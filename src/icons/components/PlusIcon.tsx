@@ -1,0 +1,31 @@
+import * as React from 'react';
+
+export interface IPlusIconProps extends React.SVGProps<SVGSVGElement> {
+  fill0?: string;
+}
+
+const PlusIcon = ({ fill0, ...restProps }: IPlusIconProps) => (
+  <svg
+    preserveAspectRatio="none"
+    overflow="visible"
+    style={{
+      display: 'block',
+    }}
+    width="1em"
+    height="1em"
+    viewBox="0 0 14.5833 14.5833"
+    fill="none"
+    {...restProps}
+  >
+    <g id="elements">
+      <path
+        id="Icon"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M7.29167 0C7.63684 0 7.91667 0.279822 7.91667 0.625V6.66667H13.9583C14.3035 6.66667 14.5833 6.94649 14.5833 7.29167C14.5833 7.63684 14.3035 7.91667 13.9583 7.91667H7.91667V13.9583C7.91667 14.3035 7.63684 14.5833 7.29167 14.5833C6.94649 14.5833 6.66667 14.3035 6.66667 13.9583V7.91667H0.625C0.279822 7.91667 0 7.63684 0 7.29167C0 6.94649 0.279822 6.66667 0.625 6.66667H6.66667V0.625C6.66667 0.279822 6.94649 0 7.29167 0Z"
+        fill={fill0 ?? '#B65FFC'}
+      />
+    </g>
+  </svg>
+);
+export default PlusIcon;

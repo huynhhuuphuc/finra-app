@@ -2,9 +2,21 @@ import { history } from '@umijs/max';
 import { useState } from 'react';
 
 const HOLDINGS = [
-  { name: 'Tích luỹ Linh hoạt', value: '68.888.999', stack: 'z-[1] -mb-8 h-[116px]' },
-  { name: 'Tích luỹ Vững bền', value: '68.686.686', stack: 'z-[2] -mb-8 h-[116px]' },
-  { name: 'Tích luỹ Thần tốc', value: '6.868.888', stack: 'z-[3] mb-0 h-[88px]' },
+  {
+    name: 'Tích luỹ Linh hoạt',
+    value: '68.888.999',
+    stack: 'z-[1] -mb-8 h-[116px]',
+  },
+  {
+    name: 'Tích luỹ Vững bền',
+    value: '68.686.686',
+    stack: 'z-[2] -mb-8 h-[116px]',
+  },
+  {
+    name: 'Tích luỹ Thần tốc',
+    value: '6.868.888',
+    stack: 'z-[3] mb-0 h-[88px]',
+  },
 ];
 
 const ALLOCATION = [
@@ -51,7 +63,12 @@ export default function AssetsPage() {
                 aria-label={hidden ? 'Hiện số tiền' : 'Ẩn số tiền'}
                 onClick={() => setHidden((value) => !value)}
               >
-                <img src="/images/assets/eye.svg" alt="" width={16} height={16} />
+                <img
+                  src="/images/assets/eye.svg"
+                  alt=""
+                  width={16}
+                  height={16}
+                />
               </button>
             </p>
             <strong className="mt-1 flex items-baseline gap-1 text-xl font-semibold leading-8">
@@ -59,7 +76,10 @@ export default function AssetsPage() {
               {hidden ? '••••••••••' : '6.868.686.868'}
             </strong>
           </div>
-          <div className="pointer-events-none absolute bottom-2 right-2 h-[59px] w-[145px]" aria-hidden>
+          <div
+            className="pointer-events-none absolute bottom-2 right-2 h-[59px] w-[145px]"
+            aria-hidden
+          >
             <img
               className="absolute left-0 top-0 w-[145px]"
               src="/images/assets/chart-fill.svg"
@@ -79,7 +99,12 @@ export default function AssetsPage() {
             className="flex cursor-pointer flex-col items-center gap-2 border-0 bg-transparent p-0 text-xs font-semibold leading-4 text-[#060607]"
           >
             <span className="grid size-8 place-items-center rounded-full bg-[rgba(182,95,252,0.1)]">
-              <img src="/images/assets/plus.svg" alt="" width={20} height={20} />
+              <img
+                src="/images/assets/plus.svg"
+                alt=""
+                width={20}
+                height={20}
+              />
             </span>
             Đầu tư
           </button>
@@ -88,7 +113,12 @@ export default function AssetsPage() {
             className="flex cursor-pointer flex-col items-center gap-2 border-0 bg-transparent p-0 text-xs font-semibold leading-4 text-[#060607]"
           >
             <span className="grid size-8 place-items-center rounded-full bg-[rgba(182,95,252,0.1)]">
-              <img src="/images/assets/clock.svg" alt="" width={20} height={20} />
+              <img
+                src="/images/assets/clock.svg"
+                alt=""
+                width={20}
+                height={20}
+              />
             </span>
             Lịch sử giao dịch
           </button>
@@ -106,7 +136,10 @@ export default function AssetsPage() {
           <em className="inline-flex rounded-[5px] bg-[#34c759] px-1.5 py-0.5 text-xs font-semibold not-italic leading-4 text-white">
             +4,8%
           </em>
-          <div className="absolute -bottom-[18px] -right-1.5 h-[78px] w-[150px]" aria-hidden>
+          <div
+            className="absolute -bottom-[18px] -right-1.5 h-[78px] w-[150px]"
+            aria-hidden
+          >
             {COINS.map((coin) => (
               <i
                 key={coin}
@@ -142,7 +175,9 @@ export default function AssetsPage() {
                 width={4}
                 height={4}
               />
-              <p className="m-0 text-xs leading-4 text-white/75">Số dư khả dụng</p>
+              <p className="m-0 text-xs leading-4 text-white/75">
+                Số dư khả dụng
+              </p>
               <strong className="mt-0.5 block text-sm font-semibold leading-5 text-white">
                 888.999đ
               </strong>
@@ -207,7 +242,12 @@ export default function AssetsPage() {
             <i className="h-6 w-1.5 rounded bg-[#171b6d]" />
             <span className="inline-flex items-center gap-1 text-[#060607]">
               Tích luỹ
-              <img src="/images/assets/arrow-down.svg" alt="" width={12} height={12} />
+              <img
+                src="/images/assets/arrow-down.svg"
+                alt=""
+                width={12}
+                height={12}
+              />
             </span>
             <b className="font-semibold text-[#060607]">3,000,000đ</b>
           </div>
