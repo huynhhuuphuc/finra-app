@@ -1,0 +1,24 @@
+.lg-editor-wang {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: #fff;
+  border: 1px dashed #ccc;
+  box-sizing: border-box;
+
+  &.w-e-full-screen-container {
+    z-index: 100;
+  }
+
+  :global {
+    .w-e-toolbar,
+    .w-e-bar {
+      flex-wrap: wrap !important;
+    }
+
+    .w-e-text-container,
+    .w-e-scroll {
+      max-width: 100%;
+    }
+  }
+}

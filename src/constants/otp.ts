@@ -1,0 +1,4 @@
+const PENDING_LOGIN = 'PENDING_LOGIN';
+const OTP_LENGTH = 6;
+
+export { OTP_LENGTH, PENDING_LOGIN };

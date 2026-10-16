@@ -1,0 +1,86 @@
+import { defineConfig } from '@umijs/max';
+import defaultSettings from './defaultSettings';
+import routes from './routes';
+export default defineConfig({
+  /**
+   * @name Enable hash mode
+   * @description Let build artifacts contain hash suffix. Usually used for incremental publishing and avoiding browser cache.
+   * @doc https://umijs.org/docs/api/config#hash
+   */
+  hash: true,
+
+  /**
+   * @name Route configuration, files not imported in routes will not be compiled
+   * @description Only supports path, component, routes, redirect, wrappers, title configuration
+   * @doc https://umijs.org/docs/guides/routes
+   */
+  routes,
+
+  /**
+   * @name Antd plugin
+   * @description Built-in babel import plugin
+   * @doc https://umijs.org/docs/max/antd#antd
+   */
+  antd: {},
+
+  npmClient: 'pnpm',
+
+  /**
+   * @name Access plugin
+   * @description Permission plugin based on initialState, must enable initialState first
+   * @doc https://umijs.org/docs/max/access
+   */
+  access: {},
+
+  /**
+   * @name Fast refresh configuration
+   * @description A good hot update component that can preserve state during updates
+   */
+  fastRefresh: true,
+
+  /**
+   * @name Data flow plugin
+   * @@doc https://umijs.org/docs/max/data-flow
+   */
+  model: {},
+
+  /**
+   * A global initial data flow that can be used to share data between plugins
+   * @description Can be used to store some global data, such as user information, or some global state. Global initial state is created at the beginning of the entire Umi project.
+   * @doc https://umijs.org/docs/max/data-flow
+   */
+  initialState: {},
+
+  /**
+   * @name Layout plugin
+   * @doc https://umijs.org/docs/max/layout-menu
+   */
+  layout: {
+    // locale: true,
+    ...defaultSettings,
+  },
+
+  locale: {
+    default: 'en-US',
+    antd: true,
+    baseNavigator: false,
+  },
+
+  mfsu: {
+    strategy: 'normal',
+    shared: {
+      clsx: {
+        singleton: true,
+      },
+    },
+  },
+  jsMinifier: 'terser',
+  tailwindcss: {},
+  proxy: {
+    '/cms-api': {
+      target: 'https://uat-cms.finra.com.vn',
+      changeOrigin: true,
+      pathRewrite: { '^/cms-api': '' },
+    },
+  },
+});

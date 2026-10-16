@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-darker: 'Darker Grotesque', sans-serif;
+  --font-hanken: 'Hanken Grotesque', sans-serif;
+
+  --color-textColor: rgba(0, 0, 0, 0.88);
+  --color-textColorTertiary: rgba(0, 0, 0, 0.45);
+  --color-primaryBg: rgba(230, 244, 255, 1);
+}
