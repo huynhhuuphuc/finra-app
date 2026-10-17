@@ -1,3 +1,5 @@
+import { getCustomerInfo } from '@/api/core';
+import { ACCESS_TOKEN } from '@/constants/cookie';
 import {
   AdvanceIcon,
   ArrowRightIcon,
@@ -6,7 +8,6 @@ import {
   BellIcon,
   CardGlowIcon,
   EyeIcon,
-  ViewOffIcon,
   FlagIcon,
   MarkerIcon,
   PlusIcon,
@@ -15,13 +16,15 @@ import {
   RefreshIcon,
   ReloadIcon,
   ReloadLightIcon,
+  ViewOffIcon,
   WaveBottom2Icon,
   WaveBottomIcon,
   WaveTop2Icon,
   WaveTopIcon,
 } from '@/icons';
+import { getCookie } from '@/utils/cookie';
 import type { SVGProps } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type HomeIcon = (props: SVGProps<SVGSVGElement>) => JSX.Element;
 
@@ -118,6 +121,33 @@ const GOALS = [
 
 export default function HomePage() {
   const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    if (!getCookie(ACCESS_TOKEN)) return;
+
+    const controller = new AbortController();
+
+    getCustomerInfo(
+      { CUSTOMER_CODE: '000814' },
+      {
+        deviceId: 'AP3A.240905.015.A2',
+        signal: controller.signal,
+        silentError: true,
+      },
+    )
+      .then((response) => {
+        if (!controller.signal.aborted) {
+          console.log('[Home] GET_CUSTOMER_INFO:', response);
+        }
+      })
+      .catch((error: unknown) => {
+        if (!controller.signal.aborted) {
+          console.error('[Home] GET_CUSTOMER_INFO failed:', error);
+        }
+      });
+
+    return () => controller.abort();
+  }, []);
 
   return (
     <div className="bg-white px-5 pb-6 pt-4 text-[#060607]">

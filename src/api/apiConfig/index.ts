@@ -237,6 +237,9 @@ cusInstance.interceptors.response.use(
   },
   (error: AxiosError) => {
     message.destroy(GLOBAL_LOADING_KEY);
+    if ((error.config as CustomRequestConfig | undefined)?.silentError) {
+      return Promise.reject(error);
+    }
     try {
       errorHandler(error);
     } catch (err) {
@@ -246,7 +249,9 @@ cusInstance.interceptors.response.use(
   },
 );
 
-const requestCus = <R = any>(options: AxiosRequestConfig): Promise<R> => {
+type CustomRequestConfig = AxiosRequestConfig & { silentError?: boolean };
+
+const requestCus = <R = any>(options: CustomRequestConfig): Promise<R> => {
   const config: AxiosRequestConfig = { ...options };
 
   // FormData: drop default JSON content-type so boundary is set correctly
