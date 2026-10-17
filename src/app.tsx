@@ -5,7 +5,7 @@ import {
   type Settings as LayoutSettings,
 } from '@ant-design/pro-components';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { history, RunTimeLayoutConfig } from '@umijs/max';
+import { history, RunTimeLayoutConfig, useLocation } from '@umijs/max';
 import { App } from 'antd';
 import type { PropsWithChildren } from 'react';
 import defaultSettings from '../config/defaultSettings';
@@ -29,12 +29,30 @@ const queryClient = new QueryClient({
   },
 });
 
+const TAB_PATHS = new Set([
+  '/home',
+  '/products',
+  '/for-you',
+  '/assets',
+  '/account',
+]);
 const getBase = () => (window as any)?.routerBase || '/';
 const stripBase = (p: string) => {
   const base = getBase();
   return p.startsWith(base) ? p.slice(base.length - 1) : p;
 };
 let NAV_LOCK = false;
+
+function AppShell({ children }: PropsWithChildren) {
+  const { pathname } = useLocation();
+  const showTabs = TAB_PATHS.has(stripBase(pathname));
+  return (
+    <div className="app-shell">
+      <div className="app-shell-body">{children}</div>
+      {showTabs ? <BottomTabBar /> : null}
+    </div>
+  );
+}
 
 export function onRouteChange({
   location,
@@ -181,14 +199,7 @@ export const layout: RunTimeLayoutConfig = ({
         setInitialState((prev) => ({ ...prev, currentUser: user }));
       }
     },
-    childrenRender: (children) => {
-      return (
-        <div className="app-shell">
-          <div className="app-shell-body">{children}</div>
-          <BottomTabBar />
-        </div>
-      );
-    },
+    childrenRender: (children) => <AppShell>{children}</AppShell>,
     unAccessible: <NoPermission />,
   };
 };

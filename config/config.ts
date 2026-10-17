@@ -82,5 +82,9 @@ export default defineConfig({
       changeOrigin: true,
       pathRewrite: { '^/cms-api': '' },
     },
+    '/core': {
+      target: 'http://172.16.90.62:9090',
+      changeOrigin: true,
+    },
   },
 });

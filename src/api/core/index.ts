@@ -2,7 +2,8 @@ import { ACCESS_TOKEN } from '@/constants/cookie';
 import { getCookie } from '@/utils/cookie';
 import { requestCus } from '../apiConfig';
 
-const DEFAULT_ENDPOINT = 'http://172.16.90.62:9090/core';
+const DEFAULT_ENDPOINT =
+  process.env.NAME === 'development' ? '/core' : 'http://172.16.90.62:9090/core';
 const DEFAULT_API_KEY =
   'm2OjAItAHwoOTFibJSMD2KZcO9W9Qi6VkTuloPPZNnbQSsku8NrIdfRVBpK85wg0TxVLLjfenSQ5yaWVK2gD2yqFC9OqFUAehIenwZJ467Nhl1VnmEsRqz7OEmtCEHGT';
 

@@ -51,6 +51,17 @@ export default [
     component: '@/pages/Assets',
   },
   {
+    path: '/account/info',
+    name: 'Thông tin tài khoản',
+    component: '@/pages/Account/components/AccountDetail/AccountDetail',
+  },
+  {
+    path: '/account/history',
+    name: 'Lịch sử giao dịch',
+    component:
+      '@/pages/Account/components/TransactionHistory/TransactionHistory',
+  },
+  {
     path: '/account',
     name: 'Tài khoản',
     component: '@/pages/Account',
