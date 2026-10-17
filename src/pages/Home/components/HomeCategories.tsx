@@ -34,11 +34,11 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
         <Carousel
           ref={carouselRef}
           arrows={false}
-          autoplay={categories.length > 1}
-          autoplaySpeed={3000}
           cssEase="cubic-bezier(0.4, 0, 0.2, 1)"
           dots={false}
           infinite={categories.length > 1}
+          autoplay={categories.length > 1}
+          autoplaySpeed={4000}
           beforeChange={(_, next) => setCurrent(next)}
           className="-mx-5"
         >
