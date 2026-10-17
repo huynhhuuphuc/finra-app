@@ -1,5 +1,5 @@
 import { getCustomerName } from '@/api/core/customer';
-import { formatHomeMoney } from '@/api/core/home';
+import { formatHomeMoney, getHomeCustomerStatus } from '@/api/core/home';
 import useHomeData from '@/hooks/useHomeData';
 import {
   AdvanceIcon,
@@ -23,6 +23,7 @@ import { useState } from 'react';
 import CustomerAvatar from '../Account/components/CustomerAvatar';
 import ProfileStatus from '../Account/components/ProfileStatus';
 import HomeCategories from './components/HomeCategories';
+import NewbieQuestProgress from './components/NewbieQuestProgress';
 import RecentTransactions from './components/RecentTransactions';
 import UpcomingInterest from './components/UpcomingInterest';
 
@@ -73,6 +74,7 @@ export default function HomePage() {
 
   const home = useHomeData();
   const profile = home.profile.profile;
+  const customerStatus = getHomeCustomerStatus(profile);
   const summary = home.summary.data;
   const money = (value: unknown, unit = true, signed = false) =>
     formatHomeMoney(value, hidden, unit, signed);
@@ -127,7 +129,11 @@ export default function HomePage() {
         error={home.summary.error}
         retry={home.summary.refetch}
       />
-      <section className="relative mt-5 h-[188px] overflow-hidden rounded-2xl bg-[#0a0a0b] text-white">
+      <section
+        className={`relative mt-5 overflow-hidden rounded-2xl bg-[#0a0a0b] text-white transition-[height] duration-300 ${
+          customerStatus?.showBalanceDetails ? 'h-[188px]' : 'h-[128px]'
+        }`}
+      >
         <CardGlowIcon
           width={160}
           height={141}
@@ -185,25 +191,30 @@ export default function HomePage() {
             </span>
           </p>
         </div>
-        <div className="absolute inset-x-0 bottom-0 flex h-[60px] bg-[#1cffc7] px-4 pt-3 text-[#060607]">
-          <div className="flex-1">
-            <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-1">
-              Tiền mặt khả dụng
-            </p>
-            <p className="text-xs font-semibold leading-4">
-              {money(summary?.CASH_BALANCE)}
-            </p>
+        {customerStatus?.showBalanceDetails && (
+          <div className="absolute inset-x-0 bottom-0 flex h-[60px] bg-[#1cffc7] px-4 pt-3 text-[#060607]">
+            <div className="flex-1">
+              <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-1">
+                Tiền mặt khả dụng
+              </p>
+              <p className="text-xs font-semibold leading-4">
+                {money(summary?.CASH_BALANCE)}
+              </p>
+            </div>
+            <div className="flex-1 text-right">
+              <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-1">
+                Lợi nhuận hiện tại
+              </p>
+              <p className="text-xs font-semibold leading-4">
+                {money(summary?.SUM_FEE_VALUE, true, true)}
+              </p>
+            </div>
           </div>
-          <div className="flex-1 text-right">
-            <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-1">
-              Lợi nhuận hiện tại
-            </p>
-            <p className="text-xs font-semibold leading-4">
-              {money(summary?.SUM_FEE_VALUE, true, true)}
-            </p>
-          </div>
-        </div>
+        )}
       </section>
+      {customerStatus?.showQuestProgress && (
+        <NewbieQuestProgress completedSteps={customerStatus.completedSteps} />
+      )}
 
       <div className="mt-5 grid grid-cols-4 gap-2">
         {ACTIONS.map((action) => {

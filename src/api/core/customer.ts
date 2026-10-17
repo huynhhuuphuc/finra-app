@@ -1,6 +1,8 @@
 import { getCustomerInfo, requestCore } from './index';
 
 export interface CustomerProfile {
+  IS_HAS_TRANS?: number | string | null;
+  IS_HAS_CONTRACT?: number | string | null;
   CUSTOMER_NAME?: string;
   NICK_NAME?: string;
   AVATAR_IMG?: string;

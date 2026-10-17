@@ -3,6 +3,7 @@ import {
   customerApiOptions,
   readCoreData,
   type CoreResult,
+  type CustomerProfile,
   type CustomerTransaction,
 } from './customer';
 import { getContractNearInterest, requestCore } from './index';
@@ -25,6 +26,18 @@ export interface NearInterest {
   EXTEND_TYPE_NAME?: string;
   DAY_TIMELINE_ARR?: unknown;
   STATUS_LOAN_APPENDIX?: string;
+}
+
+export function getHomeCustomerStatus(profile?: CustomerProfile) {
+  if (!profile) return null;
+  const hasTransaction = String(profile.IS_HAS_TRANS) === '1';
+  const hasContract = String(profile.IS_HAS_CONTRACT) === '1';
+  return {
+    isNewUser: !hasTransaction && !hasContract,
+    showBalanceDetails: hasContract,
+    showQuestProgress: !hasContract,
+    completedSteps: 1 + Number(hasTransaction) + Number(hasContract),
+  };
 }
 
 function checkRows<T>(rows: T[]): T[] {

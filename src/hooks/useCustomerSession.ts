@@ -1,18 +1,17 @@
 import { ACCESS_TOKEN, USER_INFO } from '@/constants/cookie';
+import type { CurrentUser } from '@/types/currentUser';
 import { getCookie } from '@/utils/cookie';
 
 export default function useCustomerSession() {
   const token = getCookie(ACCESS_TOKEN) as string;
-  const user = getCookie(USER_INFO) as {
-    customerCode?: string;
-    CUSTOMER_CODE?: string;
-  } | null;
-  const customerCode = user?.customerCode || user?.CUSTOMER_CODE || '000814';
+  const currentUser = getCookie(USER_INFO) as CurrentUser | null;
+  const customerCode =
+    typeof currentUser?.user === 'string' ? currentUser.user.trim() : '';
   return {
     token,
-    // Existing login is still a demo; use its configured customer until real login.
+    currentUser,
     customerCode,
-    accountCode: `${customerCode}1`,
-    hasSession: Boolean(token),
+    accountCode: customerCode ? `${customerCode}1` : '',
+    hasSession: Boolean(token && customerCode),
   };
 }
