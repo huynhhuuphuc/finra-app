@@ -7,7 +7,7 @@ export default function useCustomerProfile() {
   const query = useQuery({
     queryKey: ['customer-profile', customerCode, token],
     queryFn: ({ signal }) => fetchCustomerProfile(customerCode, signal),
-    enabled: Boolean(token),
+    enabled: hasSession,
     staleTime: Infinity,
     retry: false,
   });
