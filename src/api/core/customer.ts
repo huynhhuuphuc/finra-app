@@ -63,6 +63,8 @@ export interface TransactionFilters {
 }
 
 export interface CustomerTransaction {
+  BUSINESS_CODE?: string;
+  C_BUSINESS_DETAIL_CODE?: string;
   PK_CASH_TRANSACTION?: string;
   BUSINESS_TRANS_DETAIL_NAME?: string;
   DUE_DATE?: string;

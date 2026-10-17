@@ -4,7 +4,7 @@ import {
 } from '@/api/core/customer';
 import { ACCESS_TOKEN } from '@/constants/cookie';
 import { PAGE_URL } from '@/constants/pathUrl';
-import useCustomerProfile from '@/hooks/useCustomerProfile';
+import useCustomerSession from '@/hooks/useCustomerSession';
 import {
   ArrowUpLightIcon,
   BackIcon,
@@ -69,8 +69,7 @@ export default function TransactionHistory() {
     TO_DATE: '',
   });
   const [draft, setDraft] = useState(filters);
-  const profileQuery = useCustomerProfile();
-  const accountCode = profileQuery.profile?.ACCOUNT_CODE;
+  const { accountCode, customerCode, hasSession } = useCustomerSession();
   const requestFilters: TransactionFilters = {
     ...filters,
     FROM_DATE: filters.FROM_DATE
@@ -82,14 +81,14 @@ export default function TransactionHistory() {
   const query = useQuery({
     queryKey: [
       'transactions',
-      profileQuery.customerCode,
+      customerCode,
       accountCode,
       getCookie(ACCESS_TOKEN),
       requestFilters,
     ],
     queryFn: ({ signal }) =>
       fetchCustomerTransactions(accountCode!, requestFilters, signal),
-    enabled: Boolean(profileQuery.hasSession && accountCode),
+    enabled: Boolean(hasSession && accountCode),
     retry: false,
   });
   const items = (query.data || []).map((transaction) => {
@@ -175,16 +174,6 @@ export default function TransactionHistory() {
         </div>
       </div>
 
-      <ProfileStatus
-        loading={profileQuery.hasSession && profileQuery.isPending}
-        error={profileQuery.error}
-        retry={profileQuery.refetch}
-      />
-      {profileQuery.profile && !accountCode && (
-        <p role="alert" className="px-5 py-3 text-sm">
-          Hồ sơ chưa có mã tài khoản giao dịch.
-        </p>
-      )}
       <ProfileStatus
         loading={query.isFetching}
         error={query.error}
