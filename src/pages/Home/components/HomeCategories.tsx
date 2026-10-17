@@ -16,6 +16,8 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
           arrows
           dots={false}
           infinite={categories.length > 1}
+          autoplay={categories.length > 1}
+          autoplaySpeed={4000}
           beforeChange={(_, next) => setCurrent(next)}
           className="mt-5"
         >
