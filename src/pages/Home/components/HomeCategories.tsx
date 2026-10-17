@@ -1,4 +1,6 @@
 import type { HomeCategory } from '@/api/core/home';
+import { PAGE_URL } from '@/constants/pathUrl';
+import { history } from '@umijs/max';
 import { Carousel, Modal } from 'antd';
 import type { CarouselRef } from 'antd/es/carousel';
 import { useRef, useState } from 'react';
@@ -28,6 +30,9 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
   const [current, setCurrent] = useState(0);
   const carouselRef = useRef<CarouselRef>(null);
   const categories = items.filter((item) => item.CODE !== 'MI_UPS');
+  const handleCooperate = (item: HomeCategory) => {
+    history.push(PAGE_URL.productCooperate);
+  };
   return (
     <>
       {categories.length ? (
@@ -64,7 +69,7 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
                     </div>
                     <button
                       type="button"
-                      onClick={() => setSelected(item)}
+                      onClick={() => handleCooperate(item)}
                       aria-label={`Hợp tác ${item.NAME || 'cùng FINRA'}`}
                       className="isolate order-1 mx-auto flex h-8 w-[100px] flex-none flex-row items-center justify-between rounded-[10px] border-0 bg-[#b65ffc] px-1 py-0 text-xs leading-4 text-white"
                     >
