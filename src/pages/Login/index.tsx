@@ -1,6 +1,6 @@
 import { PENDING_LOGIN } from '@/constants/otp';
 import { PAGE_URL } from '@/constants/pathUrl';
-import { AvatarIcon } from '@/icons';
+import { AvatarIcon, EyeIcon, ViewOffIcon } from '@/icons';
 import type { CurrentUser } from '@/types/currentUser';
 import { Helmet, history } from '@umijs/max';
 import { App, Button, Form, Input } from 'antd';
@@ -101,14 +101,22 @@ export default function Login() {
                 height={24}
               />
             }
-            iconRender={() => (
-              <img
-                src="/images/login/view-off.svg"
-                alt=""
-                width={24}
-                height={24}
-              />
-            )}
+            iconRender={(visible) =>
+              visible ? (
+                <EyeIcon
+                  width={21.5}
+                  height={15.5}
+                  preserveAspectRatio="xMidYMid meet"
+                />
+              ) : (
+                <ViewOffIcon
+                  width={24}
+                  height={24}
+                  fill0="#B3B3B3"
+                  preserveAspectRatio="xMidYMid meet"
+                />
+              )
+            }
           />
         </Form.Item>
 

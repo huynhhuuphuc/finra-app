@@ -12,6 +12,8 @@ export { default as BellIcon } from './components/BellIcon';
 export type { IBellIconProps } from './components/BellIcon';
 export { default as CardGlowIcon } from './components/CardGlowIcon';
 export type { ICardGlowIconProps } from './components/CardGlowIcon';
+export { default as DotIcon } from './components/DotIcon';
+export type { IDotIconProps } from './components/DotIcon';
 export { default as EyeIcon } from './components/EyeIcon';
 export type { IEyeIconProps } from './components/EyeIcon';
 export { default as FlagIcon } from './components/FlagIcon';

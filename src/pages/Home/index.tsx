@@ -6,6 +6,7 @@ import {
   BellIcon,
   CardGlowIcon,
   EyeIcon,
+  ViewOffIcon,
   FlagIcon,
   MarkerIcon,
   PlusIcon,
@@ -199,11 +200,20 @@ export default function HomePage() {
               aria-label={hidden ? 'Hiện số tiền' : 'Ẩn số tiền'}
               onClick={() => setHidden((value) => !value)}
             >
-              <EyeIcon
-                width={14.3333}
-                height={10.3333}
-                preserveAspectRatio="xMidYMid meet"
-              />
+              {hidden ? (
+                <ViewOffIcon
+                  width={16}
+                  height={16}
+                  fill0="#B3B3B3"
+                  preserveAspectRatio="xMidYMid meet"
+                />
+              ) : (
+                <EyeIcon
+                  width={14.3333}
+                  height={10.3333}
+                  preserveAspectRatio="xMidYMid meet"
+                />
+              )}
             </button>
           </p>
           <p className="mt-1 flex items-baseline gap-1">
@@ -215,13 +225,13 @@ export default function HomePage() {
         </div>
         <div className="absolute inset-x-0 bottom-0 flex h-[60px] bg-[#1cffc7] px-4 pt-3 text-[#060607]">
           <div className="flex-1">
-            <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)]">
+            <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-1">
               Tiền mặt khả dụng
             </p>
             <p className="text-xs font-semibold leading-4">100.000.000đ</p>
           </div>
           <div className="flex-1 text-right">
-            <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)]">
+            <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-1">
               Lợi nhuận hiện tại
             </p>
             <p className="text-xs font-semibold leading-4">+89,124đ (+0.3%)</p>
@@ -233,23 +243,23 @@ export default function HomePage() {
         {ACTIONS.map((action) => {
           const Icon = action.icon;
           return (
-          <button
-            key={action.label}
-            type="button"
-            className="flex flex-col items-center gap-4 rounded-lg bg-[#f7f7f7] px-2 py-2.5"
-          >
-            <span className="grid size-8 place-items-center rounded-full bg-[rgba(182,95,252,0.1)]">
-              <HomeGlyph
-                icon={Icon}
-                width={action.width}
-                height={action.height}
-                flip={action.flip}
-              />
-            </span>
-            <span className="text-xs font-semibold leading-4 text-[rgba(10,10,11,0.78)]">
-              {action.label}
-            </span>
-          </button>
+            <button
+              key={action.label}
+              type="button"
+              className="flex flex-col items-center gap-4 rounded-lg bg-[#f7f7f7] px-2 py-2.5"
+            >
+              <span className="grid size-8 place-items-center rounded-full bg-[rgba(182,95,252,0.1)]">
+                <HomeGlyph
+                  icon={Icon}
+                  width={action.width}
+                  height={action.height}
+                  flip={action.flip}
+                />
+              </span>
+              <span className="text-xs font-semibold leading-4 text-[rgba(10,10,11,0.78)]">
+                {action.label}
+              </span>
+            </button>
           );
         })}
       </div>
@@ -314,33 +324,35 @@ export default function HomePage() {
           {TRANSACTIONS.map((item, index) => {
             const Icon = item.icon;
             return (
-            <div key={item.title} className="flex gap-4">
-              <span className="grid size-9 shrink-0 place-items-center rounded-md bg-[#171b6d]">
-                <HomeGlyph
-                  icon={Icon}
-                  width={item.width}
-                  height={item.height}
-                  flip={item.flip}
-                />
-              </span>
-              <div
-                className={`flex min-w-0 flex-1 items-center justify-between pb-4 ${
-                  index < TRANSACTIONS.length - 1
-                    ? 'border-b border-[#e7e7e7]'
-                    : 'pb-0'
-                }`}
-              >
-                <div>
+              <div key={item.title} className="flex gap-4">
+                <span className="grid size-9 shrink-0 place-items-center rounded-md bg-[#171b6d]">
+                  <HomeGlyph
+                    icon={Icon}
+                    width={item.width}
+                    height={item.height}
+                    flip={item.flip}
+                  />
+                </span>
+                <div
+                  className={`flex min-w-0 flex-1 items-center justify-between pb-4 ${
+                    index < TRANSACTIONS.length - 1
+                      ? 'border-b border-[#e7e7e7]'
+                      : 'pb-0'
+                  }`}
+                >
+                  <div>
+                    <p className="text-xs font-semibold leading-4">
+                      {item.title}
+                    </p>
+                    <p className="mt-1 text-[10px] leading-4">
+                      16/09/2024 <span className="text-[#b3b3b3]">|</span> 16:19
+                    </p>
+                  </div>
                   <p className="text-xs font-semibold leading-4">
-                    {item.title}
-                  </p>
-                  <p className="mt-1 text-[10px] leading-4">
-                    16/09/2024 <span className="text-[#b3b3b3]">|</span> 16:19
+                    {item.amount}
                   </p>
                 </div>
-                <p className="text-xs font-semibold leading-4">{item.amount}</p>
               </div>
-            </div>
             );
           })}
         </div>
@@ -349,7 +361,12 @@ export default function HomePage() {
       <section className="mt-4 rounded-lg border border-[#e7e7e7] p-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold leading-7">Danh mục tích luỹ</h2>
-          <HomeGlyph icon={ArrowRightIcon} width={9.584} height={14.5833} flip />
+          <HomeGlyph
+            icon={ArrowRightIcon}
+            width={9.584}
+            height={14.5833}
+            flip
+          />
         </div>
         {GOALS.map((goal, index) => (
           <div

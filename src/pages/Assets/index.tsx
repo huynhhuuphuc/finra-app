@@ -1,3 +1,4 @@
+import DotIcon from '@/icons/components/DotIcon';
 import { history } from '@umijs/max';
 import { useState } from 'react';
 
@@ -153,10 +154,15 @@ export default function AssetsPage() {
           <div className="absolute -right-2.5 top-3 z-0 h-[140px] w-[72%] rounded-[8px_36px_8px_8px] border border-[#6d6bd8] bg-[#6d6bd8]" />
           <article className="relative z-[1] flex h-[172px] flex-col justify-center gap-4 rounded-[8px_40px_8px_8px] border border-[#5856d6] bg-[#5856d6] p-4 text-white">
             <div className="relative pl-3">
-              <img
+              {/* <img
                 className="absolute left-0 top-1.5"
                 src="/images/assets/dot.svg"
                 alt=""
+                width={4}
+                height={4}
+              /> */}
+              <DotIcon
+                className="absolute left-0 top-1.5"
                 width={4}
                 height={4}
               />
@@ -168,10 +174,8 @@ export default function AssetsPage() {
               </strong>
             </div>
             <div className="relative pl-3">
-              <img
+              <DotIcon
                 className="absolute left-0 top-1.5"
-                src="/images/assets/dot.svg"
-                alt=""
                 width={4}
                 height={4}
               />
