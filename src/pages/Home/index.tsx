@@ -1,20 +1,17 @@
-import useCustomerProfile from '@/hooks/useCustomerProfile';
+import { getCustomerName } from '@/api/core/customer';
+import { formatHomeMoney } from '@/api/core/home';
+import useHomeData from '@/hooks/useHomeData';
 import {
   AdvanceIcon,
   ArrowRightIcon,
   ArrowUpIcon,
-  ArrowUpLightIcon,
   BellIcon,
   CardGlowIcon,
   EyeIcon,
-  FlagIcon,
-  MarkerIcon,
   PlusIcon,
-  PlusLightIcon,
   QrIcon,
   RefreshIcon,
   ReloadIcon,
-  ReloadLightIcon,
   ViewOffIcon,
   WaveBottom2Icon,
   WaveBottomIcon,
@@ -22,7 +19,12 @@ import {
   WaveTopIcon,
 } from '@/icons';
 import type { SVGProps } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import CustomerAvatar from '../Account/components/CustomerAvatar';
+import ProfileStatus from '../Account/components/ProfileStatus';
+import HomeCategories from './components/HomeCategories';
+import RecentTransactions from './components/RecentTransactions';
+import UpcomingInterest from './components/UpcomingInterest';
 
 type HomeIcon = (props: SVGProps<SVGSVGElement>) => JSX.Element;
 
@@ -66,84 +68,26 @@ const ACTIONS: {
   { label: 'Ứng trước', icon: AdvanceIcon, width: 17.9167, height: 17.9167 },
 ];
 
-const TRANSACTIONS: {
-  title: string;
-  amount: string;
-  icon: HomeIcon;
-  width: number;
-  height: number;
-  flip?: boolean;
-}[] = [
-  {
-    title: 'Nộp tiền',
-    amount: '+100,000,000',
-    icon: PlusLightIcon,
-    width: 14.5833,
-    height: 14.5833,
-  },
-  {
-    title: 'Rút tiền',
-    amount: '-5,000,000',
-    icon: ArrowUpLightIcon,
-    width: 14.5833,
-    height: 9.58412,
-    flip: true,
-  },
-  {
-    title: 'Mở tích luỹ',
-    amount: '-50,000,000',
-    icon: ReloadLightIcon,
-    width: 16.25,
-    height: 16.2497,
-  },
-];
-
-const GOALS = [
-  {
-    name: 'Đi du lịch',
-    value: '+6.257.125đ',
-    soft: 'w-[35%]',
-    fill: 'w-[17%]',
-    marker: 'left-[14%]',
-    flags: ['left-[31%]', 'left-[62%]', 'left-[93%]'],
-  },
-  {
-    name: 'Mua nhà mới',
-    value: '+150.257.215đ',
-    soft: '',
-    fill: 'w-[38%]',
-    marker: 'left-[35%]',
-    flags: [],
-  },
-];
-
 export default function HomePage() {
   const [hidden, setHidden] = useState(false);
 
-  const { data, error } = useCustomerProfile();
-
-  useEffect(() => {
-    if (data) console.log('[Home] GET_CUSTOMER_INFO:', data.response);
-    if (error) console.error('[Home] GET_CUSTOMER_INFO failed:', error);
-  }, [data, error]);
+  const home = useHomeData();
+  const profile = home.profile.profile;
+  const summary = home.summary.data;
+  const money = (value: unknown, unit = true, signed = false) =>
+    formatHomeMoney(value, hidden, unit, signed);
 
   return (
     <div className="bg-white px-5 pb-6 pt-4 text-[#060607]">
       <header className="flex h-14 items-center justify-between">
         <div className="flex min-w-0 items-center gap-3">
-          <img
-            src="/images/home/avatar.png"
-            alt=""
-            width={44}
-            height={44}
-            className="size-11 rounded-md object-cover"
-          />
+          <CustomerAvatar profile={profile} size={44} />
           <div className="min-w-0">
             <p className="text-sm font-light leading-5 text-[rgba(10,10,11,0.78)] !mb-0">
               Xin chào ✋
             </p>
             <p className="text-sm font-semibold leading-5 !mb-0">
-              Nguyễn Minh Tuấn
+              {getCustomerName(profile)}
             </p>
           </div>
         </div>
@@ -173,6 +117,16 @@ export default function HomePage() {
         </div>
       </header>
 
+      <ProfileStatus
+        loading={home.hasSession && home.profile.isPending}
+        error={home.profile.error}
+        retry={home.profile.refetch}
+      />
+      <ProfileStatus
+        loading={home.hasSession && home.summary.isPending}
+        error={home.summary.error}
+        retry={home.summary.refetch}
+      />
       <section className="relative mt-5 h-[188px] overflow-hidden rounded-2xl bg-[#0a0a0b] text-white">
         <CardGlowIcon
           width={160}
@@ -227,7 +181,7 @@ export default function HomePage() {
           <p className="mt-1 flex items-baseline gap-1">
             <span className="text-xl leading-8">đ</span>
             <span className="text-[32px] font-semibold leading-[52px]">
-              {hidden ? '••••••••••' : '6.868.686.868'}
+              {money(summary?.SUM_CASH, false)}
             </span>
           </p>
         </div>
@@ -236,13 +190,17 @@ export default function HomePage() {
             <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-1">
               Tiền mặt khả dụng
             </p>
-            <p className="text-xs font-semibold leading-4">100.000.000đ</p>
+            <p className="text-xs font-semibold leading-4">
+              {money(summary?.CASH_BALANCE)}
+            </p>
           </div>
           <div className="flex-1 text-right">
             <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-1">
               Lợi nhuận hiện tại
             </p>
-            <p className="text-xs font-semibold leading-4">+89,124đ (+0.3%)</p>
+            <p className="text-xs font-semibold leading-4">
+              {money(summary?.SUM_FEE_VALUE, true, true)}
+            </p>
           </div>
         </div>
       </section>
@@ -284,17 +242,14 @@ export default function HomePage() {
             flip
           />
         </div>
-        <img
-          src="/images/home/product-card.png"
-          alt="Finra Snap"
-          className="mt-5 block w-full drop-shadow-[2px_2px_12px_rgba(0,0,0,0.1)]"
+        <ProfileStatus
+          loading={home.hasSession && home.categories.isPending}
+          error={home.categories.error}
+          retry={home.categories.refetch}
         />
-        <div className="mt-3 flex justify-center gap-1">
-          <span className="h-1 w-6 rounded-full bg-[rgba(10,10,11,0.78)]" />
-          <span className="h-1 w-4 rounded-full bg-[#e7e7e7]" />
-          <span className="h-1 w-4 rounded-full bg-[#e7e7e7]" />
-          <span className="h-1 w-4 rounded-full bg-[#e7e7e7]" />
-        </div>
+        {home.categories.isSuccess && (
+          <HomeCategories items={home.categories.data} />
+        )}
       </section>
 
       <div className="mt-4 -mx-5 overflow-x-auto px-5">
@@ -313,12 +268,23 @@ export default function HomePage() {
             </h2>
             <p className="mt-1 text-xs leading-4 text-[rgba(10,10,11,0.55)]">
               Cập nhật gần nhất:{' '}
-              <span className="text-[#060607]">16/9/2024 16:13</span>
+              <span className="text-[#060607]">
+                {home.transactions.dataUpdatedAt
+                  ? new Intl.DateTimeFormat('vi-VN', {
+                      dateStyle: 'short',
+                      timeStyle: 'short',
+                    }).format(home.transactions.dataUpdatedAt)
+                  : '—'}
+              </span>
             </p>
           </div>
           <button
             type="button"
             aria-label="Làm mới"
+            onClick={() => {
+              void home.transactions.refetch();
+            }}
+            disabled={!home.hasSession || home.transactions.isFetching}
             className="grid size-5 place-items-center"
           >
             <RefreshIcon
@@ -328,101 +294,45 @@ export default function HomePage() {
             />
           </button>
         </div>
-        <div className="mt-4 flex flex-col gap-4">
-          {TRANSACTIONS.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <div key={item.title} className="flex gap-4">
-                <span className="grid size-9 shrink-0 place-items-center rounded-md bg-[#171b6d]">
-                  <HomeGlyph
-                    icon={Icon}
-                    width={item.width}
-                    height={item.height}
-                    flip={item.flip}
-                  />
-                </span>
-                <div
-                  className={`flex min-w-0 flex-1 items-center justify-between pb-4 ${
-                    index < TRANSACTIONS.length - 1
-                      ? 'border-b border-[#e7e7e7]'
-                      : 'pb-0'
-                  }`}
-                >
-                  <div>
-                    <p className="text-xs font-semibold leading-4">
-                      {item.title}
-                    </p>
-                    <p className="mt-1 text-[10px] leading-4">
-                      16/09/2024 <span className="text-[#b3b3b3]">|</span> 16:19
-                    </p>
-                  </div>
-                  <p className="text-xs font-semibold leading-4">
-                    {item.amount}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <ProfileStatus
+          loading={home.transactions.isFetching}
+          error={home.transactions.error}
+          retry={home.transactions.refetch}
+        />
+        {home.transactions.isSuccess && (
+          <RecentTransactions items={home.transactions.data} hidden={hidden} />
+        )}
       </section>
 
-      <section className="mt-4 rounded-lg border border-[#e7e7e7] p-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold leading-7">Danh mục tích luỹ</h2>
-          <HomeGlyph
-            icon={ArrowRightIcon}
-            width={9.584}
-            height={14.5833}
-            flip
-          />
-        </div>
-        {GOALS.map((goal, index) => (
-          <div
-            key={goal.name}
-            className={
-              index === 0 ? 'mt-4 border-b border-[#e7e7e7] pb-4' : 'mt-4'
-            }
-          >
-            <div className="flex items-baseline justify-between">
-              <p className="text-sm font-semibold leading-5">{goal.name}</p>
-              <p className="text-xs font-semibold leading-4 text-[#34c759]">
-                {goal.value}
-              </p>
-            </div>
-            <div className="relative mt-3 h-8">
-              <div className="absolute inset-x-0 top-1.5 h-2 rounded-full bg-[#e7e7e7]" />
-              {goal.soft ? (
-                <div
-                  className={`absolute left-0 top-1.5 h-2 rounded-full bg-[#f6ebff] ${goal.soft}`}
-                />
-              ) : null}
-              <div
-                className={`absolute left-0 top-1.5 h-2 rounded-full bg-[#b65ffc] ${goal.fill}`}
-              />
-              <MarkerIcon
-                width={14}
-                height={12}
-                className={`absolute top-3.5 h-3 w-3.5 ${goal.marker}`}
-              />
-              {goal.flags.map((flag) => (
-                <span
-                  key={flag}
-                  className={`absolute top-0 grid size-5 -translate-x-1/2 place-items-center rounded-full bg-white shadow-[0_4px_6px_rgba(0,0,0,0.18)] ${flag}`}
-                >
-                  <FlagIcon
-                    width={10}
-                    height={11}
-                    preserveAspectRatio="xMidYMid meet"
-                  />
-                </span>
-              ))}
-            </div>
-            <p className="text-[10px] leading-4 text-[rgba(10,10,11,0.55)]">
-              Mỗi bước đi đều để lại giá trị khác biệt 🤌
-            </p>
+      {(home.nearInterest.isPending ||
+        home.nearInterest.isError ||
+        Boolean(home.nearInterest.data?.length)) && (
+        <section className="mt-4 rounded-lg border border-[#e7e7e7] p-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold leading-7">
+              Khoản gần kỳ nhận lợi ích
+            </h2>
+            <button
+              type="button"
+              aria-label="Làm mới khoản gần kỳ nhận lợi ích"
+              onClick={() => {
+                void home.nearInterest.refetch();
+              }}
+              disabled={home.nearInterest.isFetching}
+            >
+              <RefreshIcon width={18} height={18} />
+            </button>
           </div>
-        ))}
-      </section>
+          <ProfileStatus
+            loading={home.hasSession && home.nearInterest.isPending}
+            error={home.nearInterest.error}
+            retry={home.nearInterest.refetch}
+          />
+          {home.nearInterest.isSuccess && (
+            <UpcomingInterest items={home.nearInterest.data} hidden={hidden} />
+          )}
+        </section>
+      )}
     </div>
   );
 }

@@ -7,10 +7,12 @@ export default function useCustomerSession() {
     customerCode?: string;
     CUSTOMER_CODE?: string;
   } | null;
+  const customerCode = user?.customerCode || user?.CUSTOMER_CODE || '000814';
   return {
     token,
     // Existing login is still a demo; use its configured customer until real login.
-    customerCode: user?.customerCode || user?.CUSTOMER_CODE || '000814',
+    customerCode,
+    accountCode: `${customerCode}1`,
     hasSession: Boolean(token),
   };
 }
