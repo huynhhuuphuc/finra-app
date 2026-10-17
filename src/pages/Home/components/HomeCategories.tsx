@@ -30,7 +30,7 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
                 <img
                   src={item.URL_BANNER || '/images/home/product-card.png'}
                   alt={item.NAME || 'Sản phẩm FINRA'}
-                  className="block w-full rounded-lg object-contain"
+                  className="block aspect-[2/1] w-full rounded-lg object-cover"
                   onError={(event) => {
                     event.currentTarget.onerror = null;
                     event.currentTarget.src = '/images/home/product-card.png';
