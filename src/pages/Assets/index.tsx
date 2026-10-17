@@ -4,6 +4,7 @@ import {
   parseAmount,
   sumProductContracts,
 } from '@/api/core/assets';
+import PageHeader from '@/components/PageHeader';
 import { PAGE_URL } from '@/constants/pathUrl';
 import useCustomerSession from '@/hooks/useCustomerSession';
 import DotIcon from '@/icons/components/DotIcon';
@@ -12,6 +13,7 @@ import { history } from '@umijs/max';
 import { useState } from 'react';
 import ProfileStatus from '../Account/components/ProfileStatus';
 import AssetTimeline from './components/AssetTimeline';
+import { LinkSquareIcon } from '@/icons';
 
 const COINS = [
   'right-[18px] bottom-2 size-[46px]',
@@ -69,31 +71,27 @@ export default function AssetsPage() {
 
   return (
     <div className="min-h-full bg-white text-[#060607]">
-      <header className="grid h-[60px] grid-cols-[40px_1fr_40px] items-center bg-white px-4">
-        <button
-          type="button"
-          className="grid size-6 cursor-pointer place-items-center border-0 bg-transparent p-0"
-          aria-label="Quay lại"
-          onClick={() => history.back()}
-        >
-          <img src="/images/assets/back.svg" alt="" width={24} height={24} />
-        </button>
-        <h1 className="m-0 text-center text-lg font-semibold leading-7 text-[#060607]">
-          Tài sản
-        </h1>
-        <button
-          type="button"
-          aria-label="Làm mới tài sản"
-          onClick={() => {
-            void summaryQuery.refetch();
-            void productsQuery.refetch();
-          }}
-          disabled={summaryQuery.isFetching || productsQuery.isFetching}
-          className="text-xl disabled:opacity-40"
-        >
-          ↻
-        </button>
-      </header>
+      <PageHeader
+        title="Tài sản"
+        extra={
+          <button
+            type="button"
+            aria-label="Làm mới tài sản"
+            onClick={() => {
+              void summaryQuery.refetch();
+              void productsQuery.refetch();
+            }}
+            disabled={summaryQuery.isFetching || productsQuery.isFetching}
+            className="flex size-8 items-center justify-center rounded border border-[#8e8e8f]"
+          >
+            <LinkSquareIcon
+              width={16.25}
+              height={16.25}
+              preserveAspectRatio="xMidYMid meet"
+            />
+          </button>
+        }
+      />
 
       <div className="bg-[#f3eef7] bg-[url('/images/assets/hero-bg.svg')] bg-[length:140%] bg-[center_40%] bg-no-repeat px-5 pb-4 pt-2">
         <ProfileStatus
@@ -253,7 +251,7 @@ export default function AssetsPage() {
                 </p>
               </div>
               <div className="flex items-center justify-between px-4 pt-3">
-                <span className="font-['Hanken_Grotesque',sans-serif] text-xs leading-4 text-[rgba(10,10,11,0.55)]">
+                <span className="text-xs leading-4 text-[rgba(10,10,11,0.55)]">
                   Tổng lợi nhuận
                 </span>
                 <strong className="text-lg font-semibold leading-7 text-[#34c759]">
@@ -316,7 +314,9 @@ export default function AssetsPage() {
             >
               Tích luỹ
               <img
-                className={expanded ? '' : '-rotate-90'}
+                className={`transition-transform duration-200 ease-out ${
+                  expanded ? '' : '-rotate-90'
+                }`}
                 src="/images/assets/arrow-down.svg"
                 alt=""
                 width={12}

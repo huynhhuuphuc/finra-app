@@ -1,14 +1,24 @@
 import type { HomeCategory } from '@/api/core/home';
 import { Carousel, Modal } from 'antd';
-import { useState } from 'react';
+import type { CarouselRef } from 'antd/es/carousel';
+import { useRef, useState } from 'react';
 
 export default function HomeCategories({ items }: { items: HomeCategory[] }) {
   const [selected, setSelected] = useState<HomeCategory | null>(null);
+  const [current, setCurrent] = useState(0);
+  const carouselRef = useRef<CarouselRef>(null);
   const categories = items.filter((item) => item.CODE !== 'MI_UPS');
   return (
     <>
       {categories.length ? (
-        <Carousel arrows infinite={categories.length > 1} className="mt-5 pb-5">
+        <Carousel
+          ref={carouselRef}
+          arrows
+          dots={false}
+          infinite={categories.length > 1}
+          beforeChange={(_, next) => setCurrent(next)}
+          className="mt-5"
+        >
           {categories.map((item, index) => (
             <div key={item.CODE || index}>
               <button
@@ -32,6 +42,24 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
         </Carousel>
       ) : (
         <p className="text-sm text-gray-500">Chưa có sản phẩm.</p>
+      )}
+      {categories.length > 1 && (
+        <div className="mt-3 flex justify-center gap-1">
+          {categories.map((item, index) => (
+            <button
+              key={item.CODE || index}
+              type="button"
+              aria-label={`Xem sản phẩm ${index + 1}`}
+              aria-current={index === current}
+              onClick={() => carouselRef.current?.goTo(index)}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                index === current
+                  ? 'w-6 bg-[rgba(10,10,11,0.78)]'
+                  : 'w-4 bg-[#e7e7e7]'
+              }`}
+            />
+          ))}
+        </div>
       )}
       <Modal
         open={Boolean(selected)}

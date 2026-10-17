@@ -232,7 +232,7 @@ export default function HomePage() {
 
       <section className="mt-5">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold leading-7">
+          <h2 className="text-lg font-semibold leading-7 !mb-0">
             Hợp tác cùng FINRA
           </h2>
           <HomeGlyph

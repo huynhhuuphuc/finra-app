@@ -15,4 +15,11 @@ module.exports = {
     './src/pages/**/*.{js,jsx,ts,tsx}',
     './src/utils/**/*.{js,jsx,ts,tsx}',
   ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'Poppins', 'sans-serif'],
+      },
+    },
+  },
 };

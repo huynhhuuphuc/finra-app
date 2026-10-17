@@ -1,5 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300..900&family=Hanken+Grotesque:wght@300..900&display=swap&subset=vietnamese');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap&subset=vietnamese');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap&text=0123456789');
 @import (css) './../tailwind.css';
+
+:root {
+  --font-app: 'Inter', 'Poppins', sans-serif;
+}
 
 html,
 body,
@@ -7,7 +12,7 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Hanken Grotesque', sans-serif;
+  font-family: var(--font-app);
 }
 
 .login-submit-btn:not(:disabled) {
@@ -680,7 +685,7 @@ body::-webkit-scrollbar-thumb,
   border: 0;
   background: transparent;
   color: rgba(10, 10, 11, 0.55);
-  font-family: 'Hanken Grotesque', sans-serif;
+  font-family: var(--font-app);
   font-size: 10px;
   font-weight: 400;
   line-height: 16px;
@@ -767,6 +772,40 @@ body::-webkit-scrollbar-thumb,
 
 .dashboard-radio .ant-form-item {
   margin-bottom: 0 !important;
+}
+
+.amount-ruler.ant-slider {
+  margin: 0;
+  height: 40px;
+  padding: 0;
+}
+
+.amount-ruler .ant-slider-rail,
+.amount-ruler .ant-slider-track {
+  background: transparent !important;
+}
+
+.amount-ruler .ant-slider-handle {
+  width: 2px !important;
+  height: 40px !important;
+}
+
+.amount-ruler .ant-slider-handle::before {
+  display: none !important;
+}
+
+.amount-ruler .ant-slider-handle::after,
+.amount-ruler .ant-slider-handle:hover::after,
+.amount-ruler .ant-slider-handle:focus::after,
+.amount-ruler .ant-slider-handle:active::after {
+  inset: 0 !important;
+  width: 2px !important;
+  height: 40px !important;
+  border-radius: 1px !important;
+  background: #b65ffc !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transform: none !important;
 }
 
 :where(.css-dev-only-do-not-override-5uesps).ant-form-inline

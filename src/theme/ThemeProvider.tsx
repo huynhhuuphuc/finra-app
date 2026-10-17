@@ -21,6 +21,7 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
           : antdTheme.defaultAlgorithm,
         token: {
           colorPrimary: BRAND_PRIMARY,
+          fontFamily: "'Inter', 'Poppins', sans-serif",
         },
       }}
     >

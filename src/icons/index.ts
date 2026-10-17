@@ -50,6 +50,8 @@ export { default as InfoIcon } from './components/InfoIcon';
 export type { IInfoIconProps } from './components/InfoIcon';
 export { default as KeyIcon } from './components/KeyIcon';
 export type { IKeyIconProps } from './components/KeyIcon';
+export { default as LinkSquareIcon } from './components/LinkSquareIcon';
+export type { ILinkSquareIconProps } from './components/LinkSquareIcon';
 export { default as LockedIcon } from './components/LockedIcon';
 export type { ILockedIconProps } from './components/LockedIcon';
 export { default as LockPasswordIcon } from './components/LockPasswordIcon';

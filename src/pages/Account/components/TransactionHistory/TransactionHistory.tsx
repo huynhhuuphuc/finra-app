@@ -138,7 +138,6 @@ export default function TransactionHistory() {
           <ConfigProvider
             theme={{
               token: {
-                fontFamily: "'Hanken Grotesque', sans-serif",
                 fontSize: 12,
                 borderRadius: 6,
                 borderRadiusSM: 6,

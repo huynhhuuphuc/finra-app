@@ -31,7 +31,6 @@ const queryClient = new QueryClient({
 
 const TAB_PATHS = new Set([
   '/home',
-  '/products',
   '/for-you',
   '/assets',
   '/account',
