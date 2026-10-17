@@ -370,9 +370,64 @@ body,
     color: rgba(10, 10, 11, 0.36) !important;
   }
 
+  .login-shortcuts {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding: 28px 8px 8px;
+  }
+
+  .login-shortcut {
+    display: flex;
+    width: 88px;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: #060607;
+    font-size: 12px;
+    line-height: 16px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .login-shortcut-icon {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e7e7e7;
+    border-radius: 8px;
+    background: #fff;
+  }
+
   .text-primary {
     color: #903dc4 !important;
   }
+}
+
+.login-drawer {
+  position: absolute !important;
+  inset: 0;
+}
+
+.login-drawer .ant-drawer-mask,
+.login-drawer .ant-drawer-content-wrapper {
+  position: absolute;
+}
+
+.login-drawer .ant-drawer-content-wrapper {
+  height: auto !important;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
+.login-drawer .ant-drawer-section,
+.login-drawer .ant-drawer-content {
+  border-radius: 16px 16px 0 0;
 }
 
 @keyframes fade-in-up {

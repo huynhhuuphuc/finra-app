@@ -5,6 +5,7 @@ import type { CurrentUser } from '@/types/currentUser';
 import { Helmet, history } from '@umijs/max';
 import { App, Button, Form, Input } from 'antd';
 import { useState } from 'react';
+import LoginShortcuts from './components/LoginShortcuts';
 
 const DEMO_USERNAME = 'admin';
 const DEMO_PASSWORD = '123456';
@@ -148,6 +149,7 @@ export default function Login() {
         >
           Đăng nhập
         </Button>
+        <LoginShortcuts />
       </Form>
     </div>
   );

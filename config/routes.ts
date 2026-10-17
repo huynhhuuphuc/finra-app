@@ -36,6 +36,16 @@ export default [
     component: '@/pages/Home',
   },
   {
+    path: '/products/detail',
+    name: 'Chi tiết hợp tác',
+    component: '@/pages/Products/components/ProductDetail',
+  },
+  {
+    path: '/products/cooperate',
+    name: 'Sản phẩm tích lũy',
+    component: '@/pages/Products/components/ProductCooperate',
+  },
+  {
     path: '/products',
     name: 'Sản phẩm',
     component: '@/pages/Products',
