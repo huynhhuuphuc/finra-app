@@ -116,61 +116,63 @@ export default function TransactionHistory() {
 
   return (
     <div className="min-h-full bg-white pb-24 text-[#060607]">
-      <header className="flex h-[60px] items-center gap-4 px-5">
-        <button
-          type="button"
-          aria-label="Quay lại"
-          onClick={() => history.replace(PAGE_URL.account)}
-          className="grid size-6 shrink-0 place-items-center"
-        >
-          <BackIcon
-            width={24}
-            height={24}
-            preserveAspectRatio="xMidYMid meet"
-          />
-        </button>
-        <h1 className="text-lg font-semibold leading-7 !mb-0">
-          Lịch sử giao dịch
-        </h1>
-      </header>
+      <div className="sticky top-0 z-10 bg-white">
+        <header className="flex h-[60px] items-center gap-4 px-5">
+          <button
+            type="button"
+            aria-label="Quay lại"
+            onClick={() => history.replace(PAGE_URL.account)}
+            className="grid size-6 shrink-0 place-items-center"
+          >
+            <BackIcon
+              width={24}
+              height={24}
+              preserveAspectRatio="xMidYMid meet"
+            />
+          </button>
+          <h1 className="text-lg font-semibold leading-7 !mb-0">
+            Lịch sử giao dịch
+          </h1>
+        </header>
 
-      <div className="mx-5 mt-[22px]">
-        <ConfigProvider
-          theme={{
-            token: {
-              fontFamily: "'Hanken Grotesque', sans-serif",
-              fontSize: 12,
-              borderRadius: 6,
-              borderRadiusSM: 6,
-              controlHeight: 36,
-              boxShadowTertiary: 'none',
-              motionDurationSlow: '0.3s',
-            },
-            components: {
-              Segmented: {
-                trackBg: '#e7e7e7',
-                trackPadding: 2,
-                itemColor: '#8e8e8f',
-                itemHoverColor: '#060607',
-                itemHoverBg: 'transparent',
-                itemSelectedBg: '#ffffff',
-                itemSelectedColor: '#060607',
-                itemActiveBg: 'transparent',
+        <div className="-mb-2 mt-[14px] px-5 py-2">
+          <ConfigProvider
+            theme={{
+              token: {
+                fontFamily: "'Hanken Grotesque', sans-serif",
+                fontSize: 12,
+                borderRadius: 6,
+                borderRadiusSM: 6,
+                controlHeight: 36,
+                boxShadowTertiary: 'none',
+                motionDurationSlow: '0.3s',
               },
-            },
-          }}
-        >
-          <Segmented
-            block
-            value={tab}
-            onChange={(value) => setTab(value as Tab)}
-            options={TABS.map((item) => ({
-              label: item.label,
-              value: item.id,
-            }))}
-            className="[&_.ant-segmented-item-label]:font-normal [&_.ant-segmented-item-selected_.ant-segmented-item-label]:font-semibold"
-          />
-        </ConfigProvider>
+              components: {
+                Segmented: {
+                  trackBg: '#e7e7e7',
+                  trackPadding: 2,
+                  itemColor: '#8e8e8f',
+                  itemHoverColor: '#060607',
+                  itemHoverBg: 'transparent',
+                  itemSelectedBg: '#ffffff',
+                  itemSelectedColor: '#060607',
+                  itemActiveBg: 'transparent',
+                },
+              },
+            }}
+          >
+            <Segmented
+              block
+              value={tab}
+              onChange={(value) => setTab(value as Tab)}
+              options={TABS.map((item) => ({
+                label: item.label,
+                value: item.id,
+              }))}
+              className="[&_.ant-segmented-item-label]:font-normal [&_.ant-segmented-item-selected_.ant-segmented-item-label]:font-semibold"
+            />
+          </ConfigProvider>
+        </div>
       </div>
 
       <ProfileStatus

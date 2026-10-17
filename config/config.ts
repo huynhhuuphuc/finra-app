@@ -56,15 +56,11 @@ export default defineConfig({
    * @doc https://umijs.org/docs/max/layout-menu
    */
   layout: {
-    // locale: true,
     ...defaultSettings,
+    locale: false,
   },
 
-  locale: {
-    default: 'en-US',
-    antd: true,
-    baseNavigator: false,
-  },
+  locale: false,
 
   mfsu: {
     strategy: 'normal',

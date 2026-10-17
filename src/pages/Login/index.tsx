@@ -8,7 +8,11 @@ import { useState } from 'react';
 
 const DEMO_USERNAME = 'admin';
 const DEMO_PASSWORD = '123456';
+const DEMO_ACCOUNT_CODE = /^\d{6}$/;
 const SESSION_MINUTES = 60;
+
+const isDemoAccount = (account: string) =>
+  account === DEMO_USERNAME || DEMO_ACCOUNT_CODE.test(account);
 
 type LoginValues = {
   username: string;
@@ -26,7 +30,7 @@ export default function Login() {
 
   const onSubmit = (values: LoginValues) => {
     const account = values.username.trim();
-    if (account !== DEMO_USERNAME || values.password !== DEMO_PASSWORD) {
+    if (!isDemoAccount(account) || values.password !== DEMO_PASSWORD) {
       message.error('Sai tài khoản hoặc mật khẩu.');
       return;
     }
