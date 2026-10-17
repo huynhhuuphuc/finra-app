@@ -1,6 +1,7 @@
 const PAGE_URL = {
   home: '/home',
   assets: '/assets',
+  assetProduct: '/assets/product',
   dashboard: '/assets',
   login: '/login',
   otp: '/otp',

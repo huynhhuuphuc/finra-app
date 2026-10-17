@@ -186,13 +186,6 @@ export default function AssetsPage() {
           <div className="absolute -right-2.5 top-3 z-0 h-[140px] w-[72%] rounded-[8px_36px_8px_8px] border border-[#6d6bd8] bg-[#6d6bd8]" />
           <article className="relative z-[1] flex h-[172px] flex-col justify-center gap-4 rounded-[8px_40px_8px_8px] border border-[#5856d6] bg-[#5856d6] p-4 text-white">
             <div className="relative pl-3">
-              {/* <img
-                className="absolute left-0 top-1.5"
-                src="/images/assets/dot.svg"
-                alt=""
-                width={4}
-                height={4}
-              /> */}
               <DotIcon
                 className="absolute left-0 top-1.5"
                 width={4}
@@ -241,9 +234,17 @@ export default function AssetsPage() {
         )}
         <div className="flex flex-col gap-3">
           {products.map((item, index) => (
-            <article
+            <button
+              type="button"
               key={`${item.WEB_PRODUCT_TYPE}-${index}`}
-              className={`relative overflow-hidden rounded-xl border border-[#e7e7e7] bg-white min-h-[88px]`}
+              className="relative min-h-[88px] w-full cursor-pointer overflow-hidden rounded-xl border border-[#e7e7e7] bg-white p-0 text-left"
+              onClick={() =>
+                history.push(
+                  `${PAGE_URL.assetProduct}?type=${encodeURIComponent(
+                    item.WEB_PRODUCT_TYPE,
+                  )}`,
+                )
+              }
             >
               <div className="flex h-11 items-center justify-between bg-[#f7f7f7] px-4">
                 <p className="m-0 text-sm font-semibold leading-5 text-[#060607]">
@@ -265,7 +266,7 @@ export default function AssetsPage() {
                   <small className="ml-0.5 text-xs font-semibold">đ</small>
                 </strong>
               </div>
-            </article>
+            </button>
           ))}
         </div>
       </section>

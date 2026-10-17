@@ -56,6 +56,12 @@ export default [
     component: '@/pages/ForYou',
   },
   {
+    path: '/assets/product',
+    name: 'Chi tiết sản phẩm',
+    component: '@/pages/Assets/components/AssetProductDetail',
+    hideInMenu: true,
+  },
+  {
     path: '/assets',
     name: 'Tài sản',
     component: '@/pages/Assets',
