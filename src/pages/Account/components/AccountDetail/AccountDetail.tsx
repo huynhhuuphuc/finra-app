@@ -1,6 +1,9 @@
 import { PAGE_URL } from '@/constants/pathUrl';
+import useCustomerProfile from '@/hooks/useCustomerProfile';
 import { BackIcon, CameraIcon, CancelIcon, EditIcon } from '@/icons';
 import { history } from '@umijs/max';
+import CustomerAvatar from '../CustomerAvatar';
+import ProfileStatus from '../ProfileStatus';
 
 function Field({
   label,
@@ -8,7 +11,7 @@ function Field({
   tone = 'strong',
 }: {
   label: string;
-  value: string;
+  value?: string;
   tone?: 'strong' | 'muted';
 }) {
   return (
@@ -23,13 +26,15 @@ function Field({
             : '!text-[rgba(10,10,11,0.78)]'
         }`}
       >
-        {value}
+        {value || '—'}
       </p>
     </div>
   );
 }
 
 export default function AccountDetail() {
+  const { profile, isPending, error, refetch, hasSession } =
+    useCustomerProfile();
   return (
     <div className="min-h-full bg-white pb-8 text-[#060607]">
       <header className="flex h-[60px] items-center px-5">
@@ -49,7 +54,7 @@ export default function AccountDetail() {
 
       <div className="relative mx-auto mt-5 size-32">
         <div className="grid size-full place-items-center rounded-full bg-[#b65ffc] text-[60px] font-semibold leading-none text-white">
-          T
+          <CustomerAvatar profile={profile} size={128} />
         </div>
         <button
           type="button"
@@ -66,41 +71,70 @@ export default function AccountDetail() {
 
       <div className="mt-3 text-center">
         <h1 className="text-lg font-semibold leading-7 !mb-0">
-          Nguyễn Thanh Tùng MTP
+          {profile?.CUSTOMER_NAME || '—'}
         </h1>
         <button
           type="button"
           className="mt-0.5 text-sm leading-5 !text-[#b65ffc] underline"
         >
-          Đặt Nickname
+          {profile?.NICK_NAME?.trim() || 'Đặt Nickname'}
         </button>
       </div>
 
       <div className="mt-[30px] flex flex-col gap-5 px-5">
+        <ProfileStatus
+          loading={hasSession && isPending}
+          error={error}
+          retry={refetch}
+        />
         <section className="rounded-lg border border-[#e7e7e7] p-4">
           <h2 className="text-lg font-semibold leading-7 !mb-0">
             Thông tin tài khoản
           </h2>
           <div className="mt-8 flex flex-col gap-4">
-            <Field label="Số tài khoản" value="666888" tone="muted" />
-            <Field label="CMND/CCCD" value="001099022715" tone="muted" />
-            <Field label="Họ và tên" value="ĐẶNG THẾ ANH" tone="muted" />
-            <div className="flex gap-4">
-              <Field label="Ngày sinh" value="07/05/1999" tone="muted" />
-              <Field label="Giới tính" value="Nam" tone="muted" />
-            </div>
             <Field
-              label="Nơi cấp"
-              value="Cục CS ĐKQL CT và DLQG về DC"
+              label="Số tài khoản"
+              value={profile?.CUST_MOBILE}
+              tone="muted"
+            />
+            <Field label="CMND/CCCD" value={profile?.CARD_ID} tone="muted" />
+            <Field
+              label="Họ và tên"
+              value={profile?.CUSTOMER_NAME}
               tone="muted"
             />
             <div className="flex gap-4">
-              <Field label="Ngày cấp" value="03/07/2022" tone="muted" />
-              <Field label="Ngày hết hạn" value="18/02/2027" tone="muted" />
+              <Field
+                label="Ngày sinh"
+                value={profile?.BIRTH_DAY}
+                tone="muted"
+              />
+              <Field
+                label="Giới tính"
+                value={profile?.CUST_GENDER}
+                tone="muted"
+              />
+            </div>
+            <Field
+              label="Nơi cấp"
+              value={profile?.ISSUE_PLACE_NAME}
+              tone="muted"
+            />
+            <div className="flex gap-4">
+              <Field
+                label="Ngày cấp"
+                value={profile?.ISSUE_DATE}
+                tone="muted"
+              />
+              <Field
+                label="Ngày hết hạn"
+                value={profile?.EXPIRE_DATE}
+                tone="muted"
+              />
             </div>
             <Field
               label="Địa chỉ thường trú"
-              value="35 Tô Vĩnh Diện, Thanh Xuân, Hà Nội"
+              value={profile?.RESEDENCE_ADDRESS}
               tone="muted"
             />
           </div>
@@ -120,12 +154,9 @@ export default function AccountDetail() {
             </button>
           </div>
           <div className="mt-8 flex flex-col gap-4">
-            <Field label="Số điện thoại" value="0386089123" />
-            <Field label="Email" value="nidhong99@gmail.com" />
-            <Field
-              label="Địa chỉ liên hệ"
-              value="35 Tô Vĩnh Diện, Thanh Xuân, Hà Nội"
-            />
+            <Field label="Số điện thoại" value={profile?.CUST_MOBILE} />
+            <Field label="Email" value={profile?.CUST_EMAIL} />
+            <Field label="Địa chỉ liên hệ" value={profile?.CUST_ADDRESS} />
           </div>
         </section>
 

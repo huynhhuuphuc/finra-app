@@ -1,16 +1,15 @@
+import { getCustomerName } from '@/api/core/customer';
 import { PAGE_URL } from '@/constants/pathUrl';
+import useCustomerProfile from '@/hooks/useCustomerProfile';
 import {
   ArrowRight01Icon,
   ArrowRightIcon,
   ArrowUpIcon,
   BellIcon,
   ClockIcon,
-  DevicesIcon,
   FinraMarkIcon,
-  IdentificationIcon,
   InfoIcon,
   LockPasswordIcon,
-  LockedIcon,
   LogoutIcon,
   NoteDoneIcon,
   PlusLightIcon,
@@ -22,9 +21,12 @@ import {
 } from '@/icons';
 import { removeCookieAll } from '@/utils/cookie';
 import { clearGaUserId } from '@/utils/ga4';
+import { useQueryClient } from '@tanstack/react-query';
 import { history, useModel } from '@umijs/max';
 import type { SVGProps } from 'react';
 import { useState } from 'react';
+import CustomerAvatar from './components/CustomerAvatar';
+import ProfileStatus from './components/ProfileStatus';
 
 type AccountIcon = (props: SVGProps<SVGSVGElement>) => JSX.Element;
 
@@ -81,25 +83,25 @@ const SECURITY: {
     width: 14.5835,
     height: 17.9167,
   },
-  {
-    label: 'Đăng nhập sinh trắc học',
-    icon: IdentificationIcon,
-    width: 17.0835,
-    height: 17.0834,
-    trailing: 'switch',
-  },
-  {
-    label: 'Đăng ký Smart OTP',
-    icon: LockedIcon,
-    width: 17.5,
-    height: 17.5001,
-  },
-  {
-    label: 'Quản lý thiết bị đăng nhập',
-    icon: DevicesIcon,
-    width: 16.2497,
-    height: 17.9167,
-  },
+  // {
+  //   label: 'Đăng nhập sinh trắc học',
+  //   icon: IdentificationIcon,
+  //   width: 17.0835,
+  //   height: 17.0834,
+  //   trailing: 'switch',
+  // },
+  // {
+  //   label: 'Đăng ký Smart OTP',
+  //   icon: LockedIcon,
+  //   width: 17.5,
+  //   height: 17.5001,
+  // },
+  // {
+  //   label: 'Quản lý thiết bị đăng nhập',
+  //   icon: DevicesIcon,
+  //   width: 16.2497,
+  //   height: 17.9167,
+  // },
 ];
 
 const GENERAL: {
@@ -151,6 +153,9 @@ const GENERAL: {
 ];
 
 export default function AccountPage() {
+  const { profile, isPending, error, refetch, hasSession } =
+    useCustomerProfile();
+  const queryClient = useQueryClient();
   const { setInitialState } = useModel('@@initialState');
   const [biometric, setBiometric] = useState(false);
   const [rating, setRating] = useState(0);
@@ -158,6 +163,7 @@ export default function AccountPage() {
   const logout = () => {
     clearGaUserId();
     removeCookieAll();
+    queryClient.clear();
     setInitialState((state) => ({ ...state, currentUser: undefined }));
     history.replace(PAGE_URL.login);
   };
@@ -178,7 +184,7 @@ export default function AccountPage() {
           />
         </button>
         <div className="absolute left-5 top-[60px] grid size-20 place-items-center rounded-full border-4 border-white bg-[#b65ffc] text-[37px] font-semibold leading-none text-white">
-          T
+          <CustomerAvatar profile={profile} size={72} />
         </div>
         <button
           type="button"
@@ -197,11 +203,16 @@ export default function AccountPage() {
       </div>
 
       <div className="flex flex-col gap-5 px-5 pt-[66px]">
+        <ProfileStatus
+          loading={hasSession && isPending}
+          error={error}
+          retry={refetch}
+        />
         <section className="rounded-[10px] border border-[#e7e7e7] p-4">
           <div className="flex flex-col gap-6">
             <div>
               <h1 className="text-base font-semibold leading-6 !mb-0">
-                Nguyễn Thanh Tùng MTP
+                {getCustomerName(profile)}
               </h1>
               <button
                 type="button"

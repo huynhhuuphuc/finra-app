@@ -1,4 +1,10 @@
+import {
+  fetchCustomerTransactions,
+  type TransactionFilters,
+} from '@/api/core/customer';
+import { ACCESS_TOKEN } from '@/constants/cookie';
 import { PAGE_URL } from '@/constants/pathUrl';
+import useCustomerProfile from '@/hooks/useCustomerProfile';
 import {
   ArrowUpLightIcon,
   BackIcon,
@@ -6,9 +12,13 @@ import {
   PlusLightIcon,
   ReloadLightIcon,
 } from '@/icons';
+import { getCookie } from '@/utils/cookie';
+import { useQuery } from '@tanstack/react-query';
 import { history } from '@umijs/max';
-import { ConfigProvider, Segmented } from 'antd';
+import { ConfigProvider, DatePicker, Input, Modal, Segmented } from 'antd';
+import dayjs from 'dayjs';
 import { useState } from 'react';
+import ProfileStatus from '../ProfileStatus';
 
 type Tab = 'all' | 'money' | 'saving';
 type Kind = 'deposit' | 'withdraw' | 'saving';
@@ -17,68 +27,6 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'all', label: 'Tất cả' },
   { id: 'money', label: 'Tiền' },
   { id: 'saving', label: 'Tích lũy' },
-];
-
-const TRANSACTIONS: {
-  title: string;
-  amount: string;
-  kind: Kind;
-  positive: boolean;
-}[] = [
-  {
-    title: 'Nộp tiền',
-    amount: '+100,000,000',
-    kind: 'deposit',
-    positive: true,
-  },
-  {
-    title: 'Rút tiền',
-    amount: '-5,000,000',
-    kind: 'withdraw',
-    positive: false,
-  },
-  {
-    title: 'Nộp tiền',
-    amount: '+100,000,000',
-    kind: 'deposit',
-    positive: true,
-  },
-  {
-    title: 'Mở tích luỹ',
-    amount: '-50,000,000',
-    kind: 'saving',
-    positive: false,
-  },
-  {
-    title: 'Mở tích luỹ',
-    amount: '-100,000,000',
-    kind: 'saving',
-    positive: false,
-  },
-  {
-    title: 'Nộp tiền',
-    amount: '+100,000,000',
-    kind: 'deposit',
-    positive: true,
-  },
-  {
-    title: 'Rút tiền',
-    amount: '-5,000,000',
-    kind: 'withdraw',
-    positive: false,
-  },
-  {
-    title: 'Nộp tiền',
-    amount: '+100,000,000',
-    kind: 'deposit',
-    positive: true,
-  },
-  {
-    title: 'Mở tích luỹ',
-    amount: '-100,000,000',
-    kind: 'saving',
-    positive: false,
-  },
 ];
 
 function TransactionIcon({ kind }: { kind: Kind }) {
@@ -114,10 +62,56 @@ function TransactionIcon({ kind }: { kind: Kind }) {
 
 export default function TransactionHistory() {
   const [tab, setTab] = useState<Tab>('all');
-  const items = TRANSACTIONS.filter((item) => {
-    if (tab === 'money') return item.kind !== 'saving';
-    if (tab === 'saving') return item.kind === 'saving';
-    return true;
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    TRANSACTION_TYPE: '',
+    FROM_DATE: '',
+    TO_DATE: '',
+  });
+  const [draft, setDraft] = useState(filters);
+  const profileQuery = useCustomerProfile();
+  const accountCode = profileQuery.profile?.ACCOUNT_CODE;
+  const requestFilters: TransactionFilters = {
+    ...filters,
+    FROM_DATE: filters.FROM_DATE
+      ? dayjs(filters.FROM_DATE).format('DD/MM/YYYY')
+      : '',
+    TO_DATE: filters.TO_DATE ? dayjs(filters.TO_DATE).format('DD/MM/YYYY') : '',
+    HISTORY_TYPE: tab === 'money' ? 'CASH' : tab === 'saving' ? 'PRODUCT' : '',
+  };
+  const query = useQuery({
+    queryKey: [
+      'transactions',
+      profileQuery.customerCode,
+      accountCode,
+      getCookie(ACCESS_TOKEN),
+      requestFilters,
+    ],
+    queryFn: ({ signal }) =>
+      fetchCustomerTransactions(accountCode!, requestFilters, signal),
+    enabled: Boolean(profileQuery.hasSession && accountCode),
+    retry: false,
+  });
+  const items = (query.data || []).map((transaction) => {
+    const cashIn = Number(transaction.CASH_IN);
+    const cashOut = Number(transaction.CASH_OUT);
+    const positive = Number.isFinite(cashIn) && cashIn > 0;
+    const amount = positive ? cashIn : cashOut;
+    return {
+      ...transaction,
+      title: transaction.BUSINESS_TRANS_DETAIL_NAME || '—',
+      amount: Number.isFinite(amount)
+        ? (positive ? '+' : '-') +
+          new Intl.NumberFormat('vi-VN').format(Math.abs(amount)) +
+          'đ'
+        : '—',
+      positive,
+      kind: (tab === 'saving'
+        ? 'saving'
+        : positive
+        ? 'deposit'
+        : 'withdraw') as Kind,
+    };
   });
 
   return (
@@ -179,10 +173,33 @@ export default function TransactionHistory() {
         </ConfigProvider>
       </div>
 
+      <ProfileStatus
+        loading={profileQuery.hasSession && profileQuery.isPending}
+        error={profileQuery.error}
+        retry={profileQuery.refetch}
+      />
+      {profileQuery.profile && !accountCode && (
+        <p role="alert" className="px-5 py-3 text-sm">
+          Hồ sơ chưa có mã tài khoản giao dịch.
+        </p>
+      )}
+      <ProfileStatus
+        loading={query.isFetching}
+        error={query.error}
+        retry={query.refetch}
+      />
+      {query.isSuccess && items.length === 0 && (
+        <p className="px-5 py-3 text-sm">Không có giao dịch phù hợp.</p>
+      )}
       <section className="mx-5 mt-5 rounded-lg border border-[#e7e7e7] p-4">
         <div className="flex flex-col gap-4">
           {items.map((item, index) => (
-            <div key={`${item.title}-${index}`} className="flex gap-4">
+            <div
+              key={
+                item.PK_CASH_TRANSACTION || `${item.TRANSACTION_NO}-${index}`
+              }
+              className="flex gap-4"
+            >
               <span className="grid size-9 shrink-0 place-items-center rounded-md bg-[#171b6d]">
                 <TransactionIcon kind={item.kind} />
               </span>
@@ -193,9 +210,9 @@ export default function TransactionHistory() {
                       {item.title}
                     </p>
                     <p className="mt-1 flex items-center gap-1 text-[10px] leading-4 !mb-0">
-                      <span>16/09/2024</span>
+                      <span>{item.DUE_DATE || '—'}</span>
                       <span className="text-[#b3b3b3]">|</span>
-                      <span>16:19</span>
+                      <span>{item.CREATE_TIME || ''}</span>
                     </p>
                   </div>
                   <p
@@ -217,6 +234,10 @@ export default function TransactionHistory() {
 
       <button
         type="button"
+        onClick={() => {
+          setDraft(filters);
+          setFilterOpen(true);
+        }}
         className="fixed bottom-6 left-1/2 z-10 flex h-10 w-[120px] -translate-x-1/2 items-center justify-center gap-3 rounded-xl border border-[#c06ae4] bg-white text-sm font-semibold leading-5"
       >
         Bộ lọc
@@ -226,6 +247,72 @@ export default function TransactionHistory() {
           preserveAspectRatio="xMidYMid meet"
         />
       </button>
+      <Modal
+        title="Bộ lọc giao dịch"
+        open={filterOpen}
+        onCancel={() => setFilterOpen(false)}
+        okText="Áp dụng"
+        cancelText="Hủy"
+        okButtonProps={{
+          disabled: Boolean(
+            draft.FROM_DATE &&
+              draft.TO_DATE &&
+              dayjs(draft.FROM_DATE).isAfter(dayjs(draft.TO_DATE)),
+          ),
+        }}
+        onOk={() => {
+          setFilters(draft);
+          setFilterOpen(false);
+        }}
+      >
+        <div className="flex flex-col gap-4 py-4">
+          <label>
+            Từ ngày
+            <DatePicker
+              className="w-full"
+              format="DD/MM/YYYY"
+              value={draft.FROM_DATE ? dayjs(draft.FROM_DATE) : null}
+              onChange={(date) =>
+                setDraft({
+                  ...draft,
+                  FROM_DATE: date ? date.format('YYYY-MM-DD') : '',
+                })
+              }
+            />
+          </label>
+          <label>
+            Đến ngày
+            <DatePicker
+              className="w-full"
+              format="DD/MM/YYYY"
+              value={draft.TO_DATE ? dayjs(draft.TO_DATE) : null}
+              onChange={(date) =>
+                setDraft({
+                  ...draft,
+                  TO_DATE: date ? date.format('YYYY-MM-DD') : '',
+                })
+              }
+            />
+          </label>
+          <label>
+            Mã loại giao dịch
+            <Input
+              value={draft.TRANSACTION_TYPE}
+              onChange={(event) =>
+                setDraft({ ...draft, TRANSACTION_TYPE: event.target.value })
+              }
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() =>
+              setDraft({ TRANSACTION_TYPE: '', FROM_DATE: '', TO_DATE: '' })
+            }
+          >
+            Xóa bộ lọc
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

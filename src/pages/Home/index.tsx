@@ -1,5 +1,4 @@
-import { getCustomerInfo } from '@/api/core';
-import { ACCESS_TOKEN } from '@/constants/cookie';
+import useCustomerProfile from '@/hooks/useCustomerProfile';
 import {
   AdvanceIcon,
   ArrowRightIcon,
@@ -22,7 +21,6 @@ import {
   WaveTop2Icon,
   WaveTopIcon,
 } from '@/icons';
-import { getCookie } from '@/utils/cookie';
 import type { SVGProps } from 'react';
 import { useEffect, useState } from 'react';
 
@@ -122,32 +120,12 @@ const GOALS = [
 export default function HomePage() {
   const [hidden, setHidden] = useState(false);
 
+  const { data, error } = useCustomerProfile();
+
   useEffect(() => {
-    if (!getCookie(ACCESS_TOKEN)) return;
-
-    const controller = new AbortController();
-
-    getCustomerInfo(
-      { CUSTOMER_CODE: '000814' },
-      {
-        deviceId: 'AP3A.240905.015.A2',
-        signal: controller.signal,
-        silentError: true,
-      },
-    )
-      .then((response) => {
-        if (!controller.signal.aborted) {
-          console.log('[Home] GET_CUSTOMER_INFO:', response);
-        }
-      })
-      .catch((error: unknown) => {
-        if (!controller.signal.aborted) {
-          console.error('[Home] GET_CUSTOMER_INFO failed:', error);
-        }
-      });
-
-    return () => controller.abort();
-  }, []);
+    if (data) console.log('[Home] GET_CUSTOMER_INFO:', data.response);
+    if (error) console.error('[Home] GET_CUSTOMER_INFO failed:', error);
+  }, [data, error]);
 
   return (
     <div className="bg-white px-5 pb-6 pt-4 text-[#060607]">
