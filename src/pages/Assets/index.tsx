@@ -7,13 +7,13 @@ import {
 import PageHeader from '@/components/PageHeader';
 import { PAGE_URL } from '@/constants/pathUrl';
 import useCustomerSession from '@/hooks/useCustomerSession';
+import { LinkSquareIcon } from '@/icons';
 import DotIcon from '@/icons/components/DotIcon';
 import { useQuery } from '@tanstack/react-query';
 import { history } from '@umijs/max';
 import { useState } from 'react';
 import ProfileStatus from '../Account/components/ProfileStatus';
 import AssetTimeline from './components/AssetTimeline';
-import { LinkSquareIcon } from '@/icons';
 
 const COINS = [
   'right-[18px] bottom-2 size-[46px]',
@@ -249,6 +249,12 @@ export default function AssetsPage() {
                 <p className="m-0 text-sm font-semibold leading-5 text-[#060607]">
                   {item.PRODUCT_NAME || '—'}
                 </p>
+                <img
+                  src="/images/assets/arrow-up-right.svg"
+                  alt=""
+                  width={15}
+                  height={15}
+                />
               </div>
               <div className="flex items-center justify-between px-4 pt-3">
                 <span className="text-xs leading-4 text-[rgba(10,10,11,0.55)]">

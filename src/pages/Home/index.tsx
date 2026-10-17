@@ -2,7 +2,6 @@ import { getCustomerName } from '@/api/core/customer';
 import { formatHomeMoney, getHomeCustomerStatus } from '@/api/core/home';
 import useHomeData from '@/hooks/useHomeData';
 import {
-  AdvanceIcon,
   ArrowRightIcon,
   ArrowUpIcon,
   BellIcon,
@@ -66,7 +65,7 @@ const ACTIONS: {
     flip: true,
   },
   { label: 'Hợp tác', icon: ReloadIcon, width: 16.25, height: 16.2497 },
-  { label: 'Ứng trước', icon: AdvanceIcon, width: 17.9167, height: 17.9167 },
+  // { label: 'Ứng trước', icon: AdvanceIcon, width: 17.9167, height: 17.9167 },
 ];
 
 export default function HomePage() {
@@ -216,7 +215,7 @@ export default function HomePage() {
         <NewbieQuestProgress completedSteps={customerStatus.completedSteps} />
       )}
 
-      <div className="mt-5 grid grid-cols-4 gap-2">
+      <div className="mt-5 grid grid-cols-3 gap-2">
         {ACTIONS.map((action) => {
           const Icon = action.icon;
           return (
