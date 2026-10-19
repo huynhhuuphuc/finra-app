@@ -7,7 +7,7 @@ import { parseLoginResponse, type LoginResponse } from './loginResponse';
 const LOGIN_ENDPOINT =
   process.env.NAME === 'development'
     ? '/finra-auth/login'
-    : 'http://172.16.90.62:9090/login';
+    : 'https://api-uat-invest.finra.com.vn/login';
 
 export async function login(usr: string, pwd: string) {
   const previousToken = getCookie(ACCESS_TOKEN);

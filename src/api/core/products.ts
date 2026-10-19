@@ -8,7 +8,7 @@ import { requestCore } from './index';
 const PUBLIC_CORE =
   process.env.NAME === 'development'
     ? '/unAuthenticated/core'
-    : 'http://172.16.90.62:9090/unAuthenticated/core';
+    : 'https://api-uat-invest.finra.com.vn/core';
 const V2_HOST =
   process.env.NAME === 'development'
     ? '/finra-v2'
