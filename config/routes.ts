@@ -31,6 +31,11 @@ export default [
     layout: false,
   },
   {
+    path: '/developing',
+    component: '@/components/DevelopingPage',
+    layout: false,
+  },
+  {
     path: '/home',
     name: 'Trang chủ',
     component: '@/pages/Home',
@@ -59,6 +64,12 @@ export default [
     path: '/assets/product',
     name: 'Chi tiết sản phẩm',
     component: '@/pages/Assets/components/AssetProductDetail',
+    hideInMenu: true,
+  },
+  {
+    path: '/assets/accumulation',
+    name: 'Thông tin chi tiết',
+    component: '@/pages/Assets/components/AccumulationDetail',
     hideInMenu: true,
   },
   {

@@ -64,6 +64,7 @@ export function onRouteChange({
   const rawPath = location?.pathname || window.location.pathname;
   const atLogin = /(^|\/)login(\/|$)/.test(rawPath);
   const atOtp = /(^|\/)otp(\/|$)/.test(rawPath);
+  const atPublic = stripBase(rawPath) === PAGE_URL.developing;
   const storedToken = getCookie(ACCESS_TOKEN);
   const user = getCookie(USER_INFO) as CurrentUser | null;
   const token =
@@ -76,7 +77,7 @@ export function onRouteChange({
   if (storedToken && !token) removeCookieAll();
   sessionStorage.removeItem(PENDING_LOGIN);
 
-  if (!token && !atLogin) {
+  if (!token && !atLogin && !atPublic) {
     NAV_LOCK = true;
     history.replace(PAGE_URL.login);
     queueMicrotask(() => {

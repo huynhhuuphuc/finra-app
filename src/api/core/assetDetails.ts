@@ -17,6 +17,10 @@ export interface AssetAccumulationDetail
     AssetGroupSummary {
   NOTE?: string;
   APPENDIX_CODE?: string;
+  TERM?: string;
+  FEE_RATE?: number | string;
+  INTEREST_DATE?: string;
+  DAY_PAY?: number | string;
 }
 
 function firstRow<T>(response: CoreResult<T>): T {

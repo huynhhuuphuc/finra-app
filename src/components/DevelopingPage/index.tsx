@@ -1,10 +1,29 @@
-import { PageContainer } from '@ant-design/pro-components';
+import PageHeader from '@/components/PageHeader';
+import { PAGE_URL } from '@/constants/pathUrl';
+import { history } from '@umijs/max';
 import { Empty } from 'antd';
 
 export default function DevelopingPage() {
   return (
-    <PageContainer title={false} breadcrumb={{}}>
-      <Empty className="py-16" description="Đang phát triển" />
-    </PageContainer>
+    <div className="app-screen !bg-white">
+      <PageHeader
+        title=""
+        onBack={() =>
+          window.history.length > 1
+            ? history.back()
+            : history.replace(PAGE_URL.login)
+        }
+      />
+      <div className="flex flex-1 items-center justify-center px-5 pb-[60px]">
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description={
+            <span className="text-sm leading-5 text-[rgba(10,10,11,0.55)]">
+              Tính năng đang phát triển. Vui lòng thử lại sau
+            </span>
+          }
+        />
+      </div>
+    </div>
   );
 }

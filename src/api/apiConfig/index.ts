@@ -230,13 +230,27 @@ const cusInstance = axios.create({
   },
 });
 
+const hasBearer = (config?: AxiosRequestConfig) =>
+  Boolean(AxiosHeaders.from(config?.headers as any).get('Authorization'));
+
 cusInstance.interceptors.response.use(
   (response) => {
     message.destroy(GLOBAL_LOADING_KEY);
+    if (
+      String((response.data as ApiResponse | undefined)?.code) === '401' &&
+      hasBearer(response.config)
+    ) {
+      handleSessionExpired({ removeNow: false, loginPath: PAGE_URL.login });
+      return Promise.reject(new Error('Session expired'));
+    }
     return response.data;
   },
   (error: AxiosError) => {
     message.destroy(GLOBAL_LOADING_KEY);
+    if (error.response?.status === 401 && hasBearer(error.config)) {
+      handleSessionExpired({ removeNow: false, loginPath: PAGE_URL.login });
+      return Promise.reject(error);
+    }
     if ((error.config as CustomRequestConfig | undefined)?.silentError) {
       return Promise.reject(error);
     }

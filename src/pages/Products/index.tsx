@@ -41,7 +41,7 @@ function ProductCard({ item }: { item: HomeCategory }) {
             {item.NAME || item.CODE}
           </p>
           {item.DESCRIPTION ? (
-            <p className="!mb-0 mt-0.5 text-xs leading-4 text-[#ff4d7a]">
+            <p className="mb-0 truncate bg-gradient-to-br from-[#ff5e5e] to-[#7c4dff] bg-clip-text text-xs leading-4 text-transparent">
               {item.DESCRIPTION}
             </p>
           ) : null}

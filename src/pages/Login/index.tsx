@@ -140,14 +140,17 @@ export default function Login() {
         <button
           type="button"
           className="login-forgot"
-          onClick={(event) => event.preventDefault()}
+          onClick={() => history.push(PAGE_URL.developing)}
         >
           Quên mật khẩu?
         </button>
 
         <p className="login-signup">
           Bạn chưa có tài khoản ?{' '}
-          <button type="button" onClick={(event) => event.preventDefault()}>
+          <button
+            type="button"
+            onClick={() => history.push(PAGE_URL.developing)}
+          >
             Tạo tài khoản
           </button>
         </p>
