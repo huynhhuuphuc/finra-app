@@ -77,7 +77,7 @@ body,
     align-items: center;
     gap: 16px;
     flex: none;
-    padding: 42px 20px 24px;
+    padding: 96px 20px 50px;
   }
 
   .login-logo {
@@ -102,6 +102,12 @@ body,
     border-radius: 16px 16px 0 0;
     background: #fff;
     padding: 16px 20px 24px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .login-sheet > * {
+    flex-shrink: 0;
   }
 
   .login-lead {

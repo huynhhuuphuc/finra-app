@@ -2,6 +2,7 @@ const PAGE_URL = {
   home: '/home',
   assets: '/assets',
   assetProduct: '/assets/product',
+  accumulation: '/assets/accumulation',
   dashboard: '/assets',
   login: '/login',
   otp: '/otp',

@@ -21,23 +21,28 @@ export default function UpcomingInterest({
         return (
           <article
             key={item.PK_MM_APPENDIX || index}
-            className="mt-4 border-b border-[#e7e7e7] pb-4 last:border-0 last:pb-0"
+            className={`mt-4 border-b border-[#e7e7e7] pb-4 last:border-0 last:pb-0 ${
+              onSelect && item.PK_MM_APPENDIX ? 'cursor-pointer' : ''
+            }`}
+            role={onSelect && item.PK_MM_APPENDIX ? 'button' : undefined}
+            tabIndex={onSelect && item.PK_MM_APPENDIX ? 0 : undefined}
+            onClick={
+              onSelect && item.PK_MM_APPENDIX ? () => onSelect(item) : undefined
+            }
+            onKeyDown={
+              onSelect && item.PK_MM_APPENDIX
+                ? (event) => {
+                    if (event.key !== 'Enter' && event.key !== ' ') return;
+                    event.preventDefault();
+                    onSelect(item);
+                  }
+                : undefined
+            }
           >
             <div className="flex items-baseline justify-between gap-3">
-              {onSelect ? (
-                <button
-                  type="button"
-                  className="text-left text-sm font-semibold underline-offset-2 hover:underline"
-                  disabled={!item.PK_MM_APPENDIX}
-                  onClick={() => onSelect(item)}
-                >
-                  {item.NAME?.trim() || 'Tích luỹ'}
-                </button>
-              ) : (
-                <p className="text-sm font-semibold">
-                  {item.NAME?.trim() || 'Tích luỹ'}
-                </p>
-              )}
+              <p className="text-left text-sm font-semibold">
+                {item.NAME?.trim() || 'Tích luỹ'}
+              </p>
               <p className="shrink-0 text-xs font-semibold text-[#34c759]">
                 {formatHomeMoney(item.CASH_VALUE, hidden)}
               </p>

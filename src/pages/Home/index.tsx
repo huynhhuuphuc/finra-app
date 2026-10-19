@@ -24,6 +24,7 @@ import ProfileStatus from '../Account/components/ProfileStatus';
 import HomeCategories from './components/HomeCategories';
 import NewbieQuestProgress from './components/NewbieQuestProgress';
 import RecentTransactions from './components/RecentTransactions';
+import { openAccumulationDetail } from '../Assets/components/AccumulationDetail';
 import UpcomingInterest from './components/UpcomingInterest';
 
 type HomeIcon = (props: SVGProps<SVGSVGElement>) => JSX.Element;
@@ -339,7 +340,11 @@ export default function HomePage() {
             retry={home.nearInterest.refetch}
           />
           {home.nearInterest.isSuccess && (
-            <UpcomingInterest items={home.nearInterest.data} hidden={hidden} />
+            <UpcomingInterest
+              items={home.nearInterest.data}
+              hidden={hidden}
+              onSelect={openAccumulationDetail}
+            />
           )}
         </section>
       )}

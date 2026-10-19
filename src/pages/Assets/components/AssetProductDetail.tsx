@@ -1,11 +1,9 @@
 import {
   canOpenMoreAccumulations,
-  fetchAssetAccumulationDetail,
   fetchAssetAccumulations,
   fetchAssetGroupSummary,
 } from '@/api/core/assetDetails';
 import { parseAmount, type AssetProduct } from '@/api/core/assets';
-import type { NearInterest } from '@/api/core/home';
 import { PAGE_URL } from '@/constants/pathUrl';
 import useCustomerSession from '@/hooks/useCustomerSession';
 import { BackIcon, EyeIcon, PlusSignIcon } from '@/icons';
@@ -13,8 +11,8 @@ import ProfileStatus from '@/pages/Account/components/ProfileStatus';
 import UpcomingInterest from '@/pages/Home/components/UpcomingInterest';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { history, useSearchParams } from '@umijs/max';
-import { Modal } from 'antd';
 import { useState } from 'react';
+import { openAccumulationDetail } from './AccumulationDetail';
 
 const formatMoney = (value: unknown, hidden: boolean) => {
   if (hidden) return '••••••';
@@ -29,18 +27,6 @@ export default function AssetProductDetail() {
   const [hidden, setHidden] = useState(false);
   const { token, customerCode, hasSession } = useCustomerSession();
   const queryClient = useQueryClient();
-  const [selection, setSelection] = useState<{
-    item: NearInterest;
-    type: string;
-    customerCode: string;
-    token: string;
-  } | null>(null);
-  const selected =
-    selection?.type === type &&
-    selection.customerCode === customerCode &&
-    selection.token === token
-      ? selection.item
-      : null;
   const cachedProduct = queryClient
     .getQueryData<AssetProduct[]>(['asset-groups', customerCode, token])
     ?.find((item) => item.WEB_PRODUCT_TYPE === type);
@@ -64,15 +50,7 @@ export default function AssetProductDetail() {
     refetchOnMount: 'always',
     retry: false,
   });
-  const selectedId = selected?.PK_MM_APPENDIX;
-  const detailQuery = useQuery({
-    queryKey: ['asset-appendix-detail', customerCode, type, selectedId, token],
-    queryFn: ({ signal }) => fetchAssetAccumulationDetail(selectedId!, signal),
-    enabled: enabled && Boolean(selectedId),
-    retry: false,
-  });
   const summary = summaryQuery.data;
-  const detail = detailQuery.data;
   const canOpenMore =
     accumulationsQuery.isSuccess &&
     !accumulationsQuery.isError &&
@@ -209,9 +187,7 @@ export default function AssetProductDetail() {
                 <UpcomingInterest
                   items={accumulationsQuery.data}
                   hidden={hidden}
-                  onSelect={(item) =>
-                    setSelection({ item, type, customerCode, token })
-                  }
+                  onSelect={openAccumulationDetail}
                 />
               ) : (
                 <p className="text-sm text-gray-500">
@@ -222,44 +198,6 @@ export default function AssetProductDetail() {
           )}
         </>
       )}
-      <Modal
-        open={Boolean(selectedId)}
-        title={detail?.NAME || selected?.NAME || 'Chi tiết khoản tích luỹ'}
-        footer={null}
-        onCancel={() => setSelection(null)}
-      >
-        <ProfileStatus
-          loading={detailQuery.isFetching}
-          error={detailQuery.error}
-          retry={detailQuery.refetch}
-        />
-        {detailQuery.isSuccess && detail && (
-          <dl className="grid grid-cols-[auto_1fr] gap-3 text-sm">
-            <dt>Mã phụ lục</dt>
-            <dd className="break-all">{detail.APPENDIX_CODE || selectedId}</dd>
-            <dt>Số tiền tích luỹ</dt>
-            <dd>{formatMoney(detail.CASH_VALUE, hidden)}đ</dd>
-            <dt>Tổng giá trị</dt>
-            <dd>{formatMoney(detail.SUM_CASH, hidden)}đ</dd>
-            <dt>Lợi nhuận dự kiến</dt>
-            <dd>{formatMoney(detail.SUM_FEE_VALUE, hidden)}đ</dd>
-            <dt>Lợi nhuận hôm nay</dt>
-            <dd>{formatMoney(detail.FEE_VALUE, hidden)}đ</dd>
-            <dt>Ngày mở</dt>
-            <dd>{detail.OPEN_DATE || '—'}</dd>
-            <dt>Ngày tất toán</dt>
-            <dd>{detail.EXPIRE_DATE || '—'}</dd>
-            <dt>Gia hạn</dt>
-            <dd>
-              {detail.EXTEND_TYPE_NAME || selected?.EXTEND_TYPE_NAME || '—'}
-            </dd>
-            <dt>Ghi chú</dt>
-            <dd className="whitespace-pre-wrap break-words">
-              {detail.NOTE || detail.CONTENT || '—'}
-            </dd>
-          </dl>
-        )}
-      </Modal>
     </div>
   );
 }

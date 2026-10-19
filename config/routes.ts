@@ -62,6 +62,12 @@ export default [
     hideInMenu: true,
   },
   {
+    path: '/assets/accumulation',
+    name: 'Thông tin chi tiết',
+    component: '@/pages/Assets/components/AccumulationDetail',
+    hideInMenu: true,
+  },
+  {
     path: '/assets',
     name: 'Tài sản',
     component: '@/pages/Assets',
