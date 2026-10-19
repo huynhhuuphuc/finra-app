@@ -11,10 +11,11 @@ import {
   type InvestmentProduct,
   type ProductConfirmation,
 } from '@/api/core/products';
+import PageHeader from '@/components/PageHeader';
 import { PAGE_URL } from '@/constants/pathUrl';
 import useCustomerProfile from '@/hooks/useCustomerProfile';
 import useCustomerSession from '@/hooks/useCustomerSession';
-import { BackIcon, EyeIcon } from '@/icons';
+import { EyeIcon, LinkSquareIcon } from '@/icons';
 import ProfileStatus from '@/pages/Account/components/ProfileStatus';
 import {
   useInfiniteQuery,
@@ -297,34 +298,26 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-full bg-white pb-28 text-[#060607]">
-      <header
-        className="px-5 pb-8"
-        style={{
-          background: 'linear-gradient(241deg, #c06ae4 8%, #4d24c6 100%)',
-        }}
-      >
-        <div className="flex h-[60px] items-center gap-3">
+      <PageHeader
+        title={title}
+        onBack={() => history.push(PAGE_URL.products)}
+        extra={
           <button
             type="button"
-            aria-label="Quay lại"
-            onClick={() => history.push(PAGE_URL.products)}
-          >
-            <BackIcon width={24} height={24} stroke0="#ffffff" />
-          </button>
-          <h1 className="!mb-0 flex-1 text-center text-lg font-semibold text-white">
-            {title}
-          </h1>
-          <button
-            type="button"
-            className="text-sm text-white"
+            aria-label="Làm mới"
             onClick={refresh}
             disabled={!enabled || productsQuery.isFetching}
+            className="flex size-8 items-center justify-center rounded border border-[#8e8e8f] disabled:opacity-40"
           >
-            Làm mới
+            <LinkSquareIcon
+              width={16.25}
+              height={16.25}
+              preserveAspectRatio="xMidYMid meet"
+            />
           </button>
-        </div>
-      </header>
-      <div className="relative z-10 -mt-6 space-y-4 px-5">
+        }
+      />
+      <div className="mt-5 space-y-4 px-5">
         {!code && <p role="alert">Vui lòng chọn danh mục từ trang Sản phẩm.</p>}
         {code === 'MI_UPS' && <p>Chưa hỗ trợ sản phẩm MI.</p>}
         <ProfileStatus

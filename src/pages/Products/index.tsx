@@ -1,6 +1,8 @@
 import type { HomeCategory } from '@/api/core/home';
+import PageHeader from '@/components/PageHeader';
 import { PAGE_URL } from '@/constants/pathUrl';
 import useProductCategories from '@/hooks/useProductCategories';
+import { LinkSquareIcon } from '@/icons';
 import ProfileStatus from '@/pages/Account/components/ProfileStatus';
 import { history } from '@umijs/max';
 import { Button } from 'antd';
@@ -69,39 +71,47 @@ export default function ProductsPage() {
   );
 
   return (
-    <div className="min-h-full bg-[#f7f7f8] px-4 pb-6 pt-2 text-[#060607]">
-      <h1 className="!mb-4 text-center text-lg font-semibold leading-7">
-        Sản phẩm hợp tác
-      </h1>
-      <div className="mb-3 flex justify-end">
-        <button
-          type="button"
-          disabled={categories.isFetching}
-          onClick={() => {
-            void categories.refetch();
-          }}
-          className="text-sm text-[#b65ffc]"
-        >
-          Làm mới
-        </button>
-      </div>
-      <ProfileStatus
-        loading={categories.isFetching}
-        error={categories.error}
-        retry={categories.refetch}
+    <div className="min-h-full bg-[#f7f7f8] pb-6 text-[#060607]">
+      <PageHeader
+        title="Sản phẩm hợp tác"
+        showBack={false}
+        extra={
+          <button
+            type="button"
+            aria-label="Làm mới"
+            disabled={categories.isFetching}
+            onClick={() => {
+              void categories.refetch();
+            }}
+            className="flex size-8 items-center justify-center rounded border border-[#8e8e8f] disabled:opacity-40"
+          >
+            <LinkSquareIcon
+              width={16.25}
+              height={16.25}
+              preserveAspectRatio="xMidYMid meet"
+            />
+          </button>
+        }
       />
-      {categories.isSuccess && items.length === 0 ? (
-        <p className="text-center text-sm text-[rgba(10,10,11,0.55)]">
-          Không có dữ liệu.
-        </p>
-      ) : null}
-      {categories.isSuccess ? (
-        <div className="flex flex-col gap-4">
-          {items.map((item, index) => (
-            <ProductCard key={item.CODE || index} item={item} />
-          ))}
-        </div>
-      ) : null}
+      <div className="px-4 pt-4">
+        <ProfileStatus
+          loading={categories.isFetching}
+          error={categories.error}
+          retry={categories.refetch}
+        />
+        {categories.isSuccess && items.length === 0 ? (
+          <p className="text-center text-sm text-[rgba(10,10,11,0.55)]">
+            Không có dữ liệu.
+          </p>
+        ) : null}
+        {categories.isSuccess ? (
+          <div className="flex flex-col gap-4">
+            {items.map((item, index) => (
+              <ProductCard key={item.CODE || index} item={item} />
+            ))}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
