@@ -14,7 +14,7 @@ import {
 } from '@/icons';
 import { getCookie } from '@/utils/cookie';
 import { useQuery } from '@tanstack/react-query';
-import { history } from '@umijs/max';
+import { history, useSearchParams } from '@umijs/max';
 import { ConfigProvider, DatePicker, Input, Modal, Segmented } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -61,7 +61,9 @@ function TransactionIcon({ kind }: { kind: Kind }) {
 }
 
 export default function TransactionHistory() {
-  const [tab, setTab] = useState<Tab>('all');
+  const [params] = useSearchParams();
+  const productCode = params.get('productCode') || '';
+  const [tab, setTab] = useState<Tab>(productCode ? 'saving' : 'all');
   const [filterOpen, setFilterOpen] = useState(false);
   const [filters, setFilters] = useState({
     TRANSACTION_TYPE: '',
@@ -76,7 +78,14 @@ export default function TransactionHistory() {
       ? dayjs(filters.FROM_DATE).format('DD/MM/YYYY')
       : '',
     TO_DATE: filters.TO_DATE ? dayjs(filters.TO_DATE).format('DD/MM/YYYY') : '',
-    HISTORY_TYPE: tab === 'money' ? 'CASH' : tab === 'saving' ? 'PRODUCT' : '',
+    HISTORY_TYPE: productCode
+      ? 'PRODUCT'
+      : tab === 'money'
+      ? 'CASH'
+      : tab === 'saving'
+      ? 'PRODUCT'
+      : '',
+    TRANSACTION_TYPE: productCode || filters.TRANSACTION_TYPE,
   };
   const query = useQuery({
     queryKey: [
@@ -161,7 +170,8 @@ export default function TransactionHistory() {
           >
             <Segmented
               block
-              value={tab}
+              disabled={Boolean(productCode)}
+              value={productCode ? 'saving' : tab}
               onChange={(value) => setTab(value as Tab)}
               options={TABS.map((item) => ({
                 label: item.label,

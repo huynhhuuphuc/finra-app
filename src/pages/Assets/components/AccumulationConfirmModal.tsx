@@ -23,6 +23,7 @@ export default function AccumulationConfirmModal({
   profit,
   received,
   loading,
+  blockedReason,
   onConfirm,
   onCancel,
 }: {
@@ -35,6 +36,7 @@ export default function AccumulationConfirmModal({
   profit: unknown;
   received: unknown;
   loading?: boolean;
+  blockedReason?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }) {
@@ -101,9 +103,17 @@ export default function AccumulationConfirmModal({
         </div>
       </section>
 
+      {blockedReason && (
+        <p
+          role="status"
+          className="mt-4 rounded-lg bg-white p-3 text-sm text-gray-700"
+        >
+          {blockedReason}
+        </p>
+      )}
       <button
         type="button"
-        disabled={loading}
+        disabled={loading || Boolean(blockedReason)}
         onClick={onConfirm}
         className="!mt-4 h-12 w-full rounded-xl bg-[#b65ffc] text-sm font-semibold !text-white disabled:opacity-60"
       >

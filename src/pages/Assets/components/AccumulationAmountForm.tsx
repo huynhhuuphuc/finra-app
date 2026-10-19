@@ -1,9 +1,14 @@
-import type { AssetAccumulationDetail } from '@/api/core/assetDetails';
+import {
+  fetchLiquidPreview,
+  type AssetAccumulationDetail,
+  type LiquidPreview,
+} from '@/api/core/assetDetails';
 import { parseAmount } from '@/api/core/assets';
 import { formatHomeMoney } from '@/api/core/home';
 import useCustomerProfile from '@/hooks/useCustomerProfile';
 import { ArrowUpIcon, BackIcon } from '@/icons';
 import CustomerAvatar from '@/pages/Account/components/CustomerAvatar';
+import { useMutation } from '@tanstack/react-query';
 import { App, ConfigProvider, Segmented } from 'antd';
 import { useState } from 'react';
 import AccumulationConfirmModal from './AccumulationConfirmModal';
@@ -59,9 +64,40 @@ export default function AccumulationAmountForm({
   const { message } = App.useApp();
   const [confirming, setConfirming] = useState(false);
   const amount = Number(shown) || 0;
-  const profit = tab === 'full' ? parseAmount(detail.FEE_VALUE) : null;
-  const received = amount + (profit ?? 0);
-  const productName = 'Tích luỹ Linh Hoạt';
+  const [preview, setPreview] = useState<LiquidPreview>();
+  const previewMutation = useMutation({
+    mutationFn: () => {
+      const max = parseAmount(detail.CAPITAL_FLEX_MAX) || balance;
+      if (
+        balance === null ||
+        !Number.isSafeInteger(amount) ||
+        amount <= 0 ||
+        amount > balance ||
+        (tab === 'partial' && max !== null && amount > max)
+      ) {
+        throw new Error(
+          'Số tiền tất toán vượt giá trị được phép hoặc không hợp lệ.',
+        );
+      }
+      return fetchLiquidPreview(
+        detail.PK_MM_APPENDIX,
+        amount,
+        tab === 'full' || amount === max ? 'TOAN_BO' : 'MOT_PHAN',
+      );
+    },
+    onSuccess: (data) => {
+      setPreview(data);
+      setConfirming(true);
+    },
+    onError: (error: Error) => message.error(error.message),
+  });
+  const profit = preview?.INTEREST_CASH;
+  const received = preview?.RAW_CASH;
+  const productName =
+    preview?.WEB_PRODUCT_TYPE_NAME ||
+    detail.WEB_PRODUCT_TYPE_NAME ||
+    detail.PRODUCT_NAME ||
+    '—';
 
   return (
     <div className="flex h-full min-h-full flex-col bg-[#171b6d] text-white">
@@ -112,7 +148,11 @@ export default function AccumulationAmountForm({
                 <Segmented
                   block
                   value={tab}
-                  onChange={(value) => setTab(value as 'partial' | 'full')}
+                  disabled={previewMutation.isPending}
+                  onChange={(value) => {
+                    setTab(value as 'partial' | 'full');
+                    setPreview(undefined);
+                  }}
                   options={[
                     { label: 'Số tiền linh hoạt', value: 'partial' },
                     { label: copy.full, value: 'full' },
@@ -138,7 +178,7 @@ export default function AccumulationAmountForm({
                       Lợi nhuận tới hôm nay
                     </p>
                     <p className="!mb-0 text-base font-semibold leading-6 text-[#34c759]">
-                      {formatHomeMoney(detail.FEE_VALUE, false, true, true)}
+                      {formatHomeMoney(preview?.INTEREST_CASH)}
                     </p>
                   </div>
                 </div>
@@ -147,12 +187,14 @@ export default function AccumulationAmountForm({
               <label className="flex flex-1 items-center">
                 <span className="sr-only">Số tiền</span>
                 <input
+                  disabled={previewMutation.isPending}
                   inputMode="numeric"
                   autoFocus
                   value={formatDigits(shown)}
                   placeholder="Nhập số tiền"
                   onChange={(event) => {
                     const next = event.target.value.replace(/\D/g, '');
+                    setPreview(undefined);
                     setDigits(next.replace(/^0+(?=\d)/, ''));
                   }}
                   className="w-full border-0 bg-transparent text-center !font-poppins !text-2xl !leading-9 !text-[#0a0a0b] caret-[#0a0a0b] outline-none placeholder:text-[rgba(10,10,11,0.36)] placeholder:opacity-40"
@@ -189,7 +231,9 @@ export default function AccumulationAmountForm({
             </div>
             <div className="text-right">
               <p className="!mb-1 font-poppins">Phí</p>
-              <p className="!mb-0 font-semibold text-[#35fc67]">Miễn phí</p>
+              <p className="!mb-0 font-semibold text-[#35fc67]">
+                Theo kết quả tất toán
+              </p>
             </div>
           </div>
         </div>
@@ -197,7 +241,10 @@ export default function AccumulationAmountForm({
         {amount > 0 ? (
           <button
             type="button"
-            onClick={() => setConfirming(true)}
+            disabled={previewMutation.isPending}
+            onClick={() => {
+              if (!previewMutation.isPending) previewMutation.mutate();
+            }}
             className="mt-4 h-12 w-full shrink-0 rounded-xl bg-[#b65ffc] text-sm font-semibold !text-white"
           >
             Thực hiện
@@ -229,10 +276,12 @@ export default function AccumulationAmountForm({
         productName={productName}
         profit={profit}
         received={received}
+        blockedReason="Bước xác thực OTP sẽ được bổ sung trước khi gửi lệnh tất toán."
         onCancel={() => setConfirming(false)}
         onConfirm={() => {
-          setConfirming(false);
-          message.info('Chức năng đang được tích hợp.');
+          // TODO(OTP): authenticate settlement (otpType=8), then call settleAccumulation.
+          // Revalidate the preview inputs and refresh detail, asset summaries and transactions after success.
+          message.info('Chưa kết nối xác thực OTP giao dịch.');
         }}
       />
     </div>

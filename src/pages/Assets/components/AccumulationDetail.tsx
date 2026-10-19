@@ -1,4 +1,7 @@
-import { fetchAssetAccumulationDetail } from '@/api/core/assetDetails';
+import {
+  fetchAssetAccumulationDetail,
+  updateAccumulationText,
+} from '@/api/core/assetDetails';
 import { parseAmount } from '@/api/core/assets';
 import {
   formatHomeMoney,
@@ -16,19 +19,22 @@ import {
   MarkerIcon,
 } from '@/icons';
 import ProfileStatus from '@/pages/Account/components/ProfileStatus';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { history, useSearchParams } from '@umijs/max';
+import { App, Input, Modal } from 'antd';
 import { useState, type ReactNode } from 'react';
 import AccumulationAmountForm, {
   type AccumulationAction,
 } from './AccumulationAmountForm';
-
-const openAccumulation = (id: string) =>
-  history.push(`${PAGE_URL.accumulation}?id=${encodeURIComponent(id)}`);
+import AccumulationRenewal from './AccumulationRenewal';
 
 export function openAccumulationDetail(item: NearInterest) {
   if (!item.PK_MM_APPENDIX) return;
-  openAccumulation(item.PK_MM_APPENDIX);
+  const params = new URLSearchParams({ id: item.PK_MM_APPENDIX });
+  if (typeof item.EXTEND_TYPE === 'string')
+    params.set('extendType', item.EXTEND_TYPE);
+  if (item.EXTEND_TYPE_NAME) params.set('extendName', item.EXTEND_TYPE_NAME);
+  history.push(`${PAGE_URL.accumulation}?${params}`);
 }
 
 function DetailField({
@@ -110,29 +116,76 @@ function InterestTrack({ item }: { item: NearInterest }) {
   );
 }
 
-export default function AccumulationDetail() {
+function AccumulationDetailContent() {
   const [params] = useSearchParams();
   const id = params.get('id') ?? '';
-  const { hasSession } = useCustomerSession();
+  const { hasSession, customerCode, token } = useCustomerSession();
+  const { message } = App.useApp();
+  const queryClient = useQueryClient();
   const detailQuery = useQuery({
-    queryKey: ['asset-appendix-detail', id],
+    queryKey: ['asset-appendix-detail', customerCode, token, id],
     queryFn: ({ signal }) => fetchAssetAccumulationDetail(id, signal),
     enabled: hasSession && Boolean(id),
     retry: false,
   });
   const detail = detailQuery.data;
   const [action, setAction] = useState<AccumulationAction | null>(null);
-  const extended = Boolean(
-    detail?.EXTEND_TYPE && detail.EXTEND_TYPE !== 'KHONG_GIA_HAN',
-  );
-  const note = detail?.NOTE?.trim() || detail?.CONTENT?.trim();
+  const extendType = detail?.EXTEND_TYPE ?? params.get('extendType');
+  const extendName = detail?.EXTEND_TYPE_NAME ?? params.get('extendName') ?? '';
+  const renewalKnown = extendType !== null && extendType !== undefined;
+  const extended = Boolean(extendType && extendType !== 'KHONG_GIA_HAN');
+  const note = detail?.NOTE?.trim();
+  const [editing, setEditing] = useState<'NAME' | 'NOTE' | null>(null);
+  const [text, setText] = useState('');
+  const [renewing, setRenewing] = useState(false);
+  const textMutation = useMutation({
+    mutationFn: ({ type, value }: { type: 'NAME' | 'NOTE'; value: string }) =>
+      updateAccumulationText(id, type, value),
+    onSuccess: () => {
+      setEditing(null);
+      message.success('Chỉnh sửa thành công.');
+      [
+        'asset-appendix-detail',
+        'asset-group-accumulations',
+        'near-interest',
+      ].forEach((key) => {
+        void queryClient.invalidateQueries({ queryKey: [key] });
+      });
+    },
+    onError: (error: Error) => message.error(error.message),
+  });
+  const editText = (type: 'NAME' | 'NOTE') => {
+    textMutation.reset();
+    setText((type === 'NAME' ? detail?.NAME : detail?.NOTE) || '');
+    setEditing(type);
+  };
+  const openRenewal = () => {
+    if (!renewalKnown) {
+      message.info(
+        'Chưa có trạng thái gia hạn. Vui lòng mở khoản từ danh sách tài sản.',
+      );
+      return;
+    }
+    if (
+      !extended &&
+      (Number(detail?.EXTEND_FLAG) !== 1 ||
+        !['TL_01', 'TL_02'].includes(detail?.PRODUCT_TYPE || ''))
+    ) {
+      message.info('Sản phẩm không cho phép gia hạn.');
+      return;
+    }
+    setRenewing(true);
+  };
 
   if (detail && action) {
     return (
       <AccumulationAmountForm
         mode={action}
         detail={detail}
-        onBack={() => setAction(null)}
+        onBack={() => {
+          setAction(null);
+          void detailQuery.refetch();
+        }}
       />
     );
   }
@@ -140,6 +193,50 @@ export default function AccumulationDetail() {
   return (
     <div className="min-h-full bg-white pb-8 text-[#060607]">
       <PageHeader title="Thông tin chi tiết" align="left" />
+      <Modal
+        open={editing !== null}
+        title={editing === 'NAME' ? 'Tên gói tích lũy' : 'Ghi chú'}
+        okText="Lưu"
+        cancelText="Hủy"
+        confirmLoading={textMutation.isPending}
+        closable={!textMutation.isPending}
+        maskClosable={!textMutation.isPending}
+        onCancel={() => {
+          if (!textMutation.isPending) setEditing(null);
+        }}
+        onOk={() => {
+          if (editing && !textMutation.isPending)
+            textMutation.mutate({ type: editing, value: text });
+        }}
+        okButtonProps={{ disabled: editing === 'NAME' && !text.trim() }}
+      >
+        <Input.TextArea
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          className="mb-3"
+          maxLength={editing === 'NAME' ? 20 : 60}
+          showCount
+          disabled={textMutation.isPending}
+        />
+      </Modal>
+      {detail && renewing && (
+        <AccumulationRenewal
+          detail={detail}
+          extended={extended}
+          extendName={extendName}
+          onClose={() => setRenewing(false)}
+        />
+      )}
+      {detail && (
+        <button
+          type="button"
+          className="mx-5 my-2 text-sm text-purple-600"
+          disabled={detailQuery.isFetching}
+          onClick={() => detailQuery.refetch()}
+        >
+          Làm mới
+        </button>
+      )}
 
       {!id && (
         <p role="alert" className="px-5 py-3 text-sm text-red-600">
@@ -161,12 +258,18 @@ export default function AccumulationDetail() {
                   <h2 className="!mb-0 truncate text-lg font-semibold leading-7">
                     {detail.NAME?.trim() || 'Tích luỹ'}
                   </h2>
-                  <EditIcon
-                    width={16}
-                    height={16}
-                    aria-hidden
-                    className="shrink-0"
-                  />
+                  <button
+                    type="button"
+                    aria-label="Sửa tên khoản tích lũy"
+                    onClick={() => editText('NAME')}
+                  >
+                    <EditIcon
+                      width={16}
+                      height={16}
+                      aria-hidden
+                      className="shrink-0"
+                    />
+                  </button>
                 </div>
                 <p className="!mb-0 mt-4 font-poppins text-xs leading-4 text-[rgba(10,10,11,0.55)]">
                   Tổng tiền gửi tích luỹ
@@ -216,7 +319,17 @@ export default function AccumulationDetail() {
               <button
                 type="button"
                 className="flex flex-col items-center justify-center gap-4 rounded-lg bg-[#f7f7f7] px-2 py-2.5"
-                onClick={() => history.push(PAGE_URL.accountHistory)}
+                onClick={() =>
+                  history.push(
+                    detail.PRODUCT_CODE
+                      ? `${
+                          PAGE_URL.accountHistory
+                        }?productCode=${encodeURIComponent(
+                          detail.PRODUCT_CODE,
+                        )}`
+                      : PAGE_URL.accountHistory,
+                  )
+                }
               >
                 <span className="grid size-8 place-items-center rounded-full bg-[rgba(182,95,252,0.1)]">
                   <ClockIcon
@@ -232,7 +345,13 @@ export default function AccumulationDetail() {
               <button
                 type="button"
                 className="flex flex-col items-center justify-center gap-4 rounded-lg bg-[#f7f7f7] px-2 py-2.5"
-                onClick={() => setAction('settle')}
+                onClick={() =>
+                  Number(detail.LIQUID_TYPE) === 1
+                    ? setAction('settle')
+                    : message.info(
+                        'Sản phẩm không cho phép tất toán trước hạn.',
+                      )
+                }
               >
                 <span className="grid size-8 place-items-center rounded-full bg-[rgba(182,95,252,0.1)]">
                   <span className="grid size-5 rotate-90 place-items-center">
@@ -250,11 +369,17 @@ export default function AccumulationDetail() {
               <button
                 type="button"
                 className="flex flex-col items-center justify-end gap-5 rounded-lg bg-[#f7f7f7] px-2 py-2.5"
-                onClick={() => setAction('extend')}
+                onClick={openRenewal}
               >
                 <span
                   role="img"
-                  aria-label={extended ? 'Đang gia hạn' : 'Không gia hạn'}
+                  aria-label={
+                    !renewalKnown
+                      ? 'Chưa có trạng thái gia hạn'
+                      : extended
+                      ? 'Đang gia hạn'
+                      : 'Không gia hạn'
+                  }
                   className={`relative h-[22px] w-10 rounded-md ${
                     extended ? 'bg-[#b65ffc]' : 'bg-[#d2d5da]'
                   }`}
@@ -291,7 +416,7 @@ export default function AccumulationDetail() {
                       Tổng gốc và LN
                     </p>
                     <p className="!mb-0 font-semibold text-white">
-                      {formatHomeMoney(detail.SUM_CASH ?? detail.CASH_VALUE)}
+                      {formatHomeMoney(detail.SUM_CASH)}
                     </p>
                   </div>
                   <div className="text-right">
@@ -299,7 +424,7 @@ export default function AccumulationDetail() {
                       Lợi nhuận hiện tại
                     </p>
                     <p className="!mb-0 font-semibold text-[#34c759]">
-                      {formatHomeMoney(detail.FEE_VALUE)}
+                      {formatHomeMoney(detail.SUM_FEE_VALUE)}
                     </p>
                   </div>
                 </div>
@@ -311,14 +436,35 @@ export default function AccumulationDetail() {
                 <h2 className="!mb-0 text-lg font-semibold leading-7">
                   Ghi chú
                 </h2>
-                <EditIcon width={16} height={16} aria-hidden />
+                <button
+                  type="button"
+                  aria-label="Sửa ghi chú"
+                  onClick={() => editText('NOTE')}
+                >
+                  <EditIcon width={16} height={16} aria-hidden />
+                </button>
               </div>
               <p className="!mb-0 font-poppins text-sm leading-5">
-                {note || '—'}
+                {note || 'Nhập ghi chú'}
               </p>
             </section>
 
             <section className="flex flex-col gap-4 rounded-lg border border-[#e7e7e7] p-4">
+              {detail.STATUS_LOAN_APPENDIX === 'DANG_UNG_TRUOC' && (
+                <p className="text-right text-sm text-purple-600">
+                  Đang ứng trước
+                </p>
+              )}
+              {extended && (
+                <div className="flex gap-4">
+                  <DetailField label="Gói gia hạn">
+                    {extendName || '—'}
+                  </DetailField>
+                  <DetailField label="Ngày gia hạn">
+                    {detail.EXPIRE_DATE || '—'}
+                  </DetailField>
+                </div>
+              )}
               <div className="flex gap-4">
                 <DetailField label="Kỳ hạn">{detail.TERM || '—'}</DetailField>
                 <DetailField label="Lợi nhuận mục tiêu">
@@ -328,14 +474,11 @@ export default function AccumulationDetail() {
               <div className="flex gap-4">
                 <DetailField label="Lợi nhuận dự kiến">
                   <span className="text-[#34c759]">
-                    {formatHomeMoney(detail.SUM_FEE_VALUE)}
+                    {formatHomeMoney(detail.FEE_VALUE)}
                   </span>
                 </DetailField>
                 <DetailField label="Ngày trả lãi">
-                  {detail.INTEREST_DATE ||
-                    (detail.DAY_PAY
-                      ? `Ngày ${detail.DAY_PAY} hàng tháng`
-                      : '—')}
+                  {detail.DAY_PAY || '—'}
                 </DetailField>
               </div>
               <div className="flex gap-4">
@@ -352,4 +495,9 @@ export default function AccumulationDetail() {
       )}
     </div>
   );
+}
+
+export default function AccumulationDetail() {
+  const [params] = useSearchParams();
+  return <AccumulationDetailContent key={params.get('id') || ''} />;
 }
