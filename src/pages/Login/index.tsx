@@ -1,19 +1,15 @@
+import { login } from '@/api/auth';
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER_INFO } from '@/constants/cookie';
 import { PENDING_LOGIN } from '@/constants/otp';
 import { PAGE_URL } from '@/constants/pathUrl';
 import { AvatarIcon, EyeIcon, ViewOffIcon } from '@/icons';
-import type { CurrentUser } from '@/types/currentUser';
-import { Helmet, history } from '@umijs/max';
+import { setCookie } from '@/utils/cookie';
+import { useQueryClient } from '@tanstack/react-query';
+import { Helmet, history, useModel } from '@umijs/max';
 import { App, Button, Form, Input } from 'antd';
 import { useState } from 'react';
+import { flushSync } from 'react-dom';
 import LoginShortcuts from './components/LoginShortcuts';
-
-const DEMO_USERNAME = 'admin';
-const DEMO_PASSWORD = '123456';
-const DEMO_ACCOUNT_CODE = /^\d{6}$/;
-const SESSION_MINUTES = 60;
-
-const isDemoAccount = (account: string) =>
-  account === DEMO_USERNAME || DEMO_ACCOUNT_CODE.test(account);
 
 type LoginValues = {
   username: string;
@@ -22,6 +18,8 @@ type LoginValues = {
 
 export default function Login() {
   const { message } = App.useApp();
+  const { setInitialState } = useModel('@@initialState');
+  const queryClient = useQueryClient();
   const [form] = Form.useForm<LoginValues>();
   const username = Form.useWatch('username', form);
   const password = Form.useWatch('password', form);
@@ -29,24 +27,38 @@ export default function Login() {
 
   const canSubmit = Boolean(username?.trim() && password);
 
-  const onSubmit = (values: LoginValues) => {
-    const account = values.username.trim();
-    if (!isDemoAccount(account) || values.password !== DEMO_PASSWORD) {
-      message.error('Sai tài khoản hoặc mật khẩu.');
-      return;
-    }
-
+  const onSubmit = async (values: LoginValues) => {
+    if (submitting) return;
     setSubmitting(true);
-    const userInfo: CurrentUser = {
-      user: account,
-      username: account,
-      token_type: 'Bearer',
-      sessionTimeoutMinutes: SESSION_MINUTES,
-      displayName: account,
-      permissions: [],
-    };
-    sessionStorage.setItem(PENDING_LOGIN, JSON.stringify(userInfo));
-    history.replace(PAGE_URL.otp);
+    try {
+      const session = await login(values.username, values.password);
+      const options = {
+        path: '/',
+        sameSite: 'lax' as const,
+        secure: window.location.protocol === 'https:',
+      };
+      // Keep the existing session-cookie mechanism. Never persist passwords.
+      setCookie(ACCESS_TOKEN, session.token, options);
+      setCookie(REFRESH_TOKEN, session.refreshToken, options);
+      setCookie(USER_INFO, session.currentUser, options);
+      sessionStorage.removeItem(PENDING_LOGIN);
+      queryClient.clear();
+      flushSync(() => {
+        setInitialState((state) => ({
+          ...state,
+          currentUser: session.currentUser,
+        }));
+      });
+      history.replace(PAGE_URL.home);
+    } catch (error: any) {
+      message.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          'Không thể kết nối máy chủ. Vui lòng thử lại.',
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

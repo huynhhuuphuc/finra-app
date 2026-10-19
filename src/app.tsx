@@ -17,7 +17,7 @@ import NoPermission from './pages/403';
 import ThemeProvider from './theme/ThemeProvider';
 import { getThemeMode, useThemeMode, type ThemeMode } from './theme/themeStore';
 import type { CurrentUser } from './types/currentUser';
-import { getCookie } from './utils/cookie';
+import { getCookie, removeCookieAll } from './utils/cookie';
 import { clearGaUserId, setGaUserId, trackPageView } from './utils/ga4';
 
 const queryClient = new QueryClient({
@@ -64,10 +64,19 @@ export function onRouteChange({
   const rawPath = location?.pathname || window.location.pathname;
   const atLogin = /(^|\/)login(\/|$)/.test(rawPath);
   const atOtp = /(^|\/)otp(\/|$)/.test(rawPath);
-  const token = getCookie(ACCESS_TOKEN);
-  const pendingLogin = sessionStorage.getItem(PENDING_LOGIN);
+  const storedToken = getCookie(ACCESS_TOKEN);
+  const user = getCookie(USER_INFO) as CurrentUser | null;
+  const token =
+    storedToken &&
+    storedToken !== 'demo-session' &&
+    user?.customerCode &&
+    user?.accountCode
+      ? storedToken
+      : '';
+  if (storedToken && !token) removeCookieAll();
+  sessionStorage.removeItem(PENDING_LOGIN);
 
-  if (!token && !atLogin && !(atOtp && pendingLogin)) {
+  if (!token && !atLogin) {
     NAV_LOCK = true;
     history.replace(PAGE_URL.login);
     queueMicrotask(() => {
@@ -157,7 +166,15 @@ export async function getInitialState(): Promise<{
     return user;
   };
 
-  const hasToken = !!getCookie(ACCESS_TOKEN);
+  const storedToken = getCookie(ACCESS_TOKEN);
+  const storedUser = getCookie(USER_INFO) as CurrentUser | null;
+  const hasToken = Boolean(
+    storedToken &&
+      storedToken !== 'demo-session' &&
+      storedUser?.customerCode &&
+      storedUser?.accountCode,
+  );
+  if (storedToken && !hasToken) removeCookieAll();
   const currentUser = hasToken ? await fetchUserInfo() : undefined;
 
   if (!currentUser) {

@@ -73,6 +73,11 @@ export default defineConfig({
   jsMinifier: 'terser',
   tailwindcss: {},
   proxy: {
+    '/finra-auth': {
+      target: 'http://172.16.90.62:9090',
+      changeOrigin: true,
+      pathRewrite: { '^/finra-auth': '' },
+    },
     '/finra-v2': {
       target: 'https://api-app-dev-v2.finra.com.vn',
       changeOrigin: true,

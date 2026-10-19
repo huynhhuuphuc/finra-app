@@ -5,6 +5,10 @@ import { parseAmount } from './assets';
 import { customerApiOptions, readCoreData, type CoreResult } from './customer';
 import { requestCore } from './index';
 
+const PUBLIC_CORE =
+  process.env.NAME === 'development'
+    ? '/unAuthenticated/core'
+    : 'http://172.16.90.62:9090/unAuthenticated/core';
 const V2_HOST =
   process.env.NAME === 'development'
     ? '/finra-v2'
@@ -74,7 +78,7 @@ export async function fetchInvestmentProducts(
         PAGE: page,
         RECORD_PER_PAGE: 10,
       },
-      { ...customerApiOptions, signal },
+      { ...customerApiOptions, endpoint: PUBLIC_CORE, token: '', signal },
     ),
   );
   if (
@@ -117,7 +121,7 @@ export async function fetchProductConfirmation(
         PRODUCT_CODE: productCode,
         CASH_VALUE: amount,
       },
-      { ...customerApiOptions, signal },
+      { ...customerApiOptions, endpoint: PUBLIC_CORE, token: '', signal },
     ),
   );
 }
