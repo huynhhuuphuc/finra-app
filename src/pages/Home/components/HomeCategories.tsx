@@ -13,6 +13,7 @@ function ProductBanner({ item }: { item: HomeCategory }) {
         <img
           src={item.URL_BANNER}
           alt={item.NAME || 'Sản phẩm FINRA'}
+          draggable={false}
           className="block h-full w-full object-cover"
           onError={() => setFailed(true)}
         />
@@ -31,7 +32,11 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
   const carouselRef = useRef<CarouselRef>(null);
   const categories = items.filter((item) => item.CODE !== 'MI_UPS');
   const handleCooperate = (item: HomeCategory) => {
-    history.push(PAGE_URL.productCooperate);
+    history.push(
+      `${PAGE_URL.productDetail}?code=${encodeURIComponent(
+        item.CODE,
+      )}&name=${encodeURIComponent(item.NAME || '')}`,
+    );
   };
   return (
     <>
@@ -39,13 +44,17 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
         <Carousel
           ref={carouselRef}
           arrows={false}
+          draggable
+          swipe
+          swipeToSlide
+          touchMove
           cssEase="cubic-bezier(0.4, 0, 0.2, 1)"
           dots={false}
           infinite={categories.length > 1}
           autoplay={categories.length > 1}
           autoplaySpeed={4000}
           beforeChange={(_, next) => setCurrent(next)}
-          className="-mx-5"
+          className="-mx-5 touch-pan-y select-none"
         >
           {categories.map((item, index) => (
             <div key={item.CODE || index}>

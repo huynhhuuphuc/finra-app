@@ -52,7 +52,7 @@ export default [
   },
   {
     path: '/for-you',
-    name: 'For You',
+    name: 'Khám phá',
     component: '@/pages/ForYou',
   },
   {

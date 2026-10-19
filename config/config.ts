@@ -73,6 +73,11 @@ export default defineConfig({
   jsMinifier: 'terser',
   tailwindcss: {},
   proxy: {
+    '/finra-v2': {
+      target: 'https://api-app-dev-v2.finra.com.vn',
+      changeOrigin: true,
+      pathRewrite: { '^/finra-v2': '' },
+    },
     '/cms-api': {
       target: 'https://uat-cms.finra.com.vn',
       changeOrigin: true,

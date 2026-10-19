@@ -242,6 +242,10 @@ export default function AssetsPage() {
                 history.push(
                   `${PAGE_URL.assetProduct}?type=${encodeURIComponent(
                     item.WEB_PRODUCT_TYPE,
+                  )}&name=${encodeURIComponent(
+                    item.PRODUCT_NAME || '',
+                  )}&productType=${encodeURIComponent(
+                    item.PRODUCT_TYPE || '',
                   )}`,
                 )
               }

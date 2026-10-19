@@ -8,9 +8,11 @@ import { FlagIcon, MarkerIcon } from '@/icons';
 export default function UpcomingInterest({
   items,
   hidden,
+  onSelect,
 }: {
   items: NearInterest[];
   hidden: boolean;
+  onSelect?: (item: NearInterest) => void;
 }) {
   return (
     <>
@@ -22,9 +24,20 @@ export default function UpcomingInterest({
             className="mt-4 border-b border-[#e7e7e7] pb-4 last:border-0 last:pb-0"
           >
             <div className="flex items-baseline justify-between gap-3">
-              <p className="text-sm font-semibold">
-                {item.NAME?.trim() || 'Tích luỹ'}
-              </p>
+              {onSelect ? (
+                <button
+                  type="button"
+                  className="text-left text-sm font-semibold underline-offset-2 hover:underline"
+                  disabled={!item.PK_MM_APPENDIX}
+                  onClick={() => onSelect(item)}
+                >
+                  {item.NAME?.trim() || 'Tích luỹ'}
+                </button>
+              ) : (
+                <p className="text-sm font-semibold">
+                  {item.NAME?.trim() || 'Tích luỹ'}
+                </p>
+              )}
               <p className="shrink-0 text-xs font-semibold text-[#34c759]">
                 {formatHomeMoney(item.CASH_VALUE, hidden)}
               </p>
@@ -35,8 +48,13 @@ export default function UpcomingInterest({
                 <span className="text-[#b65ffc]">{item.EXPIRE_DATE}</span>
               </p>
             )}
-            {item.EXTEND_TYPE_NAME && (
-              <p className="text-xs text-gray-500">{item.EXTEND_TYPE_NAME}</p>
+            {item.EXTEND_TYPE && item.EXTEND_TYPE !== 'KHONG_GIA_HAN' && (
+              <p
+                title={item.EXTEND_TYPE_NAME || ''}
+                className="text-xs text-gray-500"
+              >
+                ↻ {item.EXTEND_TYPE_NAME || 'Có gia hạn'}
+              </p>
             )}
             {progress ? (
               <div
@@ -73,7 +91,9 @@ export default function UpcomingInterest({
                 Chưa có lịch nhận lợi ích.
               </p>
             )}
-            <p className="text-[10px] text-gray-500">{item.CONTENT}</p>
+            <p className="line-clamp-2 text-[10px] text-gray-500">
+              {item.CONTENT}
+            </p>
             {item.STATUS_LOAN_APPENDIX === 'DANG_UNG_TRUOC' && (
               <p className="text-right text-xs text-[#b65ffc]">
                 Đang ứng trước
