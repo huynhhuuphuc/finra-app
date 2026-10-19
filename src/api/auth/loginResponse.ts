@@ -35,7 +35,7 @@ export function parseLoginResponse(response: LoginResponse, loginName: string) {
     typeof account.ACCOUNT_CODE !== 'string' ||
     !account.ACCOUNT_CODE.trim()
   ) {
-    throw new Error('Phản hồi đăng nhập thiếu token hoặc thông tin tài khoản.');
+    throw new Error('Sai tài khoản hoặc mật khẩu.');
   }
   // Business identifiers come from lst, never username or decoded JWT claims.
   const currentUser: CurrentUser = {
