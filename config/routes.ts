@@ -31,6 +31,11 @@ export default [
     layout: false,
   },
   {
+    path: '/developing',
+    component: '@/components/DevelopingPage',
+    layout: false,
+  },
+  {
     path: '/home',
     name: 'Trang chủ',
     component: '@/pages/Home',

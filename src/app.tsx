@@ -64,10 +64,11 @@ export function onRouteChange({
   const rawPath = location?.pathname || window.location.pathname;
   const atLogin = /(^|\/)login(\/|$)/.test(rawPath);
   const atOtp = /(^|\/)otp(\/|$)/.test(rawPath);
+  const atPublic = stripBase(rawPath) === PAGE_URL.developing;
   const token = getCookie(ACCESS_TOKEN);
   const pendingLogin = sessionStorage.getItem(PENDING_LOGIN);
 
-  if (!token && !atLogin && !(atOtp && pendingLogin)) {
+  if (!token && !atLogin && !atPublic && !(atOtp && pendingLogin)) {
     NAV_LOCK = true;
     history.replace(PAGE_URL.login);
     queueMicrotask(() => {

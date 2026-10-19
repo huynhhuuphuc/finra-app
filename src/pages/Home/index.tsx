@@ -1,5 +1,6 @@
 import { getCustomerName } from '@/api/core/customer';
 import { formatHomeMoney, getHomeCustomerStatus } from '@/api/core/home';
+import { PAGE_URL } from '@/constants/pathUrl';
 import useHomeData from '@/hooks/useHomeData';
 import {
   ArrowRightIcon,
@@ -17,6 +18,7 @@ import {
   WaveTop2Icon,
   WaveTopIcon,
 } from '@/icons';
+import { history } from '@umijs/max';
 import type { SVGProps } from 'react';
 import { useState } from 'react';
 import CustomerAvatar from '../Account/components/CustomerAvatar';
@@ -223,6 +225,7 @@ export default function HomePage() {
             <button
               key={action.label}
               type="button"
+              onClick={() => history.push(PAGE_URL.developing)}
               className="flex flex-col items-center gap-4 rounded-lg bg-[#f7f7f7] px-2 py-2.5"
             >
               <span className="grid size-8 place-items-center rounded-full bg-[rgba(182,95,252,0.1)]">
@@ -263,13 +266,13 @@ export default function HomePage() {
         )}
       </section>
 
-      <div className="mt-4 -mx-5 overflow-x-auto px-5">
+      {/* <div className="mt-4 -mx-5 overflow-x-auto px-5">
         <img
           src="/images/home/banners.png"
           alt="Tích luỹ linh hoạt và Đầu tư dễ dàng"
           className="h-40 w-auto max-w-none"
         />
-      </div>
+      </div> */}
 
       <section className="mt-4 rounded-lg border border-[#e7e7e7] p-4">
         <div className="flex items-start justify-between">

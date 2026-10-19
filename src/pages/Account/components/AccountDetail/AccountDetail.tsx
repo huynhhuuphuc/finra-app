@@ -1,6 +1,6 @@
 import { PAGE_URL } from '@/constants/pathUrl';
 import useCustomerProfile from '@/hooks/useCustomerProfile';
-import { BackIcon, CameraIcon, CancelIcon, EditIcon } from '@/icons';
+import { BackIcon, CameraIcon, EditIcon } from '@/icons';
 import { history } from '@umijs/max';
 import CustomerAvatar from '../CustomerAvatar';
 import ProfileStatus from '../ProfileStatus';
@@ -160,7 +160,7 @@ export default function AccountDetail() {
           </div>
         </section>
 
-        <button
+        {/* <button
           type="button"
           className="flex h-12 items-center justify-center gap-2 rounded-lg bg-[#f7f7f7] text-sm font-semibold leading-5 !text-[rgba(10,10,11,0.78)]"
         >
@@ -170,7 +170,7 @@ export default function AccountDetail() {
             preserveAspectRatio="xMidYMid meet"
           />
           Vô hiệu tài khoản
-        </button>
+        </button> */}
       </div>
     </div>
   );

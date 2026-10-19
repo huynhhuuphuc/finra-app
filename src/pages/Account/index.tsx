@@ -111,6 +111,7 @@ const GENERAL: {
   height: number;
   plain?: boolean;
   to?: string;
+  href?: string;
 }[] = [
   {
     label: 'Hợp đồng của tôi',
@@ -130,6 +131,7 @@ const GENERAL: {
     icon: NoteDoneIcon,
     width: 17.2921,
     height: 18.3336,
+    href: 'https://finra.com.vn/guide',
   },
   {
     label: 'Cài đặt & Bảo mật',
@@ -159,6 +161,7 @@ export default function AccountPage() {
   const { setInitialState } = useModel('@@initialState');
   const [biometric, setBiometric] = useState(false);
   const [rating, setRating] = useState(0);
+  const toDeveloping = () => history.push(PAGE_URL.developing);
 
   const logout = () => {
     clearGaUserId();
@@ -175,6 +178,7 @@ export default function AccountPage() {
         <button
           type="button"
           aria-label="Cài đặt"
+          onClick={toDeveloping}
           className="absolute right-5 top-3.5 grid size-8 place-items-center rounded border border-[#8e8e8f]"
         >
           <SettingsIcon
@@ -189,6 +193,7 @@ export default function AccountPage() {
         <button
           type="button"
           aria-label="Thông báo"
+          onClick={toDeveloping}
           className="absolute right-5 top-[104px] grid size-8 place-items-center rounded-md bg-[#f2f2f2]"
         >
           <BellIcon
@@ -232,6 +237,7 @@ export default function AccountPage() {
               <div className="flex h-20 gap-2">
                 <button
                   type="button"
+                  onClick={toDeveloping}
                   className="flex h-full flex-1 flex-col justify-between rounded-lg bg-[#f7f7f7] p-3 text-left"
                 >
                   <span className="grid size-7 place-items-center rounded-full bg-[#0a0a0b]">
@@ -247,6 +253,7 @@ export default function AccountPage() {
                 </button>
                 <button
                   type="button"
+                  onClick={toDeveloping}
                   className="flex h-full flex-1 flex-col justify-between rounded-lg bg-[#f7f7f7] p-3 text-left"
                 >
                   <span className="grid size-7 place-items-center rounded-full bg-[rgba(182,95,252,0.1)]">
@@ -264,6 +271,7 @@ export default function AccountPage() {
               </div>
               <button
                 type="button"
+                onClick={toDeveloping}
                 className="flex w-full items-center gap-3 rounded-xl border border-[#e7e7e7] py-3 pl-4 pr-2"
               >
                 <MenuIcon
@@ -287,19 +295,6 @@ export default function AccountPage() {
             </div>
           </div>
         </section>
-
-        <div className="-mx-5 flex gap-3 overflow-x-auto px-5">
-          <img
-            src="/images/account/banner-future.png"
-            alt="Đầu tư dễ dàng, mở lối tương lai"
-            className="h-40 w-[323px] shrink-0 rounded-lg"
-          />
-          <img
-            src="/images/account/banner-money.png"
-            alt="Khiến tiền của bạn sinh lời"
-            className="h-40 w-[323px] shrink-0 rounded-lg"
-          />
-        </div>
 
         <section className="flex flex-col gap-3">
           <h2 className="text-base font-semibold leading-6">Bảo mật</h2>
@@ -341,6 +336,7 @@ export default function AccountPage() {
                 ) : (
                   <button
                     type="button"
+                    onClick={toDeveloping}
                     className="flex w-full items-center gap-3 text-left"
                   >
                     <MenuIcon
@@ -376,9 +372,13 @@ export default function AccountPage() {
               >
                 <button
                   type="button"
-                  onClick={
-                    item.to ? () => history.push(item.to as string) : undefined
-                  }
+                  onClick={() => {
+                    if (item.href) {
+                      window.open(item.href, '_blank', 'noopener,noreferrer');
+                      return;
+                    }
+                    history.push(item.to ?? PAGE_URL.developing);
+                  }}
                   className="flex w-full items-center gap-3 text-left"
                 >
                   <MenuIcon

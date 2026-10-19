@@ -16,11 +16,29 @@ import { useState, type ReactNode } from 'react';
 
 type Sheet = 'guide' | 'support';
 
-const GUIDE_ITEMS: { label: string; icon: ReactNode }[] = [
-  { label: 'Mở tài khoản', icon: <BulbOutlined /> },
-  { label: 'Nộp tiền', icon: <WalletOutlined /> },
-  { label: 'Giao dịch đầu tư', icon: <BarChartOutlined /> },
-  { label: 'Rút tiền', icon: <CreditCardOutlined /> },
+const PRODUCT_INTRO_URL = 'https://finra.com.vn';
+
+const GUIDE_ITEMS: { label: string; icon: ReactNode; url: string }[] = [
+  {
+    label: 'Mở tài khoản',
+    icon: <BulbOutlined />,
+    url: 'https://finra.com.vn/hdsd/dang-nhap-va-tai-khoan/huong-dan-mo-tai-khoan-tren-app-finra',
+  },
+  {
+    label: 'Nộp tiền',
+    icon: <WalletOutlined />,
+    url: 'https://finra.com.vn/hdsd/nap-rut-tien/huong-dan-nop-tien-vao-app-finra',
+  },
+  {
+    label: 'Giao dịch đầu tư',
+    icon: <BarChartOutlined />,
+    url: 'https://finra.com.vn/hdsd/san-pham/huong-dan-giao-dich-dau-tu',
+  },
+  {
+    label: 'Rút tiền',
+    icon: <CreditCardOutlined />,
+    url: 'https://finra.com.vn/hdsd/nap-rut-tien/huong-dan-rut-tien-tren-app-finra',
+  },
 ];
 
 const PURPLE = '#B65FFC';
@@ -37,7 +55,12 @@ export default function LoginShortcuts() {
   return (
     <>
       <div className="login-shortcuts">
-        <button type="button" className="login-shortcut">
+        <a
+          href={PRODUCT_INTRO_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="login-shortcut"
+        >
           <span className="login-shortcut-icon">
             <SaveEnergy01Icon
               width={20}
@@ -48,7 +71,7 @@ export default function LoginShortcuts() {
           Giới thiệu
           <br />
           sản phẩm
-        </button>
+        </a>
         <button
           type="button"
           className="login-shortcut"
@@ -117,9 +140,12 @@ export default function LoginShortcuts() {
         {sheet === 'guide' ? (
           <div className="flex flex-col gap-3">
             {GUIDE_ITEMS.map((item) => (
-              <div
+              <a
                 key={item.label}
-                className="flex items-center gap-3 rounded-xl border border-[#e7e7e7] px-3 py-3"
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 rounded-xl border border-[#e7e7e7] px-3 py-3 active:bg-[#f7f7f7]"
               >
                 <span className="flex size-9 items-center justify-center rounded-lg bg-[#f6ebff] text-lg text-[#b65ffc]">
                   {item.icon}
@@ -132,7 +158,7 @@ export default function LoginShortcuts() {
                   height={16}
                   preserveAspectRatio="xMidYMid meet"
                 />
-              </div>
+              </a>
             ))}
           </div>
         ) : (
