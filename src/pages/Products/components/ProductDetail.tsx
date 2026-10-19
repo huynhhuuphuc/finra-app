@@ -578,7 +578,7 @@ export default function ProductDetail() {
         )}
       </div>
       {enabled && !shield && (
-        <div className="fixed inset-x-0 bottom-0 z-20 bg-white px-5 pb-4 pt-3 shadow-lg">
+        <div className="fixed inset-x-0 bottom-0 z-20 mx-auto max-w-[var(--app-content-max)] bg-white px-5 pb-4 pt-3 shadow-lg">
           <Button
             type="primary"
             block

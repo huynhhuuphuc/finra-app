@@ -73,7 +73,7 @@ export default function Login() {
         autoComplete="off"
         onFinish={onSubmit}
       >
-        <p className="login-lead">
+        <p className="login-lead font-poppins">
           Nhập <strong>Số điện thoại hoặc Nickname</strong> để bắt đầu
         </p>
 

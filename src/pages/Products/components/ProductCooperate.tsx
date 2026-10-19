@@ -186,7 +186,7 @@ export default function ProductCooperate() {
         </section>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 flex gap-4 bg-white px-5 pb-4 pt-3 shadow-[0_-2px_16px_rgba(0,0,0,0.06)]">
+      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto flex max-w-[var(--app-content-max)] gap-4 bg-white px-5 pb-4 pt-3 shadow-[0_-2px_16px_rgba(0,0,0,0.06)]">
         <Button className="!h-12 !w-[100px] !rounded-xl !border-[#8e8e8f] !text-sm !font-semibold !text-[#060607]">
           Chi tiết
         </Button>

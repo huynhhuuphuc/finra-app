@@ -1,9 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap&subset=vietnamese');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap&text=0123456789');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Poppins:wght@300;400;500;600;700&display=swap&subset=vietnamese');
 @import (css) './../tailwind.css';
 
 :root {
-  --font-app: 'Inter', 'Poppins', sans-serif;
+  --font-app: 'Inter', sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
+  --app-content-max: 640px;
 }
 
 html,
@@ -68,7 +69,7 @@ body,
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: linear-gradient(155deg, #261261 9%, #b139e4 86%) !important;
+  background: linear-gradient(239deg, #b139e4 9.03%, #261261 85.56%) !important;
   padding: 0;
 
   .login-hero {
@@ -384,13 +385,13 @@ body,
     align-items: center;
     gap: 8px;
     border: 0;
-    background: transparent;
     padding: 0;
     color: #060607;
     font-size: 12px;
     line-height: 16px;
     text-align: center;
     cursor: pointer;
+    font-family: var(--font-poppins);
   }
 
   .login-shortcut-icon {
@@ -399,9 +400,8 @@ body,
     height: 40px;
     align-items: center;
     justify-content: center;
-    border: 1px solid #e7e7e7;
     border-radius: 8px;
-    background: #fff;
+    background: #f7f5f9;
   }
 
   .text-primary {
@@ -701,14 +701,21 @@ body::-webkit-scrollbar-thumb,
   z-index: 1;
   display: flex;
   width: 100%;
-  max-width: 430px;
   transform: translateX(-50%);
   flex-direction: column;
   background: #f6f4fb;
 }
 
-.login-page.app-screen {
-  background: linear-gradient(155deg, #b139e4 9%, #261261 86%) !important;
+.login-page.app-screen > *,
+.app-shell-body > * {
+  width: 100%;
+  max-width: var(--app-content-max);
+  margin-inline: auto;
+}
+
+.login-drawer .ant-drawer-content-wrapper {
+  max-width: var(--app-content-max);
+  margin-inline: auto;
 }
 
 .app-shell-body {
@@ -719,6 +726,13 @@ body::-webkit-scrollbar-thumb,
   background: #f6f4fb;
 }
 
+@media (min-width: 641px) {
+  .app-shell,
+  .app-shell-body {
+    background: #fff;
+  }
+}
+
 .app-tabbar {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -727,7 +741,8 @@ body::-webkit-scrollbar-thumb,
   align-items: center;
   background: #fff;
   box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.06);
-  padding: 0 12px calc(env(safe-area-inset-bottom));
+  padding: 0 max(12px, calc((100% - var(--app-content-max)) / 2))
+    calc(env(safe-area-inset-bottom));
 }
 
 .app-tab {
