@@ -1,28 +1,30 @@
 import type { HomeCategory } from '@/api/core/home';
+import RemoteImage from '@/components/RemoteImage';
 import { PAGE_URL } from '@/constants/pathUrl';
 import { history } from '@umijs/max';
 import { Carousel, Modal } from 'antd';
 import type { CarouselRef } from 'antd/es/carousel';
 import { useRef, useState } from 'react';
 
-function ProductBanner({ item }: { item: HomeCategory }) {
-  const [failed, setFailed] = useState(false);
+function ProductBanner({
+  item,
+  priority,
+}: {
+  item: HomeCategory;
+  priority: boolean;
+}) {
   return (
-    <div className="min-h-0 w-full flex-1 overflow-hidden rounded-xl bg-[#5d01a6]/10">
-      {item.URL_BANNER && !failed ? (
-        <img
-          src={item.URL_BANNER}
-          alt={item.NAME || 'Sản phẩm FINRA'}
-          draggable={false}
-          className="block h-full w-full object-cover"
-          onError={() => setFailed(true)}
-        />
-      ) : (
+    <RemoteImage
+      src={item.URL_BANNER}
+      alt={item.NAME || 'Sản phẩm FINRA'}
+      priority={priority}
+      className="min-h-0 w-full flex-1 rounded-xl"
+      fallback={
         <div className="flex h-full items-center justify-center text-xs text-[#5d01a6]">
           Chưa có ảnh sản phẩm
         </div>
-      )}
-    </div>
+      }
+    />
   );
 }
 
@@ -60,7 +62,12 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
             <div key={item.CODE || index}>
               <div className="aspect-[390/271] px-5 pb-4 pt-5">
                 <article className="flex h-full flex-col overflow-hidden rounded-xl bg-white px-1 pt-1 pb-2 shadow-[0_0_16px_rgba(0,0,0,0.08)]">
-                  <ProductBanner key={item.URL_BANNER} item={item} />
+                  {/* Banner đầu tiên là ảnh lớn nhất lúc mở Home: tải ngay */}
+                  <ProductBanner
+                    key={item.URL_BANNER}
+                    item={item}
+                    priority={index === 0}
+                  />
                   <div className="mt-4 flex h-[45px] shrink-0 items-center justify-between gap-3 px-3">
                     <div className="min-w-0 pb-2">
                       <p

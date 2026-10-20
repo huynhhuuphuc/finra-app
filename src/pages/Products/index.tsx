@@ -1,5 +1,6 @@
 import type { HomeCategory } from '@/api/core/home';
 import PageHeader from '@/components/PageHeader';
+import RemoteImage from '@/components/RemoteImage';
 import { PAGE_URL } from '@/constants/pathUrl';
 import useProductCategories from '@/hooks/useProductCategories';
 import { LinkSquareIcon } from '@/icons';
@@ -9,21 +10,31 @@ import { Button } from 'antd';
 
 const FALLBACK_BANNER = '/images/home/product-card.png';
 
-function ProductCard({ item }: { item: HomeCategory }) {
+function ProductCard({
+  item,
+  priority,
+}: {
+  item: HomeCategory;
+  priority: boolean;
+}) {
   return (
     <article className="rounded-2xl bg-white shadow-[0_4px_20px_rgba(10,10,11,0.06)]">
-      <img
+      <RemoteImage
         src={
           /^https?:\/\//i.test(item.URL_BANNER || '')
             ? item.URL_BANNER
-            : FALLBACK_BANNER
+            : undefined
         }
         alt=""
-        className="aspect-[16/9] w-full rounded-xl object-cover"
-        onError={(event) => {
-          event.currentTarget.onerror = null;
-          event.currentTarget.src = FALLBACK_BANNER;
-        }}
+        priority={priority}
+        className="aspect-[16/9] w-full rounded-xl"
+        fallback={
+          <img
+            src={FALLBACK_BANNER}
+            alt=""
+            className="block size-full object-cover"
+          />
+        }
       />
       <div className="mt-3 flex items-center justify-between gap-3 px-3 pb-3">
         <button
@@ -107,7 +118,11 @@ export default function ProductsPage() {
         {categories.isSuccess ? (
           <div className="flex flex-col gap-4">
             {items.map((item, index) => (
-              <ProductCard key={item.CODE || index} item={item} />
+              <ProductCard
+                key={item.CODE || index}
+                item={item}
+                priority={index === 0}
+              />
             ))}
           </div>
         ) : null}
