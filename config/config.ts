@@ -10,6 +10,11 @@ export default defineConfig({
   hash: true,
 
   /**
+   ngăn trình duyệt tự động áp dụng Dark Mode cho trang
+   */
+  metas: [{ name: 'color-scheme', content: 'only light' }],
+
+  /**
    * @name Route configuration, files not imported in routes will not be compiled
    * @description Only supports path, component, routes, redirect, wrappers, title configuration
    * @doc https://umijs.org/docs/guides/routes

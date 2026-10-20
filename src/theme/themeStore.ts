@@ -11,16 +11,15 @@ const listeners = new Set<() => void>();
 let currentMode: ThemeMode = 'light';
 
 const readStored = (): ThemeMode => {
-  if (!isBrowser) return 'light';
-  return window.localStorage.getItem(THEME_STORAGE_KEY) === 'dark'
-    ? 'dark'
-    : 'light';
+  if (isBrowser) window.localStorage.removeItem(THEME_STORAGE_KEY);
+  return 'light';
 };
 
 const applyDom = (mode: ThemeMode) => {
   if (!isBrowser) return;
   document.documentElement.setAttribute('data-theme', mode);
-  document.documentElement.style.colorScheme = mode;
+  document.documentElement.style.colorScheme =
+    mode === 'light' ? 'only light' : mode;
 };
 
 const emit = () => {
