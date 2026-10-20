@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { history, RunTimeLayoutConfig, useLocation } from '@umijs/max';
 import { App } from 'antd';
 import type { PropsWithChildren } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import defaultSettings from '../config/defaultSettings';
 import BottomTabBar from './components/BottomTabBar';
 import { ACCESS_TOKEN, USER_INFO } from './constants/cookie';
@@ -43,12 +44,51 @@ const stripBase = (p: string) => {
 };
 let NAV_LOCK = false;
 
+type PageTransition = 'forward' | 'back' | 'none';
+
+// Độ sâu theo URL: tab chính = 1, trang con (/account/history) = 2...
+const pageDepth = (path: string) =>
+  TAB_PATHS.has(path) ? 1 : path.split('/').filter(Boolean).length;
+
+function usePageTransition(path: string) {
+  const prevPath = useRef(path);
+  const [transition, setTransition] = useState<PageTransition>('none');
+  if (prevPath.current !== path) {
+    const from = pageDepth(prevPath.current);
+    const to = pageDepth(path);
+    const wasTab = TAB_PATHS.has(prevPath.current);
+    prevPath.current = path;
+    let next: PageTransition;
+    if (to !== from) next = to > from ? 'forward' : 'back';
+    // Cùng độ sâu giữa 2 tab chính: chuyển tab, không trượt.
+    else if (wasTab && TAB_PATHS.has(path)) next = 'none';
+    // Cùng độ sâu theo history.
+    else if (history.action === 'PUSH') next = 'forward';
+    else if (history.action === 'POP') next = 'back';
+    else next = 'none';
+    if (next !== transition) setTransition(next);
+  }
+  return transition;
+}
+
 function AppShell({ children }: PropsWithChildren) {
   const { pathname } = useLocation();
-  const showTabs = TAB_PATHS.has(stripBase(pathname));
+  const path = stripBase(pathname);
+  const showTabs = TAB_PATHS.has(path);
+  const transition = usePageTransition(path);
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    bodyRef.current?.scrollTo({ top: 0 });
+  }, [path]);
+
   return (
     <div className="app-shell">
-      <div className="app-shell-body">{children}</div>
+      <div ref={bodyRef} className="app-shell-body">
+        <div key={path} className={`app-page app-page--${transition}`}>
+          {children}
+        </div>
+      </div>
       {showTabs ? <BottomTabBar /> : null}
     </div>
   );

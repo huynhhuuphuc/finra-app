@@ -17,6 +17,7 @@ import {
   EditIcon,
   FlagIcon,
   MarkerIcon,
+  RefreshIcon,
 } from '@/icons';
 import ProfileStatus from '@/pages/Account/components/ProfileStatus';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -192,7 +193,28 @@ function AccumulationDetailContent() {
 
   return (
     <div className="min-h-full bg-white pb-8 text-[#060607]">
-      <PageHeader title="Thông tin chi tiết" align="left" />
+      <PageHeader
+        title="Thông tin chi tiết"
+        align="left"
+        extra={
+          detail && (
+            <button
+              type="button"
+              aria-label="Làm mới"
+              disabled={detailQuery.isFetching}
+              onClick={() => void detailQuery.refetch()}
+              className="grid size-8 shrink-0 place-items-center rounded-md disabled:opacity-60"
+            >
+              <RefreshIcon
+                width={17.9167}
+                height={17.9167}
+                preserveAspectRatio="xMidYMid meet"
+                className={detailQuery.isFetching ? 'animate-spin' : ''}
+              />
+            </button>
+          )
+        }
+      />
       <Modal
         open={editing !== null}
         title={editing === 'NAME' ? 'Tên gói tích lũy' : 'Ghi chú'}
@@ -227,17 +249,6 @@ function AccumulationDetailContent() {
           onClose={() => setRenewing(false)}
         />
       )}
-      {detail && (
-        <button
-          type="button"
-          className="mx-5 my-2 text-sm text-purple-600"
-          disabled={detailQuery.isFetching}
-          onClick={() => detailQuery.refetch()}
-        >
-          Làm mới
-        </button>
-      )}
-
       {!id && (
         <p role="alert" className="px-5 py-3 text-sm text-red-600">
           Thiếu mã khoản tích luỹ.
