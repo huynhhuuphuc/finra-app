@@ -12,6 +12,7 @@ const PAGE_URL = {
   account: '/account',
   accountInfo: '/account/info',
   accountHistory: '/account/history',
+  accountPassword: '/account/password',
   developing: '/developing',
 };
 export { PAGE_URL };

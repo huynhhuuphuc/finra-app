@@ -92,6 +92,31 @@ export async function fetchCustomerTransactions(
   return readCoreData(response);
 }
 
+export async function changePassword(
+  user: string,
+  password: string,
+  newPassword: string,
+) {
+  if (!user || !password || !newPassword) {
+    throw new Error('Thiếu thông tin đổi mật khẩu.');
+  }
+  const response = await requestCore<{
+    code: number | string;
+    message?: string;
+    re?: string;
+  }>(
+    'CHANGE_PASSWORD',
+    { USER: user, PASSWORD: password, NEW_PASSWORD: newPassword },
+    customerApiOptions,
+  );
+  if (String(response.code) !== '1') {
+    throw new Error(
+      response.re || response.message || 'Không thể đổi mật khẩu.',
+    );
+  }
+  return response;
+}
+
 export const getCustomerName = (profile?: CustomerProfile) =>
   profile?.NICK_NAME?.trim() || profile?.CUSTOMER_NAME || '—';
 

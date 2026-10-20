@@ -89,6 +89,11 @@ export default [
       '@/pages/Account/components/TransactionHistory/TransactionHistory',
   },
   {
+    path: '/account/password',
+    name: 'Đổi mật khẩu đăng nhập',
+    component: '@/pages/Account/components/ChangePassword/ChangePassword',
+  },
+  {
     path: '/account',
     name: 'Tài khoản',
     component: '@/pages/Account',

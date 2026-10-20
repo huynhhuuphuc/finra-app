@@ -76,12 +76,14 @@ const SECURITY: {
   width: number;
   height: number;
   trailing?: 'switch';
+  to?: string;
 }[] = [
   {
     label: 'Đổi mật khẩu đăng nhập',
     icon: LockPasswordIcon,
     width: 14.5835,
     height: 17.9167,
+    to: PAGE_URL.accountPassword,
   },
   // {
   //   label: 'Đăng nhập sinh trắc học',
@@ -336,7 +338,9 @@ export default function AccountPage() {
                 ) : (
                   <button
                     type="button"
-                    onClick={toDeveloping}
+                    onClick={() =>
+                      history.push(item.to ?? PAGE_URL.developing)
+                    }
                     className="flex w-full items-center gap-3 text-left"
                   >
                     <MenuIcon
