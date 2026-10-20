@@ -1,6 +1,6 @@
 import PageHeader from '@/components/PageHeader';
 import { PAGE_URL } from '@/constants/pathUrl';
-import { history } from '@umijs/max';
+import { goBack } from '@/utils/navigation';
 import { Empty } from 'antd';
 
 export default function DevelopingPage() {
@@ -8,11 +8,7 @@ export default function DevelopingPage() {
     <div className="app-screen !bg-white">
       <PageHeader
         title=""
-        onBack={() =>
-          window.history.length > 1
-            ? history.back()
-            : history.replace(PAGE_URL.login)
-        }
+        onBack={() => goBack(PAGE_URL.login)}
       />
       <div className="flex flex-1 items-center justify-center px-5 pb-[60px]">
         <Empty

@@ -13,8 +13,9 @@ import {
   ReloadLightIcon,
 } from '@/icons';
 import { getCookie } from '@/utils/cookie';
+import { goBack } from '@/utils/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { history, useSearchParams } from '@umijs/max';
+import { useSearchParams } from '@umijs/max';
 import { ConfigProvider, DatePicker, Input, Modal, Segmented } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -129,7 +130,7 @@ export default function TransactionHistory() {
           <button
             type="button"
             aria-label="Quay lại"
-            onClick={() => history.replace(PAGE_URL.account)}
+            onClick={() => goBack(PAGE_URL.account)}
             className="grid size-6 shrink-0 place-items-center"
           >
             <BackIcon

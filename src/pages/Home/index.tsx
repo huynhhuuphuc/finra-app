@@ -194,9 +194,9 @@ export default function HomePage() {
           </p>
         </div>
         {customerStatus?.showBalanceDetails && (
-          <div className="absolute inset-x-0 bottom-0 flex h-[60px] bg-[#1cffc7] px-4 pt-3 text-[#060607]">
+          <div className="absolute inset-x-0 bottom-0 flex h-[60px] bg-[linear-gradient(112deg,#963ce7_8%,#4b2768_92%)] px-4 pt-3 text-white">
             <div className="flex-1">
-              <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-1">
+              <p className="text-xs leading-4 text-white/80 !mb-1">
                 Tiền mặt khả dụng
               </p>
               <p className="text-xs font-semibold leading-4">
@@ -204,7 +204,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex-1 text-right">
-              <p className="text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-1">
+              <p className="text-xs leading-4 text-white/80 !mb-1">
                 Lợi nhuận hiện tại
               </p>
               <p className="text-xs font-semibold leading-4">

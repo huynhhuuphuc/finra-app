@@ -20,10 +20,7 @@ export default function AssetTimeline({
     }
   }
   const points = parseAssetTimeline(value);
-  if (!points.length)
-    return (
-      <span className="text-[10px] text-white/75">Chưa có dữ liệu biểu đồ</span>
-    );
+  if (!points.length) return;
   const min = Math.min(...points.map((point) => point.amount));
   const max = Math.max(...points.map((point) => point.amount));
   const first = points[0].timestamp;
@@ -32,10 +29,15 @@ export default function AssetTimeline({
     ...point,
     x:
       last === first
-        ? 72
+        ? 140
         : 4 + ((point.timestamp - first) / (last - first)) * 136,
     y: max === min ? 28 : 52 - ((point.amount - min) / (max - min)) * 46,
   }));
+
+  const linePoints =
+    coordinates.length === 1
+      ? [{ x: 4, y: coordinates[0].y }, coordinates[0]]
+      : coordinates;
   return (
     <svg
       viewBox="0 0 145 59"
@@ -47,7 +49,8 @@ export default function AssetTimeline({
         fill="none"
         stroke="white"
         strokeWidth="2"
-        points={coordinates.map((point) => `${point.x},${point.y}`).join(' ')}
+        strokeLinecap="round"
+        points={linePoints.map((point) => `${point.x},${point.y}`).join(' ')}
       />
       {coordinates.map((point, index) => (
         <circle

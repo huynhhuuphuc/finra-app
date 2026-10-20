@@ -14,9 +14,7 @@ import {
   NoteDoneIcon,
   PlusLightIcon,
   ProfileIcon,
-  Settings02Icon,
   SettingsIcon,
-  StarIcon,
   UserSharingIcon,
 } from '@/icons';
 import { removeCookieAll } from '@/utils/cookie';
@@ -135,12 +133,12 @@ const GENERAL: {
     height: 18.3336,
     href: 'https://finra.com.vn/guide',
   },
-  {
-    label: 'Cài đặt & Bảo mật',
-    icon: Settings02Icon,
-    width: 17.9168,
-    height: 16.6667,
-  },
+  // {
+  //   label: 'Cài đặt & Bảo mật',
+  //   icon: Settings02Icon,
+  //   width: 17.9168,
+  //   height: 16.6667,
+  // },
   {
     label: 'Thông tin hỗ trợ',
     icon: InfoIcon,
@@ -338,9 +336,7 @@ export default function AccountPage() {
                 ) : (
                   <button
                     type="button"
-                    onClick={() =>
-                      history.push(item.to ?? PAGE_URL.developing)
-                    }
+                    onClick={() => history.push(item.to ?? PAGE_URL.developing)}
                     className="flex w-full items-center gap-3 text-left"
                   >
                     <MenuIcon
@@ -406,7 +402,7 @@ export default function AccountPage() {
           </div>
         </section>
 
-        <section className="relative flex items-start justify-between rounded-xl border border-[#e7e7e7] p-4">
+        {/* <section className="relative flex items-start justify-between rounded-xl border border-[#e7e7e7] p-4">
           <div className="w-[222px]">
             <p className="text-sm font-semibold leading-5 !mb-0">
               Bạn cảm thấy FINRA thế nào?
@@ -443,7 +439,7 @@ export default function AccountPage() {
 
         <p className="text-center text-xs leading-4 text-[rgba(10,10,11,0.55)] !mb-0">
           Phiên bản 1.0.0
-        </p>
+        </p> */}
 
         <button
           type="button"
