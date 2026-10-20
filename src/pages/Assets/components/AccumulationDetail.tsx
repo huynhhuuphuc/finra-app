@@ -22,7 +22,7 @@ import {
 import ProfileStatus from '@/pages/Account/components/ProfileStatus';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { history, useSearchParams } from '@umijs/max';
-import { App, Input, Modal } from 'antd';
+import { App, Input, Modal, Tooltip } from 'antd';
 import { useState, type ReactNode } from 'react';
 import AccumulationAmountForm, {
   type AccumulationAction,
@@ -72,6 +72,13 @@ function RateValue({ value }: { value: unknown }) {
   );
 }
 
+const formatDate = (time: number) =>
+  new Intl.DateTimeFormat('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(time);
+
 function InterestTrack({ item }: { item: NearInterest }) {
   const progress = getInterestProgress(item);
   if (!progress) {
@@ -90,28 +97,35 @@ function InterestTrack({ item }: { item: NearInterest }) {
     >
       <div className="absolute inset-x-0 top-3 h-2 rounded-full bg-white/40" />
       <div
-        className="absolute left-0 top-3 h-2 rounded-full border border-black/80 bg-[#b65ffc]"
+        className="absolute left-0 top-3 h-2 min-w-2 rounded-full border border-black/80 bg-[#b65ffc]"
         style={{ width: `${progress.percent}%` }}
       />
       <MarkerIcon
-        width={14}
-        height={12}
-        className="absolute top-6 -translate-x-1/2"
-        style={{ left: `${progress.percent}%` }}
+        width={20}
+        height={17}
+        preserveAspectRatio="xMidYMid meet"
+        className="absolute top-[22px] -translate-x-1/2"
+        style={{ left: `max(${progress.percent}%, 10px)` }}
       />
       {progress.flags.map((flag) => (
-        <span
+        <Tooltip
           key={flag.date}
-          title={new Intl.DateTimeFormat('vi-VN').format(flag.date)}
-          style={{ left: `${flag.percent}%` }}
-          className="absolute top-1.5 grid size-5 -translate-x-1/2 place-items-center rounded-full bg-white shadow-[0_4px_6px_rgba(0,0,0,0.18)]"
+          trigger={['click', 'hover']}
+          title={`Thanh toán lợi nhuận: ${formatDate(flag.date)}`}
         >
-          <FlagIcon
-            width={12}
-            height={12}
-            preserveAspectRatio="xMidYMid meet"
-          />
-        </span>
+          <button
+            type="button"
+            aria-label={`Ngày thanh toán lợi nhuận ${formatDate(flag.date)}`}
+            style={{ left: `${flag.percent}%` }}
+            className="absolute top-1.5 grid size-5 -translate-x-1/2 place-items-center rounded-full bg-white shadow-[0_4px_6px_rgba(0,0,0,0.18)]"
+          >
+            <FlagIcon
+              width={12}
+              height={12}
+              preserveAspectRatio="xMidYMid meet"
+            />
+          </button>
+        </Tooltip>
       ))}
     </div>
   );
@@ -455,7 +469,11 @@ function AccumulationDetailContent() {
                   <EditIcon width={16} height={16} aria-hidden />
                 </button>
               </div>
-              <p className="!mb-0 font-poppins text-sm leading-5">
+              <p
+                className={`!mb-0 text-sm font-normal leading-5 ${
+                  note ? 'text-[#060607]' : 'text-[rgba(10,10,11,0.36)]'
+                }`}
+              >
                 {note || 'Nhập ghi chú'}
               </p>
             </section>
@@ -478,7 +496,7 @@ function AccumulationDetailContent() {
               )}
               <div className="flex gap-4">
                 <DetailField label="Kỳ hạn">{detail.TERM || '—'}</DetailField>
-                <DetailField label="Lợi nhuận mục tiêu">
+                <DetailField label="Lợi nhuận trước thuế">
                   <RateValue value={detail.FEE_RATE} />
                 </DetailField>
               </div>
@@ -488,15 +506,15 @@ function AccumulationDetailContent() {
                     {formatHomeMoney(detail.FEE_VALUE)}
                   </span>
                 </DetailField>
-                <DetailField label="Ngày trả lãi">
+                <DetailField label="Ngày thanh toán lợi nhuận">
                   {detail.DAY_PAY || '—'}
                 </DetailField>
               </div>
               <div className="flex gap-4">
-                <DetailField label="Ngày tích luỹ">
+                <DetailField label="Ngày hợp tác">
                   {detail.OPEN_DATE || '—'}
                 </DetailField>
-                <DetailField label="Ngày đáo hạn">
+                <DetailField label="Ngày tất toán">
                   {detail.EXPIRE_DATE || '—'}
                 </DetailField>
               </div>
