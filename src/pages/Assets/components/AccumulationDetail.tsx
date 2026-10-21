@@ -8,6 +8,7 @@ import {
   getInterestProgress,
   type NearInterest,
 } from '@/api/core/home';
+import InterestFlag from '@/components/InterestFlag';
 import PageHeader from '@/components/PageHeader';
 import { PAGE_URL } from '@/constants/pathUrl';
 import useCustomerSession from '@/hooks/useCustomerSession';
@@ -15,14 +16,13 @@ import {
   ArrowUpIcon,
   ClockIcon,
   EditIcon,
-  FlagIcon,
   MarkerIcon,
   RefreshIcon,
 } from '@/icons';
 import ProfileStatus from '@/pages/Account/components/ProfileStatus';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { history, useSearchParams } from '@umijs/max';
-import { App, Input, Modal, Tooltip } from 'antd';
+import { App, Input, Modal } from 'antd';
 import { useState, type ReactNode } from 'react';
 import AccumulationAmountForm, {
   type AccumulationAction,
@@ -72,15 +72,9 @@ function RateValue({ value }: { value: unknown }) {
   );
 }
 
-const formatDate = (time: number) =>
-  new Intl.DateTimeFormat('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  }).format(time);
-
 function InterestTrack({ item }: { item: NearInterest }) {
   const progress = getInterestProgress(item);
+  const [activeFlag, setActiveFlag] = useState<number | null>(null);
   if (!progress) {
     return (
       <p className="font-poppins text-[10px] leading-4 text-white/75">
@@ -108,24 +102,17 @@ function InterestTrack({ item }: { item: NearInterest }) {
         style={{ left: `max(${progress.percent}%, 10px)` }}
       />
       {progress.flags.map((flag) => (
-        <Tooltip
+        <InterestFlag
           key={flag.date}
-          trigger={['click', 'hover']}
-          title={`Thanh toán lợi nhuận: ${formatDate(flag.date)}`}
-        >
-          <button
-            type="button"
-            aria-label={`Ngày thanh toán lợi nhuận ${formatDate(flag.date)}`}
-            style={{ left: `${flag.percent}%` }}
-            className="absolute top-1.5 grid size-5 -translate-x-1/2 place-items-center rounded-full bg-white shadow-[0_4px_6px_rgba(0,0,0,0.18)]"
-          >
-            <FlagIcon
-              width={12}
-              height={12}
-              preserveAspectRatio="xMidYMid meet"
-            />
-          </button>
-        </Tooltip>
+          date={flag.date}
+          percent={flag.percent}
+          open={activeFlag === flag.date}
+          onToggle={() =>
+            setActiveFlag((value) => (value === flag.date ? null : flag.date))
+          }
+          className="top-1.5 shadow-[0_4px_6px_rgba(0,0,0,0.18)]"
+          iconSize={12}
+        />
       ))}
     </div>
   );

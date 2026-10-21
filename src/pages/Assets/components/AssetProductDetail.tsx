@@ -107,34 +107,26 @@ export default function AssetProductDetail() {
       {enabled && (
         <>
           <section className="rounded-xl bg-[#f7f7f7] p-3 shadow-[2px_2px_16px_rgba(0,0,0,0.1)]">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="!mb-0 flex items-center gap-1 text-xs leading-4 text-[rgba(10,10,11,0.55)]">
-                  Tổng tiền gửi tích luỹ
-                  <button
-                    type="button"
-                    aria-label={hidden ? 'Hiện số tiền' : 'Ẩn số tiền'}
-                    className="grid size-4 place-items-center border-0 bg-transparent p-0"
-                    onClick={() => setHidden((value) => !value)}
-                  >
-                    <EyeIcon
-                      width={14.33}
-                      height={10.33}
-                      preserveAspectRatio="xMidYMid meet"
-                    />
-                  </button>
-                </p>
-                <p className="!mb-0 mt-1 flex items-baseline gap-1 font-semibold">
-                  <span className="text-xl font-normal leading-8">đ</span>
-                  <span className="text-[32px] leading-[52px]">
-                    {formatMoney(summary?.SUM_CASH, hidden)}
-                  </span>
-                </p>
-              </div>
+            <div className="flex min-h-[31px] items-center justify-between gap-3">
+              <p className="!mb-0 flex items-center gap-1 text-xs leading-4 text-[rgba(10,10,11,0.55)]">
+                Tổng giá trị hợp tác
+                <button
+                  type="button"
+                  aria-label={hidden ? 'Hiện số tiền' : 'Ẩn số tiền'}
+                  className="grid size-4 place-items-center border-0 bg-transparent p-0"
+                  onClick={() => setHidden((value) => !value)}
+                >
+                  <EyeIcon
+                    width={14.33}
+                    height={10.33}
+                    preserveAspectRatio="xMidYMid meet"
+                  />
+                </button>
+              </p>
               {canOpenMore && (
                 <button
                   type="button"
-                  className="flex h-[31px] items-center gap-2 rounded-[10px] bg-[#b65ffc] px-3 text-xs !text-white"
+                  className="flex h-[31px] shrink-0 items-center gap-2 whitespace-nowrap rounded-[10px] bg-[#b65ffc] px-3 text-xs !text-white"
                   onClick={() =>
                     history.push(
                       `${PAGE_URL.products}?type=${encodeURIComponent(
@@ -153,6 +145,12 @@ export default function AssetProductDetail() {
                 </button>
               )}
             </div>
+            <p className="!mb-0 mt-1 flex min-w-0 items-baseline gap-1 font-semibold">
+              <span className="text-xl font-normal leading-8">đ</span>
+              <span className="break-all text-[32px] leading-[52px]">
+                {formatMoney(summary?.SUM_CASH, hidden)}
+              </span>
+            </p>
             <div className="mt-4 flex items-start justify-between">
               <div>
                 <p className="!mb-0 text-xs leading-4 text-[rgba(10,10,11,0.55)]">

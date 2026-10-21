@@ -3,7 +3,9 @@ import {
   getInterestProgress,
   type NearInterest,
 } from '@/api/core/home';
-import { FlagIcon, MarkerIcon } from '@/icons';
+import InterestFlag from '@/components/InterestFlag';
+import { MarkerIcon } from '@/icons';
+import { useState } from 'react';
 
 export default function UpcomingInterest({
   items,
@@ -14,6 +16,7 @@ export default function UpcomingInterest({
   hidden: boolean;
   onSelect?: (item: NearInterest) => void;
 }) {
+  const [activeFlag, setActiveFlag] = useState<string | null>(null);
   return (
     <>
       {items.map((item, index) => {
@@ -69,27 +72,51 @@ export default function UpcomingInterest({
                   0,
                 )}%`}
               >
-                <div className="absolute inset-x-0 top-1.5 h-2 rounded-full bg-[#e7e7e7]" />
                 <div
-                  className="absolute left-0 top-1.5 h-2 rounded-full bg-[#b65ffc]"
+                  className="absolute inset-x-0 top-2 h-1 rounded-full"
+                  style={{
+                    background:
+                      'repeating-linear-gradient(135deg, #e7e7e7 0 3px, transparent 3px 6px)',
+                  }}
+                />
+                {progress.flags[0] &&
+                  progress.flags[0].percent > progress.percent && (
+                    <div
+                      className="absolute top-2 h-1 rounded-full bg-[#efe1fe]"
+                      style={{
+                        left: `${progress.percent}%`,
+                        width: `${
+                          progress.flags[0].percent - progress.percent
+                        }%`,
+                      }}
+                    />
+                  )}
+                <div
+                  className="absolute left-0 top-1.5 h-2 rounded-full border border-black/80 bg-[#b65ffc]"
                   style={{ width: `${progress.percent}%` }}
                 />
                 <MarkerIcon
-                  width={14}
-                  height={12}
-                  className="absolute top-3.5 -translate-x-1/2"
+                  width={20}
+                  height={17}
+                  className="absolute top-3.5 -translate-x-1/2 drop-shadow-[0_0_6px_rgba(255,204,0,0.7)]"
                   style={{ left: `${progress.percent}%` }}
                 />
-                {progress.flags.map((flag) => (
-                  <span
-                    key={flag.date}
-                    title={new Intl.DateTimeFormat('vi-VN').format(flag.date)}
-                    style={{ left: `${flag.percent}%` }}
-                    className="absolute top-0 grid size-5 -translate-x-1/2 place-items-center rounded-full bg-white shadow-md"
-                  >
-                    <FlagIcon width={10} height={11} />
-                  </span>
-                ))}
+                {progress.flags.map((flag) => {
+                  const flagKey = `${index}-${flag.date}`;
+                  return (
+                    <InterestFlag
+                      key={flag.date}
+                      date={flag.date}
+                      percent={flag.percent}
+                      open={activeFlag === flagKey}
+                      onToggle={() =>
+                        setActiveFlag((value) =>
+                          value === flagKey ? null : flagKey,
+                        )
+                      }
+                    />
+                  );
+                })}
               </div>
             ) : (
               <p className="mt-3 text-xs text-gray-500">
