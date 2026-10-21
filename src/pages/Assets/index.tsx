@@ -124,7 +124,7 @@ export default function AssetsPage() {
         <div className="mt-5 flex justify-around">
           <button
             type="button"
-            onClick={() => history.push(PAGE_URL.products)}
+            onClick={() => history.push(PAGE_URL.developing)}
             className="flex cursor-pointer items-center gap-3 border-0 bg-transparent p-0 text-sm font-semibold leading-5 !text-[#060607]"
           >
             <span className="grid size-10 place-items-center rounded-full bg-[rgba(182,95,252,0.12)]">
