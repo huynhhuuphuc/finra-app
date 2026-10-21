@@ -12,7 +12,7 @@ import {
   LockPasswordIcon,
   LogoutIcon,
   NoteDoneIcon,
-  PlusLightIcon,
+  PlusIcon,
   ProfileIcon,
   SettingsIcon,
   UserSharingIcon,
@@ -178,12 +178,12 @@ export default function AccountPage() {
   return (
     <div className="bg-white pb-6 text-[#060607]">
       <div className="relative">
-        <div className="h-[86px] rounded-b-xl bg-[#1a1a1a]" />
+        <div className="h-[86px] rounded-b-xl bg-[linear-gradient(90deg,#3a1c86_0%,#a63ae0_100%)]" />
         <button
           type="button"
           aria-label="Cài đặt"
           onClick={toDeveloping}
-          className="absolute right-5 top-3.5 grid size-8 place-items-center rounded border border-[#8e8e8f]"
+          className="absolute right-5 top-3.5 grid size-8 place-items-center rounded-md border border-white/70"
         >
           <SettingsIcon
             width={17.5}
@@ -238,37 +238,37 @@ export default function AccountPage() {
               </button>
             </div>
             <div className="flex flex-col gap-4">
-              <div className="flex h-20 gap-2">
+              <div className="flex h-[88px] gap-2">
                 <button
                   type="button"
                   onClick={toDeveloping}
-                  className="flex h-full flex-1 flex-col justify-between rounded-lg bg-[#f7f7f7] p-3 text-left"
+                  className="flex h-full flex-1 flex-col items-center justify-center gap-2.5 rounded-xl bg-[#f3f1f6]"
                 >
-                  <span className="grid size-7 place-items-center rounded-full bg-[#0a0a0b]">
-                    <PlusLightIcon
-                      width={14.5833}
-                      height={14.5833}
+                  <span className="grid size-9 place-items-center rounded-full bg-[rgba(182,95,252,0.14)]">
+                    <PlusIcon
+                      width={16}
+                      height={16}
                       preserveAspectRatio="xMidYMid meet"
                     />
                   </span>
-                  <span className="text-sm font-semibold leading-5">
+                  <span className="text-sm font-semibold leading-5 !text-[rgba(10,10,11,0.78)]">
                     Nộp tiền
                   </span>
                 </button>
                 <button
                   type="button"
                   onClick={toDeveloping}
-                  className="flex h-full flex-1 flex-col justify-between rounded-lg bg-[#f7f7f7] p-3 text-left"
+                  className="flex h-full flex-1 flex-col items-center justify-center gap-2.5 rounded-xl bg-[#f3f1f6]"
                 >
-                  <span className="grid size-7 place-items-center rounded-full bg-[rgba(182,95,252,0.1)]">
+                  <span className="grid size-9 place-items-center rounded-full bg-[rgba(182,95,252,0.14)]">
                     <ArrowUpIcon
-                      width={14.5833}
-                      height={9.58412}
+                      width={16}
+                      height={10.5}
                       preserveAspectRatio="xMidYMid meet"
                       className="-rotate-90 -scale-x-100"
                     />
                   </span>
-                  <span className="text-sm font-semibold leading-5">
+                  <span className="text-sm font-semibold leading-5 !text-[rgba(10,10,11,0.78)]">
                     Rút tiền
                   </span>
                 </button>
