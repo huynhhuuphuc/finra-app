@@ -3,12 +3,12 @@ import {
   type CustomerTransaction,
   type TransactionFilters,
 } from '@/api/core/customer';
+import PageHeader from '@/components/PageHeader';
 import { ACCESS_TOKEN } from '@/constants/cookie';
 import { PAGE_URL } from '@/constants/pathUrl';
 import useCustomerSession from '@/hooks/useCustomerSession';
 import {
   ArrowUpLightIcon,
-  BackIcon,
   FilterIcon,
   PlusLightIcon,
   ReloadLightIcon,
@@ -160,62 +160,52 @@ export default function TransactionHistory() {
   return (
     <div className="min-h-full bg-white pb-24 text-[#060607]">
       <div className="sticky top-0 z-10 bg-white">
-        <header className="flex h-[60px] items-center gap-4 px-5">
-          <button
-            type="button"
-            aria-label="Quay lại"
-            onClick={() => goBack(PAGE_URL.account)}
-            className="grid size-6 shrink-0 place-items-center"
-          >
-            <BackIcon
-              width={24}
-              height={24}
-              preserveAspectRatio="xMidYMid meet"
-            />
-          </button>
-          <h1 className="text-lg font-semibold leading-7 !mb-0">
-            Lịch sử giao dịch
-          </h1>
-        </header>
+        <PageHeader
+          title="Lịch sử giao dịch"
+          backVariant="boxed"
+          align="left"
+          onBack={() => goBack(PAGE_URL.account)}
+        />
 
-        <div className="-mb-2 mt-[14px] px-5 py-2">
-          <ConfigProvider
-            theme={{
-              token: {
-                fontSize: 12,
-                borderRadius: 6,
-                borderRadiusSM: 6,
-                controlHeight: 36,
-                boxShadowTertiary: 'none',
-                motionDurationSlow: '0.3s',
-              },
-              components: {
-                Segmented: {
-                  trackBg: '#e7e7e7',
-                  trackPadding: 2,
-                  itemColor: '#8e8e8f',
-                  itemHoverColor: '#060607',
-                  itemHoverBg: 'transparent',
-                  itemSelectedBg: '#ffffff',
-                  itemSelectedColor: '#060607',
-                  itemActiveBg: 'transparent',
+        {!productCode && (
+          <div className="-mb-2 mt-[14px] px-5 py-2">
+            <ConfigProvider
+              theme={{
+                token: {
+                  fontSize: 12,
+                  borderRadius: 6,
+                  borderRadiusSM: 6,
+                  controlHeight: 36,
+                  boxShadowTertiary: 'none',
+                  motionDurationSlow: '0.3s',
                 },
-              },
-            }}
-          >
-            <Segmented
-              block
-              disabled={Boolean(productCode)}
-              value={productCode ? 'saving' : tab}
-              onChange={(value) => setTab(value as Tab)}
-              options={TABS.map((item) => ({
-                label: item.label,
-                value: item.id,
-              }))}
-              className="[&_.ant-segmented-item-label]:font-normal [&_.ant-segmented-item-selected_.ant-segmented-item-label]:font-semibold"
-            />
-          </ConfigProvider>
-        </div>
+                components: {
+                  Segmented: {
+                    trackBg: '#e7e7e7',
+                    trackPadding: 2,
+                    itemColor: '#8e8e8f',
+                    itemHoverColor: '#060607',
+                    itemHoverBg: 'transparent',
+                    itemSelectedBg: '#ffffff',
+                    itemSelectedColor: '#060607',
+                    itemActiveBg: 'transparent',
+                  },
+                },
+              }}
+            >
+              <Segmented
+                block
+                value={tab}
+                onChange={(value) => setTab(value as Tab)}
+                options={TABS.map((item) => ({
+                  label: item.label,
+                  value: item.id,
+                }))}
+                className="[&_.ant-segmented-item-label]:font-normal [&_.ant-segmented-item-selected_.ant-segmented-item-label]:font-semibold"
+              />
+            </ConfigProvider>
+          </div>
+        )}
       </div>
 
       <ProfileStatus
