@@ -101,6 +101,7 @@ export default function HomePage() {
             type="button"
             aria-label="Mã QR"
             className="grid size-11 place-items-center rounded-md bg-[#f2f2f2]"
+            onClick={() => history.push(PAGE_URL.developing)}
           >
             <QrIcon
               width={19.5}
@@ -112,6 +113,7 @@ export default function HomePage() {
             type="button"
             aria-label="Thông báo"
             className="grid size-11 place-items-center rounded-md bg-[#f2f2f2]"
+            onClick={() => history.push(PAGE_URL.developing)}
           >
             <BellIcon
               width={19.5}
@@ -286,7 +288,13 @@ export default function HomePage() {
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-lg font-semibold leading-7">
-              Lịch sử giao dịch
+              <button
+                type="button"
+                className="border-0 bg-transparent p-0 text-left"
+                onClick={() => history.push(PAGE_URL.accountHistory)}
+              >
+                Lịch sử giao dịch
+              </button>
             </h2>
             <p className="mt-1 text-xs leading-4 text-[rgba(10,10,11,0.55)]">
               Cập nhật gần nhất:{' '}
@@ -332,17 +340,24 @@ export default function HomePage() {
         <section className="mt-4 rounded-lg border border-[#e7e7e7] p-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold leading-7">
-              Khoản gần kỳ nhận lợi ích
+              Danh mục hợp tác
             </h2>
             <button
               type="button"
               aria-label="Làm mới khoản gần kỳ nhận lợi ích"
-              onClick={() => {
-                void home.nearInterest.refetch();
-              }}
-              disabled={home.nearInterest.isFetching}
+              // onClick={() => {
+              //   void home.nearInterest.refetch();
+              // }}
+              // disabled={home.nearInterest.isFetching}
+              onClick={() => history.push(PAGE_URL.assets)}
+              className="!mb-2"
             >
-              <RefreshIcon width={18} height={18} />
+              <HomeGlyph
+                icon={ArrowRightIcon}
+                width={9.584}
+                height={14.5833}
+                flip
+              />
             </button>
           </div>
           <ProfileStatus
