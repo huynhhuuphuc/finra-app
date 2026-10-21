@@ -1,70 +1,66 @@
 import { parseAssetTimeline } from '@/api/core/assets';
+import { useId } from 'react';
 
-export default function AssetTimeline({
-  value,
-  hidden,
-}: {
-  value: unknown;
-  hidden: boolean;
-}) {
-  if (hidden) return null;
-  if (typeof value === 'string' && value.trim() && value !== '0') {
-    try {
-      JSON.parse(value);
-    } catch {
-      return (
-        <span role="status" className="text-[10px] text-white/75">
-          Không đọc được dữ liệu biểu đồ
-        </span>
-      );
-    }
+const WIDTH = 145;
+const HEIGHT = 59;
+const LINE = '#ffe14d';
+
+export default function AssetTimeline({ value }: { value: unknown }) {
+  const gradientId = useId();
+  let points: ReturnType<typeof parseAssetTimeline> = [];
+  try {
+    points = parseAssetTimeline(value);
+  } catch {
+    return null;
   }
-  const points = parseAssetTimeline(value);
-  if (!points.length) return;
+  if (!points.length) return null;
+
   const min = Math.min(...points.map((point) => point.amount));
   const max = Math.max(...points.map((point) => point.amount));
   const first = points[0].timestamp;
   const last = points[points.length - 1].timestamp;
   const coordinates = points.map((point) => ({
-    ...point,
     x:
       last === first
-        ? 140
-        : 4 + ((point.timestamp - first) / (last - first)) * 136,
-    y: max === min ? 28 : 52 - ((point.amount - min) / (max - min)) * 46,
+        ? WIDTH
+        : ((point.timestamp - first) / (last - first)) * WIDTH,
+    y:
+      max === min ? HEIGHT / 2 : 54 - ((point.amount - min) / (max - min)) * 48,
   }));
-
-  const linePoints =
+  // 1 điểm: vẽ đường ngang (tài sản chưa biến động).
+  const line =
     coordinates.length === 1
-      ? [{ x: 4, y: coordinates[0].y }, coordinates[0]]
+      ? [{ x: 0, y: coordinates[0].y }, coordinates[0]]
       : coordinates;
+  const linePath = line.map((point) => `${point.x},${point.y}`).join(' ');
+  const areaPath = `M${line[0].x},${HEIGHT} L${linePath.replace(/ /g, ' L')} L${
+    line[line.length - 1].x
+  },${HEIGHT} Z`;
+
   return (
     <svg
-      viewBox="0 0 145 59"
+      viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+      preserveAspectRatio="none"
       role="img"
       aria-label="Biến động tài sản theo ngày"
-      className="h-full w-full"
+      className="size-full overflow-visible"
     >
+      <defs>
+        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={LINE} stopOpacity="0.45" />
+          <stop offset="100%" stopColor={LINE} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={areaPath} fill={`url(#${gradientId})`} />
       <polyline
+        points={linePath}
         fill="none"
-        stroke="white"
+        stroke={LINE}
         strokeWidth="2"
+        strokeLinejoin="round"
         strokeLinecap="round"
-        points={linePoints.map((point) => `${point.x},${point.y}`).join(' ')}
+        vectorEffect="non-scaling-stroke"
       />
-      {coordinates.map((point, index) => (
-        <circle
-          key={`${point.timestamp}-${index}`}
-          cx={point.x}
-          cy={point.y}
-          r="2"
-          fill="white"
-        >
-          <title>
-            {point.date}: {new Intl.NumberFormat('vi-VN').format(point.amount)}đ
-          </title>
-        </circle>
-      ))}
     </svg>
   );
 }
