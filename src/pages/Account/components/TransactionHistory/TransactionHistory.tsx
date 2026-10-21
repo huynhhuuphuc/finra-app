@@ -1,5 +1,6 @@
 import {
   fetchCustomerTransactions,
+  type CustomerTransaction,
   type TransactionFilters,
 } from '@/api/core/customer';
 import { ACCESS_TOKEN } from '@/constants/cookie';
@@ -16,7 +17,14 @@ import { getCookie } from '@/utils/cookie';
 import { goBack } from '@/utils/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from '@umijs/max';
-import { ConfigProvider, DatePicker, Input, Modal, Segmented } from 'antd';
+import {
+  ConfigProvider,
+  DatePicker,
+  Drawer,
+  Empty,
+  Modal,
+  Segmented,
+} from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import ProfileStatus from '../ProfileStatus';
@@ -29,6 +37,35 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'money', label: 'Tiền' },
   { id: 'saving', label: 'Tích lũy' },
 ];
+
+const LIQUIDATION_CODES = [
+  'ADV_APPENDIX_LIQ_CASH_OUT',
+  'ADV_APPENDIX_LIQ_CASH_FEE',
+];
+
+const formatMoney = (value: number) =>
+  new Intl.NumberFormat('vi-VN').format(value) + 'đ';
+
+function getCast(transaction: CustomerTransaction) {
+  const cashIn = Number(transaction.CASH_IN) || 0;
+  const cashOut = Number(transaction.CASH_OUT) || 0;
+  if (cashIn === 0 && cashOut === 0) {
+    return { cash: '0', value: formatMoney(0), color: 'text-[#060607]' };
+  }
+  if (cashIn === 0) {
+    return {
+      cash: '-' + formatMoney(cashOut),
+      value: formatMoney(cashOut),
+      color: 'text-[#ff3b30]',
+    };
+  }
+  return {
+    cash: '+' + formatMoney(cashIn),
+    value: formatMoney(cashIn),
+    color: 'text-[#34c759]',
+    positive: true,
+  };
+}
 
 function TransactionIcon({ kind }: { kind: Kind }) {
   if (kind === 'deposit') {
@@ -72,6 +109,7 @@ export default function TransactionHistory() {
     TO_DATE: '',
   });
   const [draft, setDraft] = useState(filters);
+  const [selected, setSelected] = useState<CustomerTransaction | null>(null);
   const { accountCode, customerCode, hasSession } = useCustomerSession();
   const requestFilters: TransactionFilters = {
     ...filters,
@@ -102,19 +140,15 @@ export default function TransactionHistory() {
     retry: false,
   });
   const items = (query.data || []).map((transaction) => {
-    const cashIn = Number(transaction.CASH_IN);
-    const cashOut = Number(transaction.CASH_OUT);
-    const positive = Number.isFinite(cashIn) && cashIn > 0;
-    const amount = positive ? cashIn : cashOut;
+    const { cash, color, positive } = getCast(transaction);
+    const [date = '', time = ''] = (transaction.DUE_DATE || '').split(' ');
     return {
       ...transaction,
       title: transaction.BUSINESS_TRANS_DETAIL_NAME || '—',
-      amount: Number.isFinite(amount)
-        ? (positive ? '+' : '-') +
-          new Intl.NumberFormat('vi-VN').format(Math.abs(amount)) +
-          'đ'
-        : '—',
-      positive,
+      amount: cash,
+      color,
+      date,
+      time: time.slice(0, 5),
       kind: (tab === 'saving'
         ? 'saving'
         : positive
@@ -189,17 +223,23 @@ export default function TransactionHistory() {
         error={query.error}
         retry={query.refetch}
       />
-      {query.isSuccess && items.length === 0 && (
-        <p className="px-5 py-3 text-sm">Không có giao dịch phù hợp.</p>
-      )}
       <section className="mx-5 mt-5 rounded-lg border border-[#e7e7e7] p-4">
+        {query.isSuccess && items.length === 0 && (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="Không có giao dịch phù hợp"
+            className="!my-6"
+          />
+        )}
         <div className="flex flex-col gap-4">
           {items.map((item, index) => (
-            <div
+            <button
+              type="button"
               key={
                 item.PK_CASH_TRANSACTION || `${item.TRANSACTION_NO}-${index}`
               }
-              className="flex gap-4"
+              onClick={() => setSelected(item)}
+              className="flex gap-4 text-left"
             >
               <span className="grid size-9 shrink-0 place-items-center rounded-md bg-[#171b6d]">
                 <TransactionIcon kind={item.kind} />
@@ -211,15 +251,13 @@ export default function TransactionHistory() {
                       {item.title}
                     </p>
                     <p className="mt-1 flex items-center gap-1 text-[10px] leading-4 !mb-0">
-                      <span>{item.DUE_DATE || '—'}</span>
+                      <span>{item.date || '—'}</span>
                       <span className="text-[#b3b3b3]">|</span>
-                      <span>{item.CREATE_TIME || ''}</span>
+                      <span>{item.time}</span>
                     </p>
                   </div>
                   <p
-                    className={`shrink-0 text-xs font-semibold leading-4 !mb-0 ${
-                      item.positive ? 'text-[#34c759]' : 'text-[#ff3b30]'
-                    }`}
+                    className={`shrink-0 text-xs font-semibold leading-4 !mb-0 ${item.color}`}
                   >
                     {item.amount}
                   </p>
@@ -228,7 +266,7 @@ export default function TransactionHistory() {
                   <div className="mt-4 h-px bg-[#e7e7e7]" />
                 ) : null}
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </section>
@@ -248,6 +286,65 @@ export default function TransactionHistory() {
           preserveAspectRatio="xMidYMid meet"
         />
       </button>
+      <Drawer
+        placement="bottom"
+        open={Boolean(selected)}
+        onClose={() => setSelected(null)}
+        closable={false}
+        size="auto"
+        styles={{
+          body: { padding: '8px 20px 24px' },
+          section: { borderRadius: '16px 16px 0 0' },
+        }}
+      >
+        <div className="mx-auto mb-3 h-1 w-9 rounded-full bg-[#d9d9d9]" />
+        <h2 className="!mb-4 text-xl font-semibold leading-7 text-[#060607]">
+          Chi tiết
+        </h2>
+        <div className="grid grid-cols-2 gap-4 rounded-lg border border-[#e7e7e7] p-4 text-[#060607]">
+          <div className="col-span-2">
+            <p className="text-xs leading-4 text-[#545454] !mb-1">Nội dung</p>
+            <p className="text-sm font-semibold leading-5 !mb-0">
+              {selected?.CONTENT || selected?.BUSINESS_TRANS_DETAIL_NAME || '—'}
+            </p>
+          </div>
+          {selected &&
+          LIQUIDATION_CODES.includes(selected.C_BUSINESS_DETAIL_CODE || '') ? (
+            <div>
+              <p className="text-xs leading-4 text-[#545454] !mb-1">Giá trị</p>
+              <p className="text-sm font-semibold leading-5 !mb-0">
+                {getCast(selected).value}
+              </p>
+            </div>
+          ) : (
+            <div>
+              <p className="text-xs leading-4 text-[#545454] !mb-1">
+                Phí giao dịch
+              </p>
+              <p className="text-sm font-semibold leading-5 !mb-0">Miễn phí</p>
+            </div>
+          )}
+          <div>
+            <p className="text-xs leading-4 text-[#545454] !mb-1">Trạng thái</p>
+            <p className="text-sm font-semibold leading-5 !mb-0">
+              {selected?.STATUS_NAME || '—'}
+            </p>
+          </div>
+          <div className="col-span-2">
+            <p className="text-xs leading-4 text-[#545454] !mb-1">Thời gian</p>
+            <p className="text-sm font-semibold leading-5 !mb-0">
+              {selected?.DUE_DATE || '—'}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => setSelected(null)}
+          className="!mt-6 h-12 w-full rounded-xl bg-[#e7e7e7] text-sm font-semibold leading-5 text-[#060607]"
+        >
+          Đóng
+        </button>
+      </Drawer>
       <Modal
         title="Bộ lọc giao dịch"
         open={filterOpen}
@@ -295,7 +392,7 @@ export default function TransactionHistory() {
               }
             />
           </label>
-          <label>
+          {/* <label>
             Mã loại giao dịch
             <Input
               value={draft.TRANSACTION_TYPE}
@@ -311,7 +408,7 @@ export default function TransactionHistory() {
             }
           >
             Xóa bộ lọc
-          </button>
+          </button> */}
         </div>
       </Modal>
     </div>
