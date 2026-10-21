@@ -24,6 +24,7 @@ import { useState } from 'react';
 import CustomerAvatar from '../Account/components/CustomerAvatar';
 import ProfileStatus from '../Account/components/ProfileStatus';
 import { openAccumulationDetail } from '../Assets/components/AccumulationDetail';
+import FirstLoginPasswordModal from './components/FirstLoginPasswordModal';
 import HomeCategories from './components/HomeCategories';
 import NewbieQuestProgress from './components/NewbieQuestProgress';
 import RecentTransactions from './components/RecentTransactions';
@@ -358,6 +359,7 @@ export default function HomePage() {
           )}
         </section>
       )}
+      <FirstLoginPasswordModal />
     </div>
   );
 }
