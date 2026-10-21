@@ -94,6 +94,26 @@ export default [
     component: '@/pages/Account/components/ChangePassword/ChangePassword',
   },
   {
+    path: '/account/contracts/view',
+    name: 'Hợp đồng',
+    component: '@/pages/Account/components/Contracts/ContractViewer',
+  },
+  {
+    path: '/account/contracts',
+    name: 'Danh sách hợp đồng',
+    component: '@/pages/Account/components/Contracts/ContractList',
+  },
+  {
+    path: '/account/support',
+    name: 'Thông tin hỗ trợ',
+    component: '@/pages/Account/components/SupportInfo/SupportInfo',
+  },
+  {
+    path: '/account/about',
+    name: 'Thông tin ứng dụng',
+    component: '@/pages/Account/components/AboutFinra/AboutFinra',
+  },
+  {
     path: '/account',
     name: 'Tài khoản',
     component: '@/pages/Account',

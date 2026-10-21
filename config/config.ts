@@ -88,6 +88,11 @@ export default defineConfig({
       changeOrigin: true,
       pathRewrite: { '^/finra-v2': '' },
     },
+    '/finra-app': {
+      target: 'http://api-app-dev.finra.com.vn',
+      changeOrigin: true,
+      pathRewrite: { '^/finra-app': '' },
+    },
     '/cms-api': {
       target: 'https://uat-cms.finra.com.vn',
       changeOrigin: true,

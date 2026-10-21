@@ -1,4 +1,4 @@
-import { BackIcon } from '@/icons';
+import { ArrowRight01Icon, BackIcon } from '@/icons';
 import { history } from '@umijs/max';
 import type { ReactNode } from 'react';
 
@@ -9,6 +9,7 @@ type PageHeaderProps = {
   showBack?: boolean;
   align?: 'center' | 'left';
   sticky?: boolean;
+  backVariant?: 'default' | 'boxed';
 };
 
 export default function PageHeader({
@@ -18,16 +19,32 @@ export default function PageHeader({
   showBack = true,
   align = 'center',
   sticky = true,
+  backVariant = 'default',
 }: PageHeaderProps) {
   const centered = align === 'center';
+  const boxed = backVariant === 'boxed';
+  const sideWidth = boxed ? 'w-10' : 'w-8';
   const backButton = showBack && (
     <button
       type="button"
       aria-label="Quay lại"
-      className="flex size-6 shrink-0 items-center justify-center"
+      className={
+        boxed
+          ? 'flex size-8 shrink-0 items-center justify-center rounded-lg border border-[rgba(10,10,11,0.55)]'
+          : 'flex size-6 shrink-0 items-center justify-center'
+      }
       onClick={onBack ?? (() => history.back())}
     >
-      <BackIcon width={24} height={24} preserveAspectRatio="xMidYMid meet" />
+      {boxed ? (
+        <ArrowRight01Icon
+          width={24}
+          height={24}
+          fill0="#0A0A0B"
+          className="rotate-180 [&_path]:[fill-opacity:1]"
+        />
+      ) : (
+        <BackIcon width={24} height={24} preserveAspectRatio="xMidYMid meet" />
+      )}
     </button>
   );
 
@@ -38,7 +55,7 @@ export default function PageHeader({
       } ${centered ? '' : 'gap-4'}`}
     >
       {centered ? (
-        <div className="flex w-8 justify-start">{backButton}</div>
+        <div className={`flex ${sideWidth} justify-start`}>{backButton}</div>
       ) : (
         backButton
       )}
@@ -49,7 +66,11 @@ export default function PageHeader({
       >
         {title}
       </h1>
-      {centered ? <div className="flex w-8 justify-end">{extra}</div> : extra}
+      {centered ? (
+        <div className={`flex ${sideWidth} justify-end`}>{extra}</div>
+      ) : (
+        extra
+      )}
     </header>
   );
 }

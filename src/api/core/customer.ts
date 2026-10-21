@@ -1,4 +1,11 @@
+import { ACCESS_TOKEN } from '@/constants/cookie';
+import { getCookie } from '@/utils/cookie';
+import { requestCus } from '../apiConfig';
 import { getCustomerInfo, requestCore } from './index';
+
+const APP_API_ORIGIN = 'https://api-app-dev.finra.com.vn';
+const APP_API_HOST =
+  process.env.NAME === 'development' ? '/finra-app' : APP_API_ORIGIN;
 
 export interface CustomerProfile {
   C_MARKETING_ID_BACK?: string;
@@ -124,7 +131,37 @@ export const getCustomerAvatar = (path?: string) => {
   if (!path?.trim()) return undefined;
   if (/^https?:\/\//i.test(path)) return path;
   // Same public image route as AppStrings.imageUrl in the mobile source.
-  return `http://api-app-dev.finra.com.vn/api/app/public/view?p=${encodeURIComponent(
-    path,
-  )}`;
+  return `${APP_API_ORIGIN}/api/app/public/view?p=${encodeURIComponent(path)}`;
 };
+
+export interface CustomerContract {
+  id: string;
+  customerCode?: string;
+  contractUrl?: string;
+  contractType?: string;
+  contractTypeName?: string;
+  createdDate?: string;
+}
+
+export async function fetchCustomerContracts(signal?: AbortSignal) {
+  const token = getCookie(ACCESS_TOKEN);
+  const response = await requestCus<{
+    code: number | string;
+    message?: string;
+    data?: CustomerContract[];
+  }>({
+    url: `${APP_API_HOST}/api/app/customer/contract/find-all`,
+    method: 'GET',
+    signal,
+    silentError: true,
+    headers: {
+      lang: 'vi',
+      device_id: customerApiOptions.deviceId,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (String(response.code) !== '0') {
+    throw new Error(response.message || 'Không thể tải danh sách hợp đồng.');
+  }
+  return Array.isArray(response.data) ? response.data : [];
+}

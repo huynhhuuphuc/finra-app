@@ -13,6 +13,10 @@ const PAGE_URL = {
   accountInfo: '/account/info',
   accountHistory: '/account/history',
   accountPassword: '/account/password',
+  accountSupport: '/account/support',
+  accountAbout: '/account/about',
+  accountContracts: '/account/contracts',
+  accountContractView: '/account/contracts/view',
   developing: '/developing',
 };
 export { PAGE_URL };

@@ -118,6 +118,8 @@ const GENERAL: {
     icon: ProfileIcon,
     width: 17.0835,
     height: 17.0834,
+    // to: PAGE_URL.accountContracts,
+    to: PAGE_URL.developing,
   },
   {
     label: 'Lịch sử giao dịch',
@@ -144,6 +146,7 @@ const GENERAL: {
     icon: InfoIcon,
     width: 17.9168,
     height: 17.9167,
+    to: PAGE_URL.accountSupport,
   },
   {
     label: 'Về FINRA',
@@ -151,6 +154,7 @@ const GENERAL: {
     width: 13.2231,
     height: 20,
     plain: true,
+    to: PAGE_URL.accountAbout,
   },
 ];
 

@@ -251,6 +251,13 @@ cusInstance.interceptors.response.use(
       handleSessionExpired({ removeNow: false, loginPath: PAGE_URL.login });
       return Promise.reject(error);
     }
+    const body = error.response?.data as
+      | { message?: unknown; re?: unknown }
+      | undefined;
+    const serverMessage = [body?.message, body?.re].find(
+      (value): value is string => typeof value === 'string' && !!value.trim(),
+    );
+    if (serverMessage) error.message = serverMessage;
     if ((error.config as CustomRequestConfig | undefined)?.silentError) {
       return Promise.reject(error);
     }
