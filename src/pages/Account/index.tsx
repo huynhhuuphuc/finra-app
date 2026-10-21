@@ -182,7 +182,7 @@ export default function AccountPage() {
         <button
           type="button"
           aria-label="Cài đặt"
-          onClick={toDeveloping}
+          onClick={() => history.push(PAGE_URL.accountInfo)}
           className="absolute right-5 top-3.5 grid size-8 place-items-center rounded-md border border-white/70"
         >
           <SettingsIcon
