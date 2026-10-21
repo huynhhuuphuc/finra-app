@@ -1,8 +1,13 @@
 import { login } from '@/api/auth';
-import { ACCESS_TOKEN, REFRESH_TOKEN, USER_INFO } from '@/constants/cookie';
+import {
+  ACCESS_TOKEN,
+  MEMORIZED_ACCOUNTS,
+  REFRESH_TOKEN,
+  USER_INFO,
+} from '@/constants/cookie';
 import { PENDING_LOGIN } from '@/constants/otp';
 import { PAGE_URL } from '@/constants/pathUrl';
-import { AvatarIcon, EyeIcon, ViewOffIcon } from '@/icons';
+import { AvatarIcon, EyeIcon, ReloadLightIcon, ViewOffIcon } from '@/icons';
 import { setCookie } from '@/utils/cookie';
 import { useQueryClient } from '@tanstack/react-query';
 import { Helmet, history, useModel } from '@umijs/max';
@@ -16,6 +21,29 @@ type LoginValues = {
   password: string;
 };
 
+type MemorizedAccount = {
+  username: string;
+  fullName?: string;
+  phone?: string;
+};
+
+function readMemorizedAccount(): MemorizedAccount | null {
+  try {
+    const value = JSON.parse(localStorage.getItem(MEMORIZED_ACCOUNTS) || '');
+    return typeof value?.username === 'string' && value.username ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeMemorizedAccount(account: MemorizedAccount) {
+  try {
+    localStorage.setItem(MEMORIZED_ACCOUNTS, JSON.stringify(account));
+  } catch {
+    // Storage can be blocked; remembering is optional.
+  }
+}
+
 export default function Login() {
   const { message } = App.useApp();
   const { setInitialState } = useModel('@@initialState');
@@ -24,6 +52,7 @@ export default function Login() {
   const username = Form.useWatch('username', form);
   const password = Form.useWatch('password', form);
   const [submitting, setSubmitting] = useState(false);
+  const [memorized, setMemorized] = useState(readMemorizedAccount);
 
   const canSubmit = Boolean(username?.trim() && password);
 
@@ -41,6 +70,11 @@ export default function Login() {
       setCookie(ACCESS_TOKEN, session.token, options);
       setCookie(REFRESH_TOKEN, session.refreshToken, options);
       setCookie(USER_INFO, session.currentUser, options);
+      writeMemorizedAccount({
+        username: values.username.trim(),
+        fullName: session.currentUser.fullName,
+        phone: session.currentUser.phone,
+      });
       sessionStorage.removeItem(PENDING_LOGIN);
       queryClient.clear();
       flushSync(() => {
@@ -83,13 +117,51 @@ export default function Login() {
         className="login-sheet"
         requiredMark={false}
         autoComplete="off"
+        initialValues={{ username: memorized?.username }}
         onFinish={onSubmit}
       >
         <p className="login-lead font-poppins">
-          Nhập <strong>Số điện thoại hoặc Nickname</strong> để bắt đầu
+          {memorized ? (
+            <>
+              Nhập <strong>mật khẩu</strong> để bắt đầu
+            </>
+          ) : (
+            <>
+              Nhập <strong>Số điện thoại hoặc Nickname</strong> để bắt đầu
+            </>
+          )}
         </p>
 
+        {memorized && (
+          <div className="mb-5 flex min-h-[52px] items-center gap-3 rounded-lg bg-[#b65ffc] py-2 pl-4 pr-3 text-white">
+            <div className="min-w-0 flex-1">
+              <p className="!mb-0 truncate text-sm font-semibold uppercase leading-5 tracking-wide">
+                {memorized.fullName || memorized.username}
+              </p>
+              <p className="!mb-0 truncate text-xs leading-4 tracking-wide">
+                {memorized.phone || memorized.username}
+              </p>
+            </div>
+            <button
+              type="button"
+              aria-label="Đổi tài khoản"
+              className="grid size-9 shrink-0 place-items-center rounded-md border-0 bg-white/30"
+              onClick={() => {
+                setMemorized(null);
+                form.setFieldsValue({ username: '', password: '' });
+              }}
+            >
+              <ReloadLightIcon
+                width={16.25}
+                height={16.25}
+                preserveAspectRatio="xMidYMid meet"
+              />
+            </button>
+          </div>
+        )}
+
         <Form.Item
+          hidden={Boolean(memorized)}
           name="username"
           rules={[{ required: true, message: 'Vui lòng nhập tài khoản' }]}
           normalize={(value?: string) => value?.toUpperCase()}
