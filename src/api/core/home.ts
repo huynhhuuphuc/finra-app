@@ -34,8 +34,8 @@ export function getHomeCustomerStatus(profile?: CustomerProfile) {
   const hasContract = String(profile.IS_HAS_CONTRACT) === '1';
   return {
     isNewUser: !hasTransaction && !hasContract,
-    showBalanceDetails: hasContract,
-    showQuestProgress: !hasContract,
+    showBalanceDetails: hasTransaction || hasContract,
+    showQuestProgress: !hasTransaction && !hasContract,
     completedSteps: 1 + Number(hasTransaction) + Number(hasContract),
   };
 }
