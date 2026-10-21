@@ -184,10 +184,10 @@ export default function LoginShortcuts() {
                 Hotline hỗ trợ Khách hàng
               </p>
               <a
-                href="tel:0589558686"
+                href="tel:19005082"
                 className="text-lg font-semibold leading-7 text-[#5b4dff] underline"
               >
-                0589.55.8686
+                1900.5082
               </a>
             </div>
           </div>
