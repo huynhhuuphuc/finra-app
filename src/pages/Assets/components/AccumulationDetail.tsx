@@ -89,7 +89,22 @@ function InterestTrack({ item }: { item: NearInterest }) {
       role="img"
       aria-label={`Tiến độ kỳ nhận lợi ích ${progress.percent.toFixed(0)}%`}
     >
-      <div className="absolute inset-x-0 top-3 h-2 rounded-full bg-white/40" />
+      <div
+        className="absolute inset-x-0 top-[14px] h-1 rounded-full"
+        style={{
+          background:
+            'repeating-linear-gradient(135deg, rgba(255,255,255,0.85) 0 3px, transparent 3px 6px)',
+        }}
+      />
+      {progress.flags[0] && progress.flags[0].percent > progress.percent && (
+        <div
+          className="absolute top-3 h-2 rounded-full bg-[#f3eafd]"
+          style={{
+            left: `${progress.percent}%`,
+            width: `${progress.flags[0].percent - progress.percent}%`,
+          }}
+        />
+      )}
       <div
         className="absolute left-0 top-3 h-2 min-w-2 rounded-full border border-black/80 bg-[#b65ffc]"
         style={{ width: `${progress.percent}%` }}
@@ -98,7 +113,7 @@ function InterestTrack({ item }: { item: NearInterest }) {
         width={20}
         height={17}
         preserveAspectRatio="xMidYMid meet"
-        className="absolute top-[22px] -translate-x-1/2"
+        className="absolute top-[22px] -translate-x-1/2 drop-shadow-[0_0_6px_rgba(255,204,0,0.7)]"
         style={{ left: `max(${progress.percent}%, 10px)` }}
       />
       {progress.flags.map((flag) => (
