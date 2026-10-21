@@ -325,7 +325,7 @@ export default function HomePage() {
           </button>
         </div>
         <ProfileStatus
-          loading={home.transactions.isFetching}
+          loading={home.transactions.isPending}
           error={home.transactions.error}
           retry={home.transactions.refetch}
         />

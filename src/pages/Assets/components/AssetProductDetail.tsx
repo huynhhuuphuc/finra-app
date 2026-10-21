@@ -21,6 +21,8 @@ const formatMoney = (value: unknown, hidden: boolean) => {
   return new Intl.NumberFormat('vi-VN').format(Math.trunc(amount));
 };
 
+const REFETCH_INTERVAL = 30_000;
+
 export default function AssetProductDetail() {
   const [params] = useSearchParams();
   const type = params.get('type') ?? '';
@@ -41,6 +43,7 @@ export default function AssetProductDetail() {
     enabled,
     refetchOnMount: 'always',
     retry: false,
+    refetchInterval: REFETCH_INTERVAL,
   });
   const accumulationsQuery = useQuery({
     queryKey: ['asset-group-accumulations', customerCode, type, token],
@@ -49,6 +52,7 @@ export default function AssetProductDetail() {
     enabled,
     refetchOnMount: 'always',
     retry: false,
+    refetchInterval: REFETCH_INTERVAL,
   });
   const summary = summaryQuery.data;
   const canOpenMore =
@@ -91,7 +95,7 @@ export default function AssetProductDetail() {
       </header>
 
       <ProfileStatus
-        loading={enabled && summaryQuery.isFetching}
+        loading={enabled && summaryQuery.isPending}
         error={summaryQuery.error}
         retry={summaryQuery.refetch}
       />
@@ -172,7 +176,7 @@ export default function AssetProductDetail() {
           </section>
 
           <ProfileStatus
-            loading={enabled && accumulationsQuery.isFetching}
+            loading={enabled && accumulationsQuery.isPending}
             error={accumulationsQuery.error}
             retry={accumulationsQuery.refetch}
           />

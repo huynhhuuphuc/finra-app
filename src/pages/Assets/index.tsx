@@ -24,6 +24,8 @@ const COINS = [
   'right-9 bottom-0 size-[22px]',
 ];
 
+const ASSETS_REFETCH_INTERVAL = 30_000;
+
 export default function AssetsPage() {
   const [hidden, setHidden] = useState(false);
   const { token, customerCode, hasSession } = useCustomerSession();
@@ -32,12 +34,14 @@ export default function AssetsPage() {
     queryFn: ({ signal }) => fetchAssetSummary(customerCode, signal),
     enabled: hasSession,
     retry: false,
+    refetchInterval: ASSETS_REFETCH_INTERVAL,
   });
   const productsQuery = useQuery({
     queryKey: ['asset-groups', customerCode, token],
     queryFn: ({ signal }) => fetchAssetProducts(customerCode, signal),
     enabled: hasSession,
     retry: false,
+    refetchInterval: ASSETS_REFETCH_INTERVAL,
   });
   const summary = summaryQuery.data;
   const products = productsQuery.data || [];
