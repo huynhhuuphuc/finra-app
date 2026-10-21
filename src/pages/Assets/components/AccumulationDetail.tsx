@@ -369,6 +369,7 @@ function AccumulationDetailContent() {
                   Lịch sử GD
                 </span>
               </button>
+              {/* TODO: mở lại khi tính năng Tất toán / Gia hạn sẵn sàng
               <button
                 type="button"
                 className="flex flex-col items-center justify-center gap-4 rounded-lg bg-[#f7f7f7] px-2 py-2.5"
@@ -397,6 +398,53 @@ function AccumulationDetailContent() {
                 type="button"
                 className="flex flex-col items-center justify-end gap-5 rounded-lg bg-[#f7f7f7] px-2 py-2.5"
                 onClick={openRenewal}
+              >
+                <span
+                  role="img"
+                  aria-label={
+                    !renewalKnown
+                      ? 'Chưa có trạng thái gia hạn'
+                      : extended
+                      ? 'Đang gia hạn'
+                      : 'Không gia hạn'
+                  }
+                  className={`relative h-[22px] w-10 rounded-md ${
+                    extended ? 'bg-[#b65ffc]' : 'bg-[#d2d5da]'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 size-[18px] rounded bg-white shadow-[0_2px_4px_rgba(39,39,39,0.1)] ${
+                      extended ? 'left-5' : 'left-0.5'
+                    }`}
+                  />
+                </span>
+                <span className="text-xs font-semibold leading-4 text-[rgba(10,10,11,0.78)]">
+                  Gia hạn
+                </span>
+              </button>
+              */}
+              <button
+                type="button"
+                className="flex flex-col items-center justify-center gap-4 rounded-lg bg-[#f7f7f7] px-2 py-2.5"
+                onClick={() => history.push(PAGE_URL.developing)}
+              >
+                <span className="grid size-8 place-items-center rounded-full bg-[rgba(182,95,252,0.1)]">
+                  <span className="grid size-5 rotate-90 place-items-center">
+                    <ArrowUpIcon
+                      width={14.5833}
+                      height={9.58412}
+                      preserveAspectRatio="xMidYMid meet"
+                    />
+                  </span>
+                </span>
+                <span className="text-xs font-semibold leading-4 text-[rgba(10,10,11,0.78)]">
+                  Tất toán
+                </span>
+              </button>
+              <button
+                type="button"
+                className="flex flex-col items-center justify-end gap-5 rounded-lg bg-[#f7f7f7] px-2 py-2.5"
+                onClick={() => history.push(PAGE_URL.developing)}
               >
                 <span
                   role="img"
