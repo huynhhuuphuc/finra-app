@@ -1,6 +1,7 @@
 import { getCustomerName } from '@/api/core/customer';
 import { PAGE_URL } from '@/constants/pathUrl';
 import useCustomerProfile from '@/hooks/useCustomerProfile';
+import useLogout from '@/hooks/useLogout';
 import {
   ArrowRight01Icon,
   ArrowRightIcon,
@@ -17,10 +18,7 @@ import {
   SettingsIcon,
   UserSharingIcon,
 } from '@/icons';
-import { removeCookieAll } from '@/utils/cookie';
-import { clearGaUserId } from '@/utils/ga4';
-import { useQueryClient } from '@tanstack/react-query';
-import { history, useModel } from '@umijs/max';
+import { history } from '@umijs/max';
 import type { SVGProps } from 'react';
 import { useState } from 'react';
 import CustomerAvatar from './components/CustomerAvatar';
@@ -161,19 +159,10 @@ const GENERAL: {
 export default function AccountPage() {
   const { profile, isPending, error, refetch, hasSession } =
     useCustomerProfile();
-  const queryClient = useQueryClient();
-  const { setInitialState } = useModel('@@initialState');
+  const logout = useLogout();
   const [biometric, setBiometric] = useState(false);
   const [rating, setRating] = useState(0);
   const toDeveloping = () => history.push(PAGE_URL.developing);
-
-  const logout = () => {
-    clearGaUserId();
-    removeCookieAll();
-    queryClient.clear();
-    setInitialState((state) => ({ ...state, currentUser: undefined }));
-    history.replace(PAGE_URL.login);
-  };
 
   return (
     <div className="bg-white pb-6 text-[#060607]">
