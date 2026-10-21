@@ -1,7 +1,8 @@
+import PageHeader from '@/components/PageHeader';
 import { PAGE_URL } from '@/constants/pathUrl';
 import useCustomerProfile from '@/hooks/useCustomerProfile';
-import { BackIcon, CameraIcon, EditIcon } from '@/icons';
-import { history } from '@umijs/max';
+import { EditIcon } from '@/icons';
+import { goBack } from '@/utils/navigation';
 import CustomerAvatar from '../CustomerAvatar';
 import ProfileStatus from '../ProfileStatus';
 
@@ -37,7 +38,7 @@ export default function AccountDetail() {
     useCustomerProfile();
   return (
     <div className="min-h-full bg-white pb-8 text-[#060607]">
-      <header className="flex h-[60px] items-center px-5">
+      {/* <header className="flex h-[60px] items-center px-5">
         <button
           type="button"
           aria-label="Quay lại"
@@ -50,23 +51,17 @@ export default function AccountDetail() {
             preserveAspectRatio="xMidYMid meet"
           />
         </button>
-      </header>
+      </header> */}
+      <PageHeader
+        title="Thông tin hỗ trợ"
+        backVariant="boxed"
+        onBack={() => goBack(PAGE_URL.account)}
+      />
 
       <div className="relative mx-auto mt-5 size-32">
         <div className="grid size-full place-items-center rounded-full bg-[#b65ffc] text-[60px] font-semibold leading-none text-white">
           <CustomerAvatar profile={profile} size={128} />
         </div>
-        <button
-          type="button"
-          aria-label="Đổi ảnh đại diện"
-          className="absolute bottom-0 right-0 grid size-8 place-items-center rounded-full bg-[#f7f7f7]"
-        >
-          <CameraIcon
-            width={17.92}
-            height={17.92}
-            preserveAspectRatio="xMidYMid meet"
-          />
-        </button>
       </div>
 
       <div className="mt-3 text-center">
@@ -97,7 +92,7 @@ export default function AccountDetail() {
               value={profile?.CUST_MOBILE}
               tone="muted"
             />
-            <Field label="CMND/CCCD" value={profile?.CARD_ID} tone="muted" />
+            <Field label="CCCD" value={profile?.CARD_ID} tone="muted" />
             <Field
               label="Họ và tên"
               value={profile?.CUSTOMER_NAME}
@@ -120,18 +115,7 @@ export default function AccountDetail() {
               value={profile?.ISSUE_PLACE_NAME}
               tone="muted"
             />
-            <div className="flex gap-4">
-              <Field
-                label="Ngày cấp"
-                value={profile?.ISSUE_DATE}
-                tone="muted"
-              />
-              <Field
-                label="Ngày hết hạn"
-                value={profile?.EXPIRE_DATE}
-                tone="muted"
-              />
-            </div>
+            <Field label="Ngày cấp" value={profile?.ISSUE_DATE} tone="muted" />
             <Field
               label="Địa chỉ thường trú"
               value={profile?.RESEDENCE_ADDRESS}
@@ -154,9 +138,17 @@ export default function AccountDetail() {
             </button>
           </div>
           <div className="mt-8 flex flex-col gap-4">
-            <Field label="Số điện thoại" value={profile?.CUST_MOBILE} />
-            <Field label="Email" value={profile?.CUST_EMAIL} />
-            <Field label="Địa chỉ liên hệ" value={profile?.CUST_ADDRESS} />
+            <Field
+              label="Số điện thoại"
+              value={profile?.CUST_MOBILE}
+              tone="muted"
+            />
+            <Field label="Email" value={profile?.CUST_EMAIL} tone="muted" />
+            <Field
+              label="Địa chỉ liên hệ"
+              value={profile?.CUST_ADDRESS}
+              tone="muted"
+            />
           </div>
         </section>
 
