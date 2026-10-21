@@ -33,13 +33,15 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
   const [current, setCurrent] = useState(0);
   const carouselRef = useRef<CarouselRef>(null);
   const categories = items.filter((item) => item.CODE !== 'MI_UPS');
-  const handleCooperate = (item: HomeCategory) => {
-    history.push(
-      `${PAGE_URL.productDetail}?code=${encodeURIComponent(
-        item.CODE,
-      )}&name=${encodeURIComponent(item.NAME || '')}`,
-    );
-  };
+  // const handleCooperate = (item: HomeCategory) => {
+  //   history.push(
+  //     `${PAGE_URL.productDetail}?code=${encodeURIComponent(
+  //       item.CODE,
+  //     )}&name=${encodeURIComponent(item.NAME || '')}`,
+  //   );
+  // };
+
+  const handleCooperate = () => history.push(PAGE_URL.developing);
   return (
     <>
       {categories.length ? (
@@ -63,11 +65,18 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
               <div className="aspect-[390/271] px-5 pb-4 pt-5">
                 <article className="flex h-full flex-col overflow-hidden rounded-xl bg-white px-1 pt-1 pb-2 shadow-[0_0_16px_rgba(0,0,0,0.08)]">
                   {/* Banner đầu tiên là ảnh lớn nhất lúc mở Home: tải ngay */}
-                  <ProductBanner
-                    key={item.URL_BANNER}
-                    item={item}
-                    priority={index === 0}
-                  />
+                  <button
+                    type="button"
+                    onClick={handleCooperate}
+                    aria-label={`Xem ${item.NAME || 'sản phẩm FINRA'}`}
+                    className="flex min-h-0 w-full flex-1 border-0 bg-transparent p-0"
+                  >
+                    <ProductBanner
+                      key={item.URL_BANNER}
+                      item={item}
+                      priority={index === 0}
+                    />
+                  </button>
                   <div className="mt-4 flex h-[45px] shrink-0 items-center justify-between gap-3 px-3">
                     <div className="min-w-0 pb-2">
                       <p
@@ -85,7 +94,7 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
                     </div>
                     <button
                       type="button"
-                      onClick={() => handleCooperate(item)}
+                      onClick={handleCooperate}
                       aria-label={`Hợp tác ${item.NAME || 'cùng FINRA'}`}
                       className="isolate order-1 mx-auto flex h-8 w-[100px] flex-none flex-row items-center justify-between rounded-[10px] border-0 bg-[#b65ffc] px-1 py-0 text-xs leading-4 text-white"
                     >

@@ -249,12 +249,19 @@ export default function HomePage() {
           <h2 className="text-lg font-semibold leading-7 !mb-0">
             Hợp tác cùng FINRA
           </h2>
-          <HomeGlyph
-            icon={ArrowRightIcon}
-            width={9.584}
-            height={14.5833}
-            flip
-          />
+          <button
+            type="button"
+            aria-label="Xem tất cả hợp tác cùng FINRA"
+            onClick={() => history.push(PAGE_URL.developing)}
+            className="grid size-8 place-items-center border-0 bg-transparent p-0"
+          >
+            <HomeGlyph
+              icon={ArrowRightIcon}
+              width={9.584}
+              height={14.5833}
+              flip
+            />
+          </button>
         </div>
         <ProfileStatus
           loading={home.hasSession && home.categories.isPending}
