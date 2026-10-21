@@ -92,10 +92,14 @@ export default function Login() {
         <Form.Item
           name="username"
           rules={[{ required: true, message: 'Vui lòng nhập tài khoản' }]}
+          normalize={(value?: string) => value?.toUpperCase()}
         >
           <Input
             className="login-input"
             autoComplete="off"
+            autoCapitalize="characters"
+            autoCorrect="off"
+            spellCheck={false}
             placeholder="Số điện thoại hoặc Nickname"
             prefix={<AvatarIcon width={24} height={24} />}
           />
