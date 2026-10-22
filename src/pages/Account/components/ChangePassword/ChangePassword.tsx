@@ -11,6 +11,7 @@ import {
   PasswordRules,
   getChangePasswordError,
   passesRules,
+  showPasswordChangedModal,
 } from './passwordForm';
 
 const AUTH_NOTICE =
@@ -42,15 +43,7 @@ export default function ChangePassword() {
     setSubmitting(true);
     try {
       await changePassword(user, current, next);
-      modal.success({
-        title: 'Đổi mật khẩu thành công',
-        okText: 'Đăng nhập',
-        centered: true,
-        closable: false,
-        maskClosable: false,
-        keyboard: false,
-        onOk: logout,
-      });
+      showPasswordChangedModal(modal, logout);
     } catch (error: any) {
       if (error?.response?.status === 401) return;
       message.error(getChangePasswordError(error));

@@ -1,6 +1,51 @@
 import { EyeIcon, ViewOffIcon } from '@/icons';
-import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
+import {
+  CheckCircleFilled,
+  CheckOutlined,
+  CloseCircleFilled,
+} from '@ant-design/icons';
+import type { App } from 'antd';
 import { useId, useState } from 'react';
+
+type ModalApi = ReturnType<typeof App.useApp>['modal'];
+
+export function showPasswordChangedModal(modal: ModalApi, onLogin: () => void) {
+  const instance = modal.confirm({
+    icon: null,
+    title: null,
+    footer: null,
+    centered: true,
+    closable: false,
+    maskClosable: false,
+    keyboard: false,
+    width: 365,
+    className:
+      '[&_.ant-modal-content]:!overflow-visible [&_.ant-modal-content]:!rounded-2xl',
+    content: (
+      <div className="pt-10 text-center">
+        <span className="absolute left-1/2 top-0 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#34c759] text-[28px] text-white shadow-[0_0_20px_6px_rgba(52,199,89,0.55),0_0_48px_20px_rgba(52,199,89,0.3)]">
+          <CheckOutlined />
+        </span>
+        <h3 className="!mb-2 text-base font-bold leading-6 text-[#060607]">
+          Đổi mật khẩu thành công
+        </h3>
+        <p className="!mb-6 text-xs leading-5 text-[rgba(10,10,11,0.55)]">
+          Quý khách vừa đổi mật khẩu thành công. Vui lòng đăng nhập lại account
+        </p>
+        <button
+          type="button"
+          className="h-12 w-full rounded-xl border-0 bg-[#b65ffc] text-sm font-semibold !text-white"
+          onClick={() => {
+            instance.destroy();
+            onLogin();
+          }}
+        >
+          Đăng nhập
+        </button>
+      </div>
+    ),
+  });
+}
 
 export const MAX_LENGTH = 20;
 

@@ -6,6 +6,7 @@ import {
   PasswordRules,
   getChangePasswordError,
   passesRules,
+  showPasswordChangedModal,
 } from '@/pages/Account/components/ChangePassword/passwordForm';
 import { App, Modal } from 'antd';
 import { useState } from 'react';
@@ -29,15 +30,7 @@ export default function FirstLoginPasswordModal() {
     try {
       await changePassword(user, current, next);
       setDone(true);
-      modal.success({
-        title: 'Đổi mật khẩu thành công',
-        okText: 'Đăng nhập',
-        centered: true,
-        closable: false,
-        maskClosable: false,
-        keyboard: false,
-        onOk: logout,
-      });
+      showPasswordChangedModal(modal, logout);
     } catch (error: any) {
       if (error?.response?.status === 401) return;
       message.error(getChangePasswordError(error));

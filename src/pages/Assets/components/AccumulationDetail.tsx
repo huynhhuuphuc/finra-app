@@ -110,10 +110,10 @@ function InterestTrack({ item }: { item: NearInterest }) {
         style={{ width: `${progress.percent}%` }}
       />
       <MarkerIcon
-        width={20}
-        height={17}
+        width={30}
+        height={30}
         preserveAspectRatio="xMidYMid meet"
-        className="absolute top-[22px] -translate-x-1/2 drop-shadow-[0_0_6px_rgba(255,204,0,0.7)]"
+        className="absolute top-[12px] -translate-x-1/2 drop-shadow-[0_0_6px_rgba(255,204,0,0.7)]"
         style={{ left: `max(${progress.percent}%, 10px)` }}
       />
       {progress.flags.map((flag) => (

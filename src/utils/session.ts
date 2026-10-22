@@ -25,11 +25,12 @@ export function handleSessionExpired(opts?: {
   }
 
   Modal.error({
-    title: 'Session expired',
-    content: 'Please log in again.',
-    okText: 'OK',
+    title: 'Phiên đăng nhập đã hết hạn',
+    content: 'Vui lòng đăng nhập lại.',
+    okText: 'Đăng nhập',
     centered: true,
     maskClosable: false,
+    keyboard: false,
     onOk: () => {
       if (!removeNow) {
         removeCookieAll();

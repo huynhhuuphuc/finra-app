@@ -38,22 +38,8 @@ export default function AccountDetail() {
     useCustomerProfile();
   return (
     <div className="min-h-full bg-white pb-8 text-[#060607]">
-      {/* <header className="flex h-[60px] items-center px-5">
-        <button
-          type="button"
-          aria-label="Quay lại"
-          onClick={() => history.replace(PAGE_URL.account)}
-          className="grid size-6 place-items-center"
-        >
-          <BackIcon
-            width={24}
-            height={24}
-            preserveAspectRatio="xMidYMid meet"
-          />
-        </button>
-      </header> */}
       <PageHeader
-        title="Thông tin hỗ trợ"
+        title=""
         backVariant="boxed"
         onBack={() => goBack(PAGE_URL.account)}
       />
@@ -84,7 +70,7 @@ export default function AccountDetail() {
         />
         <section className="rounded-lg border border-[#e7e7e7] p-4">
           <h2 className="text-lg font-semibold leading-7 !mb-0">
-            Thông tin tài khoản
+            Thông tin account
           </h2>
           <div className="mt-8 flex flex-col gap-4">
             <Field
