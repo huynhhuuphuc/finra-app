@@ -131,13 +131,16 @@ export default function AssetProductDetail() {
                 <button
                   type="button"
                   className="flex h-[31px] shrink-0 items-center gap-2 whitespace-nowrap rounded-[10px] bg-[#b65ffc] px-3 text-xs !text-white"
-                  onClick={() =>
-                    history.push(
-                      `${PAGE_URL.products}?type=${encodeURIComponent(
-                        type,
-                      )}&productType=${encodeURIComponent(productType)}`,
-                    )
-                  }
+                  // onClick={() =>
+                  //   history.push(
+                  //     `${PAGE_URL.products}?type=${encodeURIComponent(
+                  //       type,
+                  //     )}&productType=${encodeURIComponent(productType)}`,
+                  //   )
+                  // }
+                  onClick={() => {
+                    history.push(PAGE_URL.developing);
+                  }}
                 >
                   <PlusSignIcon
                     width={12}

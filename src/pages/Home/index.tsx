@@ -285,18 +285,16 @@ export default function HomePage() {
       </div> */}
 
       <section className="mt-4 rounded-lg border border-[#e7e7e7] p-4">
-        <div className="flex items-start justify-between">
-          <div>
-            <h2 className="text-lg font-semibold leading-7">
-              <button
-                type="button"
-                className="border-0 bg-transparent p-0 text-left"
-                onClick={() => history.push(PAGE_URL.accountHistory)}
-              >
-                Lịch sử giao dịch
-              </button>
-            </h2>
-            <p className="mt-1 text-xs leading-4 text-[rgba(10,10,11,0.55)]">
+        <div className="flex items-start justify-between gap-3">
+          <button
+            type="button"
+            className="min-w-0 flex-1 cursor-pointer border-0 bg-transparent p-0 text-left"
+            onClick={() => history.push(PAGE_URL.accountHistory)}
+          >
+            <span className="block text-lg font-semibold leading-7 text-[#060607]">
+              Lịch sử giao dịch
+            </span>
+            <span className="mt-1 block text-xs leading-4 text-[rgba(10,10,11,0.55)]">
               Cập nhật gần nhất:{' '}
               <span className="text-[#060607]">
                 {home.transactions.dataUpdatedAt
@@ -306,8 +304,8 @@ export default function HomePage() {
                     }).format(home.transactions.dataUpdatedAt)
                   : '—'}
               </span>
-            </p>
-          </div>
+            </span>
+          </button>
           <button
             type="button"
             aria-label="Làm mới"

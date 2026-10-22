@@ -14,6 +14,7 @@ import BottomTabBar from './components/BottomTabBar';
 import { ACCESS_TOKEN, USER_INFO } from './constants/cookie';
 import { PENDING_LOGIN } from './constants/otp';
 import { PAGE_URL } from './constants/pathUrl';
+import useIdleLogout from './hooks/useIdleLogout';
 import NoPermission from './pages/403';
 import ThemeProvider from './theme/ThemeProvider';
 import { getThemeMode, useThemeMode, type ThemeMode } from './theme/themeStore';
@@ -150,6 +151,7 @@ export function onRouteChange({
 
 const AppProviders = ({ children }: PropsWithChildren) => {
   const mode = useThemeMode();
+  useIdleLogout();
   return (
     <ProConfigProvider intl={viVNIntl} dark={mode === 'dark'}>
       <App>

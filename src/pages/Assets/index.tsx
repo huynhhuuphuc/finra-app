@@ -162,10 +162,10 @@ export default function AssetsPage() {
 
       <div className="relative isolate z-0 grid grid-cols-2 gap-4 px-5 pb-2 pt-5">
         <article className="relative h-[176px] overflow-hidden rounded-[10px_10px_10px_48px] border-2 border-[#6ee7b7] bg-[linear-gradient(180deg,#e8faf1_0%,#f3fcf7_100%)] p-4 shadow-[0_6px_18px_rgba(52,199,89,0.18)]">
-          <p className="m-0 text-sm font-normal leading-5 text-[rgba(10,10,11,0.78)]">
+          <p className="!m-0 text-sm font-normal leading-5 text-[#8e8e8f] whitespace-nowrap">
             Lợi nhuận trước thuế
           </p>
-          <strong className="my-2 block text-xl font-semibold leading-8 text-[#060607]">
+          <strong className="my-2 block text-lg font-semibold leading-7 text-[#060607]">
             {money(summary?.SUM_FEE_VALUE)}
           </strong>
           <div
@@ -183,17 +183,17 @@ export default function AssetsPage() {
 
         <div className="relative">
           <div className="absolute -right-2 top-4 z-0 h-[150px] w-[72%] rounded-[10px_44px_10px_10px] bg-[#8f7de6]" />
-          <article className="relative z-[1] flex h-[176px] flex-col justify-center gap-5 rounded-[10px_48px_10px_10px] border-2 border-[#5b4fd8] bg-[linear-gradient(160deg,#a58de0_0%,#b39ee6_50%,#8d6fe2_100%)] p-4 text-white">
+          <article className="relative z-[1] flex h-[176px] flex-col justify-start gap-5 rounded-[10px_48px_10px_10px] border-2 border-[#5b4fd8] bg-[linear-gradient(160deg,#a58de0_0%,#b39ee6_50%,#8d6fe2_100%)] p-4 text-white">
             <div className="relative pl-3">
               <DotIcon
                 className="absolute left-0 top-1.5"
                 width={4}
                 height={4}
               />
-              <p className="m-0 text-xs leading-4 text-white/85">
+              <p className="!m-0 text-xs leading-4 text-white/85">
                 Tổng số tiền đầu tư
               </p>
-              <strong className="mt-0.5 block text-base font-semibold leading-6 text-white">
+              <strong className="mt-0.5 block text-sm font-semibold leading-5 text-white">
                 {money(summary?.SUM_CONTRACT)}
               </strong>
             </div>
@@ -203,10 +203,10 @@ export default function AssetsPage() {
                 width={4}
                 height={4}
               />
-              <p className="m-0 text-xs leading-4 text-white/85">
+              <p className="!m-0 text-xs leading-4 text-white/85">
                 Số dư khả dụng
               </p>
-              <strong className="mt-0.5 block text-base font-semibold leading-6 text-white">
+              <strong className="mt-0.5 block text-sm font-semibold leading-5 text-white">
                 {money(summary?.CASH_BALANCE)}
               </strong>
             </div>

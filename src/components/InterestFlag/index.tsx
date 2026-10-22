@@ -35,7 +35,15 @@ export default function InterestFlag({
         preserveAspectRatio="xMidYMid meet"
       />
       {open && (
-        <span className="absolute bottom-[calc(100%+8px)] left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-lg bg-gradient-to-r from-[#3a1d8f] to-[#b65ffc] px-3 py-1.5 text-xs font-semibold text-white after:absolute after:left-1/2 after:top-full after:-translate-x-1/2 after:border-x-[6px] after:border-t-[6px] after:border-x-transparent after:border-t-[#7a3fd0] after:content-['']">
+        <span
+          // Inline gradient: Tailwind's var-based gradient is dropped by some
+          // older iOS Safari versions, leaving white text on no background.
+          style={{
+            backgroundColor: '#7a3fd0',
+            backgroundImage: 'linear-gradient(90deg, #3a1d8f, #b65ffc)',
+          }}
+          className="absolute bottom-[calc(100%+8px)] left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-semibold text-white after:absolute after:left-1/2 after:top-full after:-translate-x-1/2 after:border-x-[6px] after:border-t-[6px] after:border-x-transparent after:border-t-[#7a3fd0] after:content-['']"
+        >
           {label}
         </span>
       )}
