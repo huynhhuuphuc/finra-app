@@ -9,7 +9,7 @@ type TabItem = {
 const TABS: TabItem[] = [
   { path: '/home', label: 'Trang chủ', icon: '/images/tabs/home.svg' },
   // { path: '/products', label: 'Sản phẩm', icon: '/images/tabs/products.svg' },
-  { path: '/for-you', label: 'Khám phá', icon: '/images/tabs/for-you.svg' },
+  // { path: '/for-you', label: 'Khám phá', icon: '/images/tabs/for-you.svg' },
   { path: '/assets', label: 'Tài sản', icon: '/images/tabs/assets.svg' },
   { path: '/account', label: 'Tài khoản', icon: '/images/tabs/account.svg' },
 ];

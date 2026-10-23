@@ -2,7 +2,7 @@ import type { HomeCategory } from '@/api/core/home';
 import RemoteImage from '@/components/RemoteImage';
 import { PAGE_URL } from '@/constants/pathUrl';
 import { history } from '@umijs/max';
-import { Carousel, Modal } from 'antd';
+import { Carousel, Empty, Modal } from 'antd';
 import type { CarouselRef } from 'antd/es/carousel';
 import { useRef, useState } from 'react';
 
@@ -21,7 +21,11 @@ function ProductBanner({
       className="min-h-0 w-full flex-1 rounded-xl"
       fallback={
         <div className="flex h-full items-center justify-center text-xs text-[#5d01a6]">
-          Chưa có ảnh sản phẩm
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="Không có ảnh sản phẩm"
+            className="!my-6"
+          />
         </div>
       }
     />
@@ -96,7 +100,7 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
                       type="button"
                       onClick={handleCooperate}
                       aria-label={`Hợp tác ${item.NAME || 'cùng FINRA'}`}
-                      className="isolate order-1 mx-auto flex h-8 w-[100px] flex-none flex-row items-center justify-between rounded-[10px] border-0 bg-[#b65ffc] px-1 py-0 text-xs leading-4 text-white"
+                      className="isolate ml-auto flex h-8 w-[125px] shrink-0 items-center justify-center rounded-[10px] border-0 bg-[#b65ffc] px-1 py-0 text-sm font-semibold leading-4 text-white"
                     >
                       <span className="w-full text-center text-white text-xs font-semibold">
                         Hợp tác
@@ -109,7 +113,11 @@ export default function HomeCategories({ items }: { items: HomeCategory[] }) {
           ))}
         </Carousel>
       ) : (
-        <p className="text-sm text-gray-500">Chưa có sản phẩm.</p>
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description="Không có sản phẩm."
+          className="!my-6"
+        />
       )}
       {categories.length > 0 && (
         <div className="flex justify-center gap-1">

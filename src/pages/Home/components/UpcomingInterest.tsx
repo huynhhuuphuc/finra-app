@@ -5,6 +5,7 @@ import {
 } from '@/api/core/home';
 import InterestFlag from '@/components/InterestFlag';
 import { MarkerIcon } from '@/icons';
+import { Empty } from 'antd';
 import { useState } from 'react';
 
 export default function UpcomingInterest({
@@ -119,9 +120,11 @@ export default function UpcomingInterest({
                 })}
               </div>
             ) : (
-              <p className="mt-3 text-xs text-gray-500">
-                Chưa có lịch nhận lợi ích.
-              </p>
+              <Empty
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description="Không có lịch nhận lợi ích."
+                className="!my-6"
+              />
             )}
             <p className="line-clamp-2 text-[10px] text-gray-500">
               {item.CONTENT}

@@ -22,7 +22,7 @@ import {
 import ProfileStatus from '@/pages/Account/components/ProfileStatus';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { history, useSearchParams } from '@umijs/max';
-import { App, Input, Modal } from 'antd';
+import { App, Empty, Input, Modal } from 'antd';
 import { useState, type ReactNode } from 'react';
 import AccumulationAmountForm, {
   type AccumulationAction,
@@ -77,9 +77,11 @@ function InterestTrack({ item }: { item: NearInterest }) {
   const [activeFlag, setActiveFlag] = useState<number | null>(null);
   if (!progress) {
     return (
-      <p className="font-poppins text-[10px] leading-4 text-white/75">
-        Chưa có lịch nhận lợi ích.
-      </p>
+      <Empty
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+        description="Chưa có lịch nhận lợi ích."
+        className="!my-6"
+      />
     );
   }
 
