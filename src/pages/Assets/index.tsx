@@ -11,6 +11,7 @@ import { PlusIcon, ReloadIcon, ViewOffIcon } from '@/icons';
 import DotIcon from '@/icons/components/DotIcon';
 import { useQuery } from '@tanstack/react-query';
 import { history } from '@umijs/max';
+import { Empty } from 'antd';
 import { useState } from 'react';
 import ProfileStatus from '../Account/components/ProfileStatus';
 import AssetAllocation from './components/AssetAllocation';
@@ -296,7 +297,11 @@ export default function AssetsPage() {
             ]}
           />
         ) : (
-          <p className="text-xs text-gray-500">Chưa có dữ liệu phân bổ</p>
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="Không có dữ liệu phân bổ"
+            className="!my-6"
+          />
         )}
       </section>
     </div>

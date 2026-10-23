@@ -3,9 +3,8 @@ import { getCookie } from '@/utils/cookie';
 import { requestCus } from '../apiConfig';
 import { getCustomerInfo, requestCore } from './index';
 
-const APP_API_ORIGIN = 'https://api-app-dev.finra.com.vn';
-const APP_API_HOST =
-  process.env.NAME === 'development' ? '/finra-app' : APP_API_ORIGIN;
+const APP_API_ORIGIN = process.env.APP_API_ORIGIN;
+const APP_API_HOST = process.env.APP_API_HOST;
 
 export interface CustomerProfile {
   C_MARKETING_ID_BACK?: string;
@@ -48,7 +47,7 @@ export function readCoreData<T>(response: CoreResult<T>): T[] {
 
 // Temporary device/customer values match the existing Home demo integration.
 export const customerApiOptions = {
-  deviceId: 'AP3A.240905.015.A2',
+  deviceId: process.env.DEVICE_ID,
   silentError: true,
 };
 

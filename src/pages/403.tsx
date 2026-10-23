@@ -1,7 +1,7 @@
 import { removeCookieAll } from '@/utils/cookie';
+import { history, useModel } from '@umijs/max';
 import { Button, Result } from 'antd';
 import React from 'react';
-import { history, useModel } from 'umi';
 
 const NoPermission: React.FC = () => {
   const { setInitialState } = useModel('@@initialState');

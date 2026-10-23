@@ -11,6 +11,7 @@ import ProfileStatus from '@/pages/Account/components/ProfileStatus';
 import UpcomingInterest from '@/pages/Home/components/UpcomingInterest';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { history, useSearchParams } from '@umijs/max';
+import { Empty } from 'antd';
 import { useState } from 'react';
 import { openAccumulationDetail } from './AccumulationDetail';
 
@@ -195,9 +196,11 @@ export default function AssetProductDetail() {
                   onSelect={openAccumulationDetail}
                 />
               ) : (
-                <p className="text-sm text-gray-500">
-                  Chưa có khoản tích luỹ trong nhóm này.
-                </p>
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="Không có khoản tích luỹ trong nhóm này."
+                  className="!my-6"
+                />
               )}
             </section>
           )}

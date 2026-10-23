@@ -2,7 +2,7 @@
 
 node: <mark>24.13.0</mark>
 
-yarn: <mark>1.22.22</mark>
+pnpm: <mark>12.3.4</mark>
 
 # Directory Structure
 
@@ -43,6 +43,7 @@ umi-admins
 │   └── .env.d.ts             # Env var type declarations for variables defined in config.xxx.ts
 └── ...                       # Misc configuration files
 ```
+
 # Backend-Frontend Interaction Conventions
 
 Response data types
@@ -87,7 +88,7 @@ It's use RESTful APIs. Using goods as an example:
 
 ```ts
 // 1. Create a product
-POST /api/banner
+POST / api / banner;
 ```
 
 # Troubleshooting

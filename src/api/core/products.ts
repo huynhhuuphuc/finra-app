@@ -5,14 +5,8 @@ import { parseAmount } from './assets';
 import { customerApiOptions, readCoreData, type CoreResult } from './customer';
 import { requestCore } from './index';
 
-const PUBLIC_CORE =
-  process.env.NAME === 'development'
-    ? '/unAuthenticated/core'
-    : 'https://api-uat-invest.finra.com.vn/core';
-const V2_HOST =
-  process.env.NAME === 'development'
-    ? '/finra-v2'
-    : 'https://api-app-dev-v2.finra.com.vn';
+const PUBLIC_CORE = process.env.PUBLIC_CORE_URL;
+const V2_HOST = process.env.V2_API_HOST;
 
 export interface InvestmentProduct {
   PRODUCT_CODE: string;

@@ -1,4 +1,5 @@
 import { defineConfig } from '@umijs/max';
+import { apiDefine } from './apiEnv';
 // TODO: For local development, please modify HOST address according to your local IP
 const HOST = {
   BackendA: 'https://test-boltholdings.upse.vn',
@@ -15,5 +16,6 @@ export default defineConfig({
     'process.env.HOST': process.env.BASE_URI,
     'process.env.SECRET_KEY': 'salt_value',
     'process.env.GA_MEASUREMENT_ID': GA_MEASUREMENT_ID,
+    ...apiDefine,
   },
 });

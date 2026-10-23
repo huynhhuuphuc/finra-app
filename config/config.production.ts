@@ -1,8 +1,9 @@
 import { defineConfig } from '@umijs/max';
+import { apiDefine } from './apiEnv';
 import defaultSettings from './defaultSettings';
 import routes from './routes';
 
-const BASE_URI = process.env.BASE_URI || 'https://prod-noti.finra.com.vn';
+const BASE_URI = process.env.BASE_URI || '';
 const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || 'G-J80F828GC5';
 
 console.log('BUILD ENV BASE_URI1:', BASE_URI);
@@ -28,5 +29,6 @@ export default defineConfig({
     'process.env.HOST': BASE_URI,
     'process.env.SECRET_KEY': 'salt_value',
     'process.env.GA_MEASUREMENT_ID': GA_MEASUREMENT_ID,
+    ...apiDefine,
   },
 });

@@ -1,7 +1,7 @@
 import type { CustomerTransaction } from '@/api/core/customer';
 import { formatHomeMoney, getTransactionAmounts } from '@/api/core/home';
 import { ArrowUpLightIcon, PlusLightIcon, ReloadLightIcon } from '@/icons';
-import { Modal } from 'antd';
+import { Empty, Modal } from 'antd';
 import { useState } from 'react';
 
 function TransactionMoney({
@@ -41,7 +41,11 @@ export default function RecentTransactions({
   return (
     <>
       {items.length === 0 && (
-        <p className="text-sm text-gray-500">Chưa có giao dịch.</p>
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description="Không có giao dịch."
+          className="!my-6"
+        />
       )}
       <div className="mt-4 flex flex-col gap-4">
         {items.slice(0, 3).map((item, index) => {
