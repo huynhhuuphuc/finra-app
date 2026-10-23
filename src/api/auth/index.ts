@@ -4,10 +4,7 @@ import { requestCus } from '../apiConfig';
 import { customerApiOptions } from '../core/customer';
 import { parseLoginResponse, type LoginResponse } from './loginResponse';
 
-const LOGIN_ENDPOINT =
-  process.env.NAME === 'development'
-    ? '/finra-auth/login'
-    : 'https://api-uat-invest.finra.com.vn/login';
+const LOGIN_ENDPOINT = process.env.AUTH_LOGIN_URL;
 
 export async function login(usr: string, pwd: string) {
   const previousToken = getCookie(ACCESS_TOKEN);

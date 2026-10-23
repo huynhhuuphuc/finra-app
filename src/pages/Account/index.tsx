@@ -194,9 +194,9 @@ export default function AccountPage() {
             height={14.67}
             preserveAspectRatio="xMidYMid meet"
           />
-          <span className="absolute -left-2 -top-2 grid h-[19px] min-w-[19px] place-items-center rounded-full bg-[#ff3b30] px-0.5 text-[10px] font-semibold leading-4 text-white">
+          {/* <span className="absolute -left-2 -top-2 grid h-[19px] min-w-[19px] place-items-center rounded-full bg-[#ff3b30] px-0.5 text-[10px] font-semibold leading-4 text-white">
             75
-          </span>
+          </span> */}
         </button>
       </div>
 

@@ -1,4 +1,5 @@
 import { defineConfig } from '@umijs/max';
+import { apiDefine } from './apiEnv';
 import defaultSettings from './defaultSettings';
 import routes from './routes';
 
@@ -28,5 +29,6 @@ export default defineConfig({
     'process.env.HOST': BASE_URI,
     'process.env.SECRET_KEY': 'salt_value',
     'process.env.GA_MEASUREMENT_ID': GA_MEASUREMENT_ID,
+    ...apiDefine,
   },
 });
